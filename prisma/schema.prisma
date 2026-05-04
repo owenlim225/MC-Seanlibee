@@ -1,0 +1,101 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  CUSTOMER
+  KITCHEN
+  DRIVER
+  ADMIN
+}
+
+enum OrderStatus {
+  PENDING_PAYMENT
+  RECEIVED
+  PREPARING
+  READY
+  PICKED_UP
+  DELIVERED
+  CANCELED
+}
+
+model User {
+  id           String             @id @default(cuid())
+  email        String             @unique
+  role         Role
+  name         String
+  orders       Order[]            @relation("CustomerOrders")
+  actedEvents  OrderStatusEvent[]
+  deliveries   DeliveryAssignment[]
+}
+
+model MenuCategory {
+  id        String     @id @default(cuid())
+  name      String
+  sortOrder Int        @default(0)
+  items     MenuItem[]
+}
+
+model MenuItem {
+  id          String      @id @default(cuid())
+  categoryId  String
+  category    MenuCategory @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  name        String
+  description String      @default("")
+  priceCents  Int
+  imageUrl    String?
+  isAvailable Boolean     @default(true)
+  orderItems  OrderItem[]
+}
+
+model Order {
+  id          String             @id @default(cuid())
+  customerId  String
+  customer    User               @relation("CustomerOrders", fields: [customerId], references: [id])
+  status      OrderStatus        @default(PENDING_PAYMENT)
+  totalCents  Int
+  createdAt   DateTime           @default(now())
+  paidAt      DateTime?
+  items       OrderItem[]
+  events      OrderStatusEvent[]
+  assignment  DeliveryAssignment?
+}
+
+model OrderItem {
+  id                String   @id @default(cuid())
+  orderId           String
+  order             Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  menuItemId        String
+  menuItem          MenuItem @relation(fields: [menuItemId], references: [id])
+  quantity          Int
+  priceCentsAtOrder Int
+}
+
+model OrderStatusEvent {
+  id          String       @id @default(cuid())
+  orderId     String
+  order       Order        @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  fromStatus  OrderStatus?
+  toStatus    OrderStatus
+  actorUserId String?
+  actor       User?        @relation(fields: [actorUserId], references: [id])
+  at          DateTime     @default(now())
+
+  @@index([orderId])
+  @@index([at])
+}
+
+model DeliveryAssignment {
+  id          String    @id @default(cuid())
+  orderId     String    @unique
+  order       Order     @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  driverId    String
+  driver      User      @relation(fields: [driverId], references: [id])
+  claimedAt   DateTime  @default(now())
+  deliveredAt DateTime?
+}
