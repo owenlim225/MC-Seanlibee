@@ -1,0 +1,19 @@
+{
+  "name": "blueprintkit",
+  "owner": {
+    "name": "JustineDevs",
+    "email": "tradergofficial@gmail.com"
+  },
+  "metadata": {
+    "description": "Complete project planning and execution framework with all 14 planning sections plus 9 Claude Skills automatically available.",
+    "pluginRoot": "."
+  },
+  "plugins": [
+    {
+      "name": "blueprintkit",
+      "source": ".",
+      "description": "Complete planning framework with all 14 planning sections (planning/0-Master-Index.md through planning/13-Lessons-Learned-Continuous-Improvement.md) plus all 9 Claude Skills (tech-stack-selector, architecture-decisions, code-standards-enforcer, ci-cd-pipeline-builder, agile-executor, project-risk-identifier, automation-orchestrator, webapp-testing, web-artifacts-builder). When installed, all planning templates and execution skills are immediately available.",
+      "category": "Project Management"
+    }
+  ]
+}

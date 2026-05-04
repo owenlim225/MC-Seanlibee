@@ -1,0 +1,17 @@
+{
+  "version": 1,
+  "skills": {
+    "blueprintkit": {
+      "source": "justinedevs/collection",
+      "sourceType": "github",
+      "skillPath": "blueprintkit/SKILL.md",
+      "computedHash": "1a5a134b7a871e75af5da3a5dda0adfc99f2212eec6863a50ab035e7be1fc30e"
+    },
+    "co-star-ui": {
+      "source": "justinedevs/collection",
+      "sourceType": "github",
+      "skillPath": "co-star-ui/SKILL.md",
+      "computedHash": "e15c54ceff775f3f1530d9d714525b88285be69618ebd93a7188ed9828181d9b"
+    }
+  }
+}
