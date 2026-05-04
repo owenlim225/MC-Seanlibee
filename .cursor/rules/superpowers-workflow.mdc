@@ -1,0 +1,17 @@
+---
+description: Superpowers design-before-code — read brainstorming and writing-plans skills when building or changing behavior
+globs: []
+alwaysApply: true
+---
+
+# Superpowers workflow (Cursor + ECC)
+
+There is no Claude Code `Skill` tool here. When a workflow matches a skill under `.cursor/skills/<name>/`, **read that `SKILL.md` with the Read tool** and follow it before writing or editing product code.
+
+**Use the brainstorming skill** (`.cursor/skills/brainstorming/SKILL.md`) when the user is starting **new features**, **new behavior**, or **non-trivial design**—even if it sounds “small.” Do not implement until the user has approved the design and the written spec under `docs/superpowers/specs/` as that skill describes.
+
+**Use the writing-plans skill** (`.cursor/skills/writing-plans/SKILL.md`) after an approved spec to produce the implementation plan under `docs/superpowers/plans/`.
+
+**Skip or shorten** this flow only when the user explicitly asks for a trivial fix (typos, one-line config) or says to skip spec/plan.
+
+**After plans:** prefer this repo’s ECC flows (`/tdd`, `code-reviewer`, existing rules)—see the “This project” section in `writing-plans/SKILL.md`.
