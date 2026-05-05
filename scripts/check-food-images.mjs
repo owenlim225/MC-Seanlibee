@@ -1,64 +1,24 @@
 import fs from "node:fs";
 import path from "node:path";
 
-const prismaDir = path.join(process.cwd(), "prisma");
-const manifestPath = path.join(prismaDir, "seed-sources", "manifest.json");
-const manifest = JSON.parse(fs.readFileSync(manifestPath, "utf8"));
+const prismaDir = path.join(process.cwd(), "prisma", "data");
+const files = fs
+  .readdirSync(prismaDir)
+  .filter((f) => f.endsWith(".json") && !f.startsWith("package"));
 
-function isValidFoodRow(row) {
-  return (
-    row &&
-    typeof row === "object" &&
-    typeof row.id === "string" &&
-    typeof row.img === "string" &&
-    typeof row.name === "string" &&
-    typeof row.dsc === "string" &&
-    typeof row.price === "number" &&
-    typeof row.rate === "number" &&
-    typeof row.country === "string"
-  );
+if (files.length === 0) {
+  process.stderr.write(`ERROR: No JSON files found in ${prismaDir}\n`);
+  process.exit(1);
 }
 
 /** @type {Map<string, string[]>} */
 const urlRefs = new Map();
-const seenIds = new Set();
-/** @type {Array<{sourceSlug: string; rowIndex: number; reason: string}>} */
-const invalidRows = [];
-/** @type {Map<string, string[]>} */
-const duplicateIdRefs = new Map();
-/** @type {Map<string, string>} */
-const firstIdRef = new Map();
-
-for (const entry of manifest) {
-  const sourcePath = path.resolve(path.join(prismaDir, "seed-sources"), entry.filePath);
-  const data = JSON.parse(fs.readFileSync(sourcePath, "utf8"));
-  if (!Array.isArray(data)) {
-    throw new Error(`Seed source must be an array: ${entry.sourceSlug} (${sourcePath})`);
-  }
-
-  for (const [rowIndex, row] of data.entries()) {
-    if (!isValidFoodRow(row)) {
-      invalidRows.push({ sourceSlug: entry.sourceSlug, rowIndex, reason: "Invalid FoodRow shape" });
-      continue;
-    }
-
-    const rowRef = `${entry.sourceSlug}[${rowIndex}]`;
-    if (seenIds.has(row.id)) {
-      const refs = duplicateIdRefs.get(row.id) ?? [];
-      if (refs.length === 0) {
-        const firstRef = firstIdRef.get(row.id);
-        if (firstRef) refs.push(firstRef);
-      }
-      refs.push(rowRef);
-      duplicateIdRefs.set(row.id, refs);
-    } else {
-      seenIds.add(row.id);
-      firstIdRef.set(row.id, rowRef);
-    }
-
+for (const f of files) {
+  const data = JSON.parse(fs.readFileSync(path.join(prismaDir, f), "utf8"));
+  for (const row of data) {
     if (!row.img) continue;
     const refs = urlRefs.get(row.img) ?? [];
-    refs.push(`${entry.sourceSlug}#${row.id}`);
+    refs.push(`${f}#${row.id}`);
     urlRefs.set(row.img, refs);
   }
 }
@@ -74,6 +34,7 @@ async function probe(url) {
       headers: { "User-Agent": "Mozilla/5.0 (compatible; FoodImageProbe/1.0)" },
     });
     clearTimeout(t);
+    const ct = r.headers.get("content-type") ?? "";
     if (r.status === 405 || r.status === 501) {
       const ac2 = new AbortController();
       const t2 = setTimeout(() => ac2.abort(), 20000);
@@ -111,26 +72,4 @@ for (const url of urls) {
   }
 }
 
-const duplicateIds = [...duplicateIdRefs.entries()].map(([id, refs]) => ({ id, refs }));
-const hasValidationErrors = invalidRows.length > 0;
-console.log(
-  JSON.stringify(
-    {
-      totalSources: manifest.length,
-      totalUniqueIds: seenIds.size,
-      invalidRowCount: invalidRows.length,
-      duplicateIdCount: duplicateIds.length,
-      totalUrls: urls.length,
-      badCount: bad.length,
-      invalidRows,
-      duplicateIds,
-      bad,
-    },
-    null,
-    2,
-  ),
-);
-
-if (hasValidationErrors) {
-  process.exit(1);
-}
+console.log(JSON.stringify({ totalUrls: urls.length, badCount: bad.length, bad }, null, 2));

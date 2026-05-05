@@ -10,7 +10,7 @@ export const GROUPED_MENU_TAXONOMY: readonly GroupedMenuTaxonomyGroup[] = [
     slug: "main-meals",
     name: "Main Meals",
     sortOrder: 10,
-    sourceSlugs: ["burgers", "pizzas", "fried-chicken", "steaks", "porks", "sausages", "sandwiches", "our-foods"],
+    sourceSlugs: ["burgers", "pizzas", "fried-chicken", "steaks", "porks", "sausages", "sandwiches"],
   },
   {
     slug: "budget-meals",
@@ -40,7 +40,7 @@ export const GROUPED_MENU_TAXONOMY: readonly GroupedMenuTaxonomyGroup[] = [
     slug: "best-sellers-featured",
     name: "Best Sellers / Featured Picks",
     sortOrder: 60,
-    sourceSlugs: ["bbqs", "burgers", "fried-chicken", "pizzas", "our-foods"],
+    sourceSlugs: ["bbqs", "burgers", "fried-chicken", "pizzas"],
   },
   {
     slug: "grilled-heavy-meals",

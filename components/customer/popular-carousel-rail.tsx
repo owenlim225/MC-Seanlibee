@@ -4,6 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 
 import { HorizontalScroller } from "@/components/customer/horizontal-scroller";
+import { resolveMenuImageUrl } from "@/lib/menu/resolve-menu-image-url";
 import { MoneyText } from "@/components/ui/money-text";
 
 export type PopularCarouselItem = {
@@ -13,21 +14,12 @@ export type PopularCarouselItem = {
   imageUrl: string | null;
 };
 
-function PlaceholderVisual({ label }: { label: string }) {
-  const initial = label.trim().charAt(0).toUpperCase() || "?";
-  return (
-    <div className="flex size-full items-center justify-center bg-zinc-100 text-2xl font-semibold text-zinc-400 dark:bg-zinc-800 dark:text-zinc-500">
-      {initial}
-    </div>
-  );
-}
-
 export function PopularCarouselRail({
   items,
-  addToCart,
+  addToCartAction,
 }: {
   items: PopularCarouselItem[];
-  addToCart: (menuItemId: string) => Promise<void>;
+  addToCartAction: (menuItemId: string) => Promise<void>;
 }) {
   if (items.length === 0) return null;
 
@@ -36,36 +28,40 @@ export function PopularCarouselRail({
       {items.map((item) => (
         <article
           key={item.id}
-          className="snap-start shrink-0 w-[168px] rounded-xl border border-zinc-200 bg-white p-2 shadow-sm dark:border-zinc-800 dark:bg-zinc-950"
+          className="relative snap-start shrink-0 w-[168px] rounded-xl border border-zinc-200 bg-white p-2 shadow-sm motion-safe:transition motion-safe:duration-200 motion-safe:hover:-translate-y-1 motion-safe:hover:shadow-lg motion-safe:hover:shadow-[#D12E27]/20 motion-safe:hover:ring-2 motion-safe:hover:ring-[#D12E27]/25 dark:border-zinc-800 dark:bg-zinc-950 dark:motion-safe:hover:shadow-[#D12E27]/30 dark:motion-safe:hover:ring-[#D12E27]/35"
         >
-          <Link href={`/customer/items/${item.id}`} className="block">
+          <Link
+            href={`/customer/items/${item.id}`}
+            className="absolute inset-0 z-10 rounded-xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#D12E27] focus-visible:ring-offset-2 dark:focus-visible:ring-offset-zinc-950"
+            aria-label={`View ${item.name}`}
+          />
+          <div className="relative z-0 flex flex-col gap-2">
             <div className="relative aspect-square w-full overflow-hidden rounded-lg bg-zinc-50 dark:bg-zinc-900">
-              {item.imageUrl ? (
-                <Image
-                  src={item.imageUrl}
-                  alt={item.name}
-                  fill
-                  className="object-cover"
-                  sizes="168px"
-                />
-              ) : (
-                <PlaceholderVisual label={item.name} />
-              )}
+              <Image
+                src={resolveMenuImageUrl(item.id, item.imageUrl, { width: 336, height: 336 })}
+                alt={item.name}
+                fill
+                className="object-cover"
+                sizes="168px"
+              />
             </div>
-          </Link>
-          <div className="mt-2 flex flex-col gap-2">
-            <Link href={`/customer/items/${item.id}`} className="line-clamp-2 min-h-[2.5rem] text-sm font-semibold leading-tight text-zinc-900 dark:text-zinc-50">
+            <p className="line-clamp-2 min-h-[2.5rem] text-sm font-semibold leading-tight text-zinc-900 dark:text-zinc-50">
               {item.name}
-            </Link>
+            </p>
             <div className="flex items-center justify-between gap-2">
               <span className="text-sm font-semibold tabular-nums text-zinc-900 dark:text-zinc-50">
                 <MoneyText cents={item.priceCents} />
               </span>
-              <form action={addToCart.bind(null, item.id)}>
+              <form
+                className="relative z-20"
+                action={addToCartAction.bind(null, item.id)}
+                onClick={(e) => e.stopPropagation()}
+              >
                 <button
                   type="submit"
                   aria-label={`Add ${item.name} to cart`}
                   className="flex size-9 shrink-0 items-center justify-center rounded-full bg-[#D12E27] text-xl font-light leading-none text-white shadow-md transition hover:opacity-90"
+                  onClick={(e) => e.stopPropagation()}
                 >
                   +
                 </button>

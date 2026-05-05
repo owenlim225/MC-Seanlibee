@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
 import { readCart } from "@/lib/cart-cookie";
+import { computeCheckoutPricing } from "@/lib/customer/checkout-pricing";
 import { setLineQty, startCheckout } from "@/app/(customer)/customer/actions";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -29,7 +30,9 @@ export default async function CartPage({
     })
     .filter((x): x is NonNullable<typeof x> => Boolean(x));
 
-  const total = lines.reduce((sum, l) => sum + l.menuItem.priceCents * l.qty, 0);
+  const pricing = computeCheckoutPricing({
+    lines: lines.map((line) => ({ priceCents: line.menuItem.priceCents, qty: line.qty })),
+  });
 
   return (
     <div className="flex flex-col gap-6">
@@ -82,12 +85,28 @@ export default async function CartPage({
             </Card>
           ))}
 
-          <Card className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
-            <div className="text-sm font-semibold">
-              Total <MoneyText cents={total} />
+          <Card className="flex flex-col gap-3">
+            <div className="text-sm font-semibold">Billing summary</div>
+            <div className="grid gap-1 text-sm">
+              <div className="flex items-center justify-between">
+                <span>Subtotal</span>
+                <MoneyText cents={pricing.subtotalCents} />
+              </div>
+              <div className="flex items-center justify-between">
+                <span>Delivery (standard)</span>
+                <MoneyText cents={pricing.deliveryFeeCents} />
+              </div>
+              <div className="flex items-center justify-between">
+                <span>Service fee</span>
+                <MoneyText cents={pricing.serviceFeeCents} />
+              </div>
+              <div className="mt-2 flex items-center justify-between border-t border-zinc-200 pt-2 text-base font-semibold dark:border-zinc-800">
+                <span>Total</span>
+                <MoneyText cents={pricing.totalCents} />
+              </div>
             </div>
             <form action={startCheckout}>
-              <Button type="submit">Checkout (mock)</Button>
+              <Button type="submit">Review payment and address</Button>
             </form>
           </Card>
         </div>
