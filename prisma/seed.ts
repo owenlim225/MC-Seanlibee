@@ -127,12 +127,13 @@ function loadFoodSourcesFromManifest(): { sourceSlug: ApprovedSourceSlug; rows: 
 const FOOD_SOURCES = loadFoodSourcesFromManifest();
 
 function rowToCreateInput(row: FoodRow): Prisma.MenuItemCreateManyInput {
+  const normalizedImageUrl = row.img.trim();
   return {
     id: row.id,
-    name: row.dsc,
-    description: `${row.name} · ${row.country}`,
+    name: row.name,
+    description: row.dsc,
     priceCents: Math.round(row.price * 100),
-    imageUrl: row.img,
+    imageUrl: normalizedImageUrl.length > 0 ? normalizedImageUrl : null,
     isAvailable: true,
   };
 }
