@@ -136,4 +136,4 @@ When replacing demo cookie auth:
 
 ---
 
-**Next step:** After you review this file, implementation planning follows **`.cursor/skills/writing-plans/SKILL.md`** → `docs/superpowers/plans/` before code changes.
+**Implementation:** Use the **single** unified plan (auth + live-demo realtime + mobile + deploy): [docs/superpowers/plans/2026-05-05-login-role-redirect-and-live-demo.md](../plans/2026-05-05-login-role-redirect-and-live-demo.md). Do not maintain a separate duplicate plan for the same scope.
