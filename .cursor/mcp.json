@@ -39,6 +39,9 @@
         "-y",
         "@modelcontextprotocol/server-sequential-thinking@2025.12.18"
       ]
+    },
+    "supabase": {
+      "url": "https://mcp.supabase.com/mcp?project_ref=sdgpxydkqdthgolfmpei"
     }
   }
 }

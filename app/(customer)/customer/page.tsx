@@ -25,9 +25,9 @@ export default async function CustomerMenuPage({
   // #region agent log
   fetch("http://127.0.0.1:7817/ingest/c3fc8591-bb49-4618-b7bd-5aef2b04dae3", {
     method: "POST",
-    headers: { "Content-Type": "application/json", "X-Debug-Session-Id": "d4c10e" },
+    headers: { "Content-Type": "application/json", "X-Debug-Session-Id": "823e17" },
     body: JSON.stringify({
-      sessionId: "d4c10e",
+      sessionId: "823e17",
       runId: "pre-fix",
       hypothesisId: "H1",
       location: "app/(customer)/customer/page.tsx:25",
@@ -40,55 +40,97 @@ export default async function CustomerMenuPage({
   // #region agent log
   fetch("http://127.0.0.1:7817/ingest/c3fc8591-bb49-4618-b7bd-5aef2b04dae3", {
     method: "POST",
-    headers: { "Content-Type": "application/json", "X-Debug-Session-Id": "d4c10e" },
+    headers: { "Content-Type": "application/json", "X-Debug-Session-Id": "823e17" },
     body: JSON.stringify({
-      sessionId: "d4c10e",
+      sessionId: "823e17",
       runId: "pre-fix",
       hypothesisId: "H2",
       location: "app/(customer)/customer/page.tsx:40",
-      message: "runtime prisma metadata snapshot",
+      message: "runtime prisma metadata snapshot before findMany",
       data: {
         prismaClientVersion: Prisma.prismaVersion.client,
         menuCategoryFields:
           (prisma as unknown as { _runtimeDataModel?: { models?: Record<string, { fields?: { name: string }[] }> } })
             ._runtimeDataModel?.models?.MenuCategory?.fields?.map((f) => f.name) ?? null,
+        hasSlugInRuntimeModel:
+          ((prisma as unknown as { _runtimeDataModel?: { models?: Record<string, { fields?: { name: string }[] }> } })
+            ._runtimeDataModel?.models?.MenuCategory?.fields?.map((f) => f.name) ?? []
+          ).includes("slug"),
       },
       timestamp: Date.now(),
     }),
   }).catch(() => {});
   // #endregion
-  const categories = await prisma.menuCategory.findMany({
-    orderBy: { sortOrder: "asc" },
-    select: {
-      id: true,
-      slug: true,
-      name: true,
-      sortOrder: true,
-      itemLinks: {
-        orderBy: { menuItem: { name: "asc" } },
-        select: {
-          menuItem: {
-            select: {
-              id: true,
-              name: true,
-              description: true,
-              priceCents: true,
-              imageUrl: true,
-              isAvailable: true,
+  // #region agent log
+  fetch("http://127.0.0.1:7817/ingest/c3fc8591-bb49-4618-b7bd-5aef2b04dae3", {
+    method: "POST",
+    headers: { "Content-Type": "application/json", "X-Debug-Session-Id": "823e17" },
+    body: JSON.stringify({
+      sessionId: "823e17",
+      runId: "pre-fix",
+      hypothesisId: "H3",
+      location: "app/(customer)/customer/page.tsx:60",
+      message: "findMany select shape",
+      data: { selectedFields: ["id", "slug", "name", "sortOrder", "itemLinks.menuItem.*"] },
+      timestamp: Date.now(),
+    }),
+  }).catch(() => {});
+  // #endregion
+  let categories: Awaited<ReturnType<typeof prisma.menuCategory.findMany>>;
+  try {
+    categories = await prisma.menuCategory.findMany({
+      orderBy: { sortOrder: "asc" },
+      select: {
+        id: true,
+        slug: true,
+        name: true,
+        sortOrder: true,
+        itemLinks: {
+          orderBy: { menuItem: { name: "asc" } },
+          select: {
+            menuItem: {
+              select: {
+                id: true,
+                name: true,
+                description: true,
+                priceCents: true,
+                imageUrl: true,
+                isAvailable: true,
+              },
             },
           },
         },
       },
-    },
-  });
+    });
+  } catch (error) {
+    // #region agent log
+    fetch("http://127.0.0.1:7817/ingest/c3fc8591-bb49-4618-b7bd-5aef2b04dae3", {
+      method: "POST",
+      headers: { "Content-Type": "application/json", "X-Debug-Session-Id": "823e17" },
+      body: JSON.stringify({
+        sessionId: "823e17",
+        runId: "pre-fix",
+        hypothesisId: "H4",
+        location: "app/(customer)/customer/page.tsx:82",
+        message: "findMany failed",
+        data: {
+          errorName: error instanceof Error ? error.name : typeof error,
+          errorMessage: error instanceof Error ? error.message : String(error),
+        },
+        timestamp: Date.now(),
+      }),
+    }).catch(() => {});
+    // #endregion
+    throw error;
+  }
   // #region agent log
   fetch("http://127.0.0.1:7817/ingest/c3fc8591-bb49-4618-b7bd-5aef2b04dae3", {
     method: "POST",
-    headers: { "Content-Type": "application/json", "X-Debug-Session-Id": "d4c10e" },
+    headers: { "Content-Type": "application/json", "X-Debug-Session-Id": "823e17" },
     body: JSON.stringify({
-      sessionId: "d4c10e",
+      sessionId: "823e17",
       runId: "pre-fix",
-      hypothesisId: "H3",
+      hypothesisId: "H5",
       location: "app/(customer)/customer/page.tsx:66",
       message: "query completed",
       data: { categoryCount: categories.length },
