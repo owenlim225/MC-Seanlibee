@@ -1,11 +1,19 @@
 import Image from "next/image";
 import Link from "next/link";
-import { prisma } from "@/lib/prisma";
 import { addToCart } from "@/app/(customer)/customer/actions";
+import { CategoryCarouselRail, FeaturedCategoryRail } from "@/components/customer/category-carousel-rail";
+import { PopularCarouselRail } from "@/components/customer/popular-carousel-rail";
 import { Button } from "@/components/ui/button";
 import { Card, CardDescription, CardTitle } from "@/components/ui/card";
 import { MoneyText } from "@/components/ui/money-text";
 import { PageHeader } from "@/components/ui/page-header";
+import { selectPopularItems } from "@/lib/menu/select-popular-items";
+import { prisma } from "@/lib/prisma";
+
+function firstCategoryThumbnail(items: { name: string; imageUrl: string | null }[]): string | null {
+  const sorted = [...items].sort((a, b) => a.name.localeCompare(b.name));
+  return sorted.find((item) => item.imageUrl)?.imageUrl ?? null;
+}
 
 export default async function CustomerMenuPage({
   searchParams,
@@ -23,41 +31,25 @@ export default async function CustomerMenuPage({
       ? categories.filter((c) => c.id === sp.category)
       : categories;
 
-  // #region agent log
-  try {
-    const hosts = new Set<string>();
-    let invalidUrlCount = 0;
-    for (const cat of filtered) {
-      for (const item of cat.items) {
-        if (!item.imageUrl) continue;
-        try {
-          hosts.add(new URL(item.imageUrl).hostname);
-        } catch {
-          invalidUrlCount += 1;
-        }
-      }
-    }
-    fetch("http://127.0.0.1:7817/ingest/c3fc8591-bb49-4618-b7bd-5aef2b04dae3", {
-      method: "POST",
-      headers: { "Content-Type": "application/json", "X-Debug-Session-Id": "bac66b" },
-      body: JSON.stringify({
-        sessionId: "bac66b",
-        location: "app/(customer)/customer/page.tsx:CustomerMenuPage",
-        message: "menu imageUrl hostnames for next/image allowlist check",
-        data: {
-          hosts: [...hosts].sort(),
-          invalidUrlCount,
-          categoryCount: filtered.length,
-        },
-        timestamp: Date.now(),
-        hypothesisId: "H1-H5",
-        runId: "pre-fix",
-      }),
-    }).catch(() => {});
-  } catch {
-    /* ignore debug log failures */
-  }
-  // #endregion
+  const popularItems = selectPopularItems(
+    categories.map((c) => ({
+      id: c.id,
+      name: c.name,
+      sortOrder: c.sortOrder,
+      items: c.items.map((item) => ({
+        id: item.id,
+        name: item.name,
+        priceCents: item.priceCents,
+        imageUrl: item.imageUrl,
+      })),
+    })),
+  );
+
+  const featuredCategories = categories.map((c) => ({
+    id: c.id,
+    name: c.name,
+    thumbnailUrl: firstCategoryThumbnail(c.items),
+  }));
 
   return (
     <div className="flex flex-col gap-6">
@@ -76,12 +68,34 @@ export default async function CustomerMenuPage({
         }
       />
 
-      <div className="flex flex-wrap gap-2 text-sm">
-        <FilterChip active={!sp.category || sp.category === "all"} href="/customer" label="All" />
-        {categories.map((c) => (
-          <FilterChip key={c.id} active={sp.category === c.id} href={`/customer?category=${c.id}`} label={c.name} />
-        ))}
-      </div>
+      <CategoryCarouselRail
+        categories={categories.map((c) => ({ id: c.id, name: c.name }))}
+        categoryParam={sp.category}
+      />
+
+      <section className="flex flex-col gap-3">
+        <div className="flex items-center justify-between gap-3">
+          <h2 className="text-lg font-semibold tracking-tight text-zinc-900 dark:text-zinc-50">
+            Featured Menu
+          </h2>
+          <Link href="/customer" className="text-sm font-semibold text-[#D12E27] hover:underline">
+            View All
+          </Link>
+        </div>
+        <FeaturedCategoryRail categories={featuredCategories} />
+      </section>
+
+      <section className="flex flex-col gap-3">
+        <div className="flex items-center justify-between gap-3">
+          <h2 className="text-lg font-semibold tracking-tight text-zinc-900 dark:text-zinc-50">
+            Most Popular
+          </h2>
+          <Link href="/customer" className="text-sm font-semibold text-[#D12E27] hover:underline">
+            View All
+          </Link>
+        </div>
+        <PopularCarouselRail items={popularItems} addToCart={addToCart} />
+      </section>
 
       <div className="flex flex-col gap-6">
         {filtered.map((category) => (
@@ -127,24 +141,5 @@ export default async function CustomerMenuPage({
         ))}
       </div>
     </div>
-  );
-}
-
-function FilterChip({
-  href,
-  label,
-  active,
-}: {
-  href: string;
-  label: string;
-  active: boolean;
-}) {
-  return (
-    <Link
-      href={href}
-      className={`rounded-full px-3 py-1 ${active ? "bg-zinc-900 text-white dark:bg-zinc-50 dark:text-zinc-950" : "bg-zinc-100 dark:bg-zinc-900"}`}
-    >
-      {label}
-    </Link>
   );
 }
