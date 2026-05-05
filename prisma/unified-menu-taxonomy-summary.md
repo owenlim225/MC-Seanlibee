@@ -18,12 +18,12 @@
 - Removed empty/noise records by requiring id/name and description-like text.
 
 ## Counts per category
-- **BBQ & Smoked Meats**: 63 items
-- **Burgers & Sandwiches**: 36 items
-- **Pizza & Breads**: 41 items
-- **Steaks & Premium Meats**: 22 items
-- **Fried Chicken & Wings**: 19 items
-- **Desserts & Ice Cream**: 57 items
+- **BBQ & Smoked Meats**: 59 items
+- **Burgers & Sandwiches**: 38 items
+- **Pizza & Breads**: 39 items
+- **Steaks & Premium Meats**: 27 items
+- **Fried Chicken & Wings**: 21 items
+- **Desserts & Ice Cream**: 53 items
 - **Drinks & Mixers**: 21 items
 
 ## Notable edge-case decisions
@@ -31,8 +31,9 @@
 - Cross-domain kits (e.g., fried chicken sandwich kits, BBQ sandwich kits) receive secondary categories to preserve browse discoverability.
 - Beverage-adjacent kits with no clear edible component were forced into `Drinks & Mixers` to avoid unclassified records.
 - Mixed combo entries keep one primary category based on strongest intent keyword, with up to three secondary categories.
+- Non-BBQ dinner kits that were previously forced into BBQ/dessert buckets were reassigned to more intuitive browse categories while preserving source provenance.
 
 ## Processing totals
 - Raw source rows processed: **299**
-- Deduplicated final items: **259**
-- Duplicates merged/removed: **40**
+- Deduplicated final items: **258**
+- Duplicates merged/removed: **41**

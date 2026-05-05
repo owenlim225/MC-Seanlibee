@@ -7,6 +7,7 @@
  */
 const encoder = new TextEncoder();
 const FIXED_KEY_BYTES = encoder.encode("ct-equal-fixed-key-v1");
+export const DEFAULT_DEMO_AUTH_PASSWORD = "Demo123!";
 
 let cachedKey: Promise<CryptoKey> | undefined;
 
@@ -36,10 +37,16 @@ export async function constantTimeEqual(a: string, b: string): Promise<boolean> 
 
 /**
  * Compare a user-submitted password to the configured demo password.
- * Returns false if `DEMO_AUTH_PASSWORD` is unset (treated as "demo disabled").
+ * In non-production, falls back to the default demo password when env is unset.
+ * In production, requires `DEMO_AUTH_PASSWORD` to be explicitly configured.
  */
 export async function checkDemoPassword(submitted: string): Promise<boolean> {
-  const expected = process.env.DEMO_AUTH_PASSWORD;
+  const expected =
+    process.env.DEMO_AUTH_PASSWORD && process.env.DEMO_AUTH_PASSWORD.length > 0
+      ? process.env.DEMO_AUTH_PASSWORD
+      : process.env.NODE_ENV === "production"
+        ? ""
+        : DEFAULT_DEMO_AUTH_PASSWORD;
   if (!expected || expected.length === 0) return false;
   return constantTimeEqual(submitted, expected);
 }

@@ -1,0 +1,3002 @@
+# Instructions
+
+- Following Playwright test failed.
+- Explain why, be concise, respect Playwright best practices.
+- Provide a snippet of code with the fix, if possible.
+
+# Test info
+
+- Name: customer.carousel.spec.ts >> category carousel marks the URL-selected chip as current
+- Location: tests\e2e\customer.carousel.spec.ts:4:5
+
+# Error details
+
+```
+Error: expect(locator).toBeVisible() failed
+
+Locator: getByRole('region', { name: 'Menu categories' })
+Expected: visible
+Error: strict mode violation: getByRole('region', { name: 'Menu categories' }) resolved to 2 elements:
+    1) <div role="region" data-scroll-region="true" aria-label="Menu categories" class="flex snap-x snap-mandatory gap-3 overflow-x-auto pb-2 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden ">…</div> aka getByRole('region', { name: 'Menu categories', exact: true })
+    2) <div role="region" aria-label="Featured menu categories" class="flex snap-x snap-mandatory gap-3 overflow-x-auto pb-2 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden ">…</div> aka getByRole('region', { name: 'Featured menu categories' })
+
+Call log:
+  - Expect "toBeVisible" with timeout 10000ms
+  - waiting for getByRole('region', { name: 'Menu categories' })
+
+```
+
+# Page snapshot
+
+```yaml
+- generic [active] [ref=e1]:
+  - banner [ref=e2]:
+    - generic [ref=e3]:
+      - link "MC Food MVP" [ref=e4] [cursor=pointer]:
+        - /url: /
+      - generic [ref=e5]:
+        - link "Customer" [ref=e6] [cursor=pointer]:
+          - /url: /customer
+        - link "Dev roles" [ref=e7] [cursor=pointer]:
+          - /url: /dev/role-switcher
+        - link "Multi-role demo" [ref=e8] [cursor=pointer]:
+          - /url: /dev/multi-role
+  - main [ref=e9]:
+    - generic [ref=e10]:
+      - navigation "Role navigation" [ref=e11]:
+        - link "Customer" [ref=e12] [cursor=pointer]:
+          - /url: /customer
+        - link "Kitchen" [ref=e13] [cursor=pointer]:
+          - /url: /kitchen
+        - link "Driver" [ref=e14] [cursor=pointer]:
+          - /url: /driver
+        - link "Admin" [ref=e15] [cursor=pointer]:
+          - /url: /admin
+      - generic [ref=e16]:
+        - generic [ref=e17]:
+          - generic [ref=e18]:
+            - heading "Menu" [level=1] [ref=e19]
+            - paragraph [ref=e20]: Add dishes to your cart — checkout uses mock Stripe.
+          - generic [ref=e21]:
+            - link "Cart" [ref=e22] [cursor=pointer]:
+              - /url: /customer/cart
+            - link "Orders" [ref=e23] [cursor=pointer]:
+              - /url: /customer/orders
+        - region "Menu categories" [ref=e25]:
+          - tab "All" [selected] [ref=e27] [cursor=pointer]
+          - tab "BBQ" [ref=e29] [cursor=pointer]
+          - tab "Breads" [ref=e31] [cursor=pointer]
+          - tab "Burgers" [ref=e33] [cursor=pointer]
+          - tab "Chocolates" [ref=e35] [cursor=pointer]
+          - tab "Desserts" [ref=e37] [cursor=pointer]
+          - tab "Drinks" [ref=e39] [cursor=pointer]
+          - tab "Fried Chicken" [ref=e41] [cursor=pointer]
+          - tab "Ice Cream" [ref=e43] [cursor=pointer]
+          - tab "Pizzas" [ref=e45] [cursor=pointer]
+          - tab "Pork" [ref=e47] [cursor=pointer]
+          - tab "Sandwiches" [ref=e49] [cursor=pointer]
+          - tab "Sausages" [ref=e51] [cursor=pointer]
+          - tab "Steaks" [ref=e53] [cursor=pointer]
+          - tab "Best Foods" [ref=e55] [cursor=pointer]
+          - tab "Our Foods" [ref=e57] [cursor=pointer]
+        - generic [ref=e58]:
+          - generic [ref=e59]:
+            - heading "Featured Menu" [level=2] [ref=e60]
+            - link "View All" [ref=e61] [cursor=pointer]:
+              - /url: /customer
+          - region "Featured menu categories" [ref=e62]:
+            - link "All All" [ref=e64] [cursor=pointer]:
+              - /url: /customer
+              - generic [ref=e65]: All
+              - generic [ref=e66]: All
+            - link "BBQ" [ref=e68] [cursor=pointer]:
+              - /url: /customer?category=cmos4bk5x0009lnysj8ew7nf5
+              - generic [ref=e69]: B
+              - generic [ref=e70]: BBQ
+            - link "Breads" [ref=e72] [cursor=pointer]:
+              - /url: /customer?category=cmos4bk68000ulnyskz1bisf5
+              - generic [ref=e73]: B
+              - generic [ref=e74]: Breads
+            - link "Burgers" [ref=e76] [cursor=pointer]:
+              - /url: /customer?category=cmos4bk6p001flnyscrp1k7h2
+              - generic [ref=e77]: B
+              - generic [ref=e78]: Burgers
+            - link "Chocolates" [ref=e80] [cursor=pointer]:
+              - /url: /customer?category=cmos4bk7g0020lnysmea0zdrf
+              - generic [ref=e81]: C
+              - generic [ref=e82]: Chocolates
+            - link "Desserts" [ref=e84] [cursor=pointer]:
+              - /url: /customer?category=cmos4bk7x002llnysibygbuj5
+              - generic [ref=e85]: D
+              - generic [ref=e86]: Desserts
+            - link "Drinks" [ref=e88] [cursor=pointer]:
+              - /url: /customer?category=cmos4bk890033lnysmbrddos2
+              - generic [ref=e89]: D
+              - generic [ref=e90]: Drinks
+            - link "Fried Chicken" [ref=e92] [cursor=pointer]:
+              - /url: /customer?category=cmos4bk8o003olnyszfy15vdx
+              - generic [ref=e93]: F
+              - generic [ref=e94]: Fried Chicken
+            - link "Ice Cream" [ref=e96] [cursor=pointer]:
+              - /url: /customer?category=cmos4bk940049lnyse8ysjfr8
+              - generic [ref=e97]: I
+              - generic [ref=e98]: Ice Cream
+            - link "Pizzas" [ref=e100] [cursor=pointer]:
+              - /url: /customer?category=cmos4bk9h004slnysyqvhg1qr
+              - generic [ref=e101]: P
+              - generic [ref=e102]: Pizzas
+            - link "Pork" [ref=e104] [cursor=pointer]:
+              - /url: /customer?category=cmos4bk9u005dlnys5d7gsugw
+              - generic [ref=e105]: P
+              - generic [ref=e106]: Pork
+            - link "Sandwiches" [ref=e108] [cursor=pointer]:
+              - /url: /customer?category=cmos4bka4005xlnysthq7bnc0
+              - generic [ref=e109]: S
+              - generic [ref=e110]: Sandwiches
+            - link "Sausages" [ref=e112] [cursor=pointer]:
+              - /url: /customer?category=cmos4bkaf006dlnys9fjrc66j
+              - generic [ref=e113]: S
+              - generic [ref=e114]: Sausages
+            - link "Steaks" [ref=e116] [cursor=pointer]:
+              - /url: /customer?category=cmos4bkam006xlnyselx7e9wu
+              - generic [ref=e117]: S
+              - generic [ref=e118]: Steaks
+            - link "Best Foods" [ref=e120] [cursor=pointer]:
+              - /url: /customer?category=cmos4bkat007ilnys9fhk8l8j
+              - generic [ref=e121]: B
+              - generic [ref=e122]: Best Foods
+            - link "Our Foods" [ref=e124] [cursor=pointer]:
+              - /url: /customer?category=cmos4bkb0007ylnyseafqnmws
+              - generic [ref=e125]: O
+              - generic [ref=e126]: Our Foods
+        - generic [ref=e127]:
+          - generic [ref=e128]:
+            - heading "Most Popular" [level=2] [ref=e129]
+            - link "View All" [ref=e130] [cursor=pointer]:
+              - /url: /customer
+          - region "Most popular menu items" [ref=e131]:
+            - article [ref=e132]:
+              - link "B" [ref=e133] [cursor=pointer]:
+                - /url: /customer/items/cmos4bk62000ilnys8wqlm8ze
+                - generic [ref=e135]: B
+              - generic [ref=e136]:
+                - link "BBQ Meat Lovers Special for 10" [ref=e137] [cursor=pointer]:
+                  - /url: /customer/items/cmos4bk62000ilnys8wqlm8ze
+                - generic [ref=e138]:
+                  - generic [ref=e139]: $139.00
+                  - button "Add BBQ Meat Lovers Special for 10 to cart" [ref=e141]: +
+            - article [ref=e142]:
+              - link "B" [ref=e143] [cursor=pointer]:
+                - /url: /customer/items/cmos4bk62000plnysgwyl1jz0
+                - generic [ref=e145]: B
+              - generic [ref=e146]:
+                - link "BBQ Rib Tips - Serves 10-15" [ref=e147] [cursor=pointer]:
+                  - /url: /customer/items/cmos4bk62000plnysgwyl1jz0
+                - generic [ref=e148]:
+                  - generic [ref=e149]: $109.00
+                  - button "Add BBQ Rib Tips - Serves 10-15 to cart" [ref=e151]: +
+            - article [ref=e152]:
+              - link "B" [ref=e153] [cursor=pointer]:
+                - /url: /customer/items/cmos4bk62000nlnysudll4rzx
+                - generic [ref=e155]: B
+              - generic [ref=e156]:
+                - link "BBQ Ribs & Pulled Pork Dinner for 6" [ref=e157] [cursor=pointer]:
+                  - /url: /customer/items/cmos4bk62000nlnysudll4rzx
+                - generic [ref=e158]:
+                  - generic [ref=e159]: $109.00
+                  - button "Add BBQ Ribs & Pulled Pork Dinner for 6 to cart" [ref=e161]: +
+            - article [ref=e162]:
+              - link "B" [ref=e163] [cursor=pointer]:
+                - /url: /customer/items/cmos4bk62000llnyssejaf5em
+                - generic [ref=e165]: B
+              - generic [ref=e166]:
+                - link "Best of Texas BBQ Combo - Serves 14" [ref=e167] [cursor=pointer]:
+                  - /url: /customer/items/cmos4bk62000llnyssejaf5em
+                - generic [ref=e168]:
+                  - generic [ref=e169]: $269.00
+                  - button "Add Best of Texas BBQ Combo - Serves 14 to cart" [ref=e171]: +
+            - article [ref=e172]:
+              - link "C" [ref=e173] [cursor=pointer]:
+                - /url: /customer/items/cmos4bk62000blnysqmjfvo6s
+                - generic [ref=e175]: C
+              - generic [ref=e176]:
+                - link "Carolina BBQ Oink Sampler" [ref=e177] [cursor=pointer]:
+                  - /url: /customer/items/cmos4bk62000blnysqmjfvo6s
+                - generic [ref=e178]:
+                  - generic [ref=e179]: $89.00
+                  - button "Add Carolina BBQ Oink Sampler to cart" [ref=e181]: +
+            - article [ref=e182]:
+              - link "C" [ref=e183] [cursor=pointer]:
+                - /url: /customer/items/cmos4bk62000mlnyss5tbwdsw
+                - generic [ref=e185]: C
+              - generic [ref=e186]:
+                - link "Choose Your Own World Championship BBQ - 4 Pack" [ref=e187] [cursor=pointer]:
+                  - /url: /customer/items/cmos4bk62000mlnyss5tbwdsw
+                - generic [ref=e188]:
+                  - generic [ref=e189]: $109.95
+                  - button "Add Choose Your Own World Championship BBQ - 4 Pack to cart" [ref=e191]: +
+            - article [ref=e192]:
+              - link "G" [ref=e193] [cursor=pointer]:
+                - /url: /customer/items/cmos4bk62000slnysfqzjkpfg
+                - generic [ref=e195]: G
+              - generic [ref=e196]:
+                - link "Guy's BBQ Trash Can Nachos + Caliente Margaritas" [ref=e197] [cursor=pointer]:
+                  - /url: /customer/items/cmos4bk62000slnysfqzjkpfg
+                - generic [ref=e198]:
+                  - generic [ref=e199]: $95.00
+                  - button "Add Guy's BBQ Trash Can Nachos + Caliente Margaritas to cart" [ref=e201]: +
+            - article [ref=e202]:
+              - link "H" [ref=e203] [cursor=pointer]:
+                - /url: /customer/items/cmos4bk62000olnyso7s6ve4f
+                - generic [ref=e205]: H
+              - generic [ref=e206]:
+                - link "Hog Heaven - Pulled Pork + Sausage Links" [ref=e207] [cursor=pointer]:
+                  - /url: /customer/items/cmos4bk62000olnyso7s6ve4f
+                - generic [ref=e208]:
+                  - generic [ref=e209]: $69.99
+                  - button "Add Hog Heaven - Pulled Pork + Sausage Links to cart" [ref=e211]: +
+            - article [ref=e212]:
+              - link "J" [ref=e213] [cursor=pointer]:
+                - /url: /customer/items/cmos4bk62000alnys7ean1246
+                - generic [ref=e215]: J
+              - generic [ref=e216]:
+                - link "Joe's KC Ribs, Brisket & Burnt Ends" [ref=e217] [cursor=pointer]:
+                  - /url: /customer/items/cmos4bk62000alnys7ean1246
+                - generic [ref=e218]:
+                  - generic [ref=e219]: $110.99
+                  - button "Add Joe's KC Ribs, Brisket & Burnt Ends to cart" [ref=e221]: +
+            - article [ref=e222]:
+              - link "J" [ref=e223] [cursor=pointer]:
+                - /url: /customer/items/cmos4bk62000rlnysvewps9xm
+                - generic [ref=e225]: J
+              - generic [ref=e226]:
+                - link "Just the Meat BBQ Faves for 6" [ref=e227] [cursor=pointer]:
+                  - /url: /customer/items/cmos4bk62000rlnysvewps9xm
+                - generic [ref=e228]:
+                  - generic [ref=e229]: $109.00
+                  - button "Add Just the Meat BBQ Faves for 6 to cart" [ref=e231]: +
+            - article [ref=e232]:
+              - link "M" [ref=e233] [cursor=pointer]:
+                - /url: /customer/items/cmos4bk62000hlnysh5pgcf1q
+                - generic [ref=e235]: M
+              - generic [ref=e236]:
+                - link "Mini Trinity BBQ Combo - Brisket, Ribs & Links" [ref=e237] [cursor=pointer]:
+                  - /url: /customer/items/cmos4bk62000hlnysh5pgcf1q
+                - generic [ref=e238]:
+                  - generic [ref=e239]: $139.00
+                  - button "Add Mini Trinity BBQ Combo - Brisket, Ribs & Links to cart" [ref=e241]: +
+            - article [ref=e242]:
+              - link "P" [ref=e243] [cursor=pointer]:
+                - /url: /customer/items/cmos4bk62000klnys2fvzhcab
+                - generic [ref=e245]: P
+              - generic [ref=e246]:
+                - link "Post Oak Smoked USDA Prime Half Brisket" [ref=e247] [cursor=pointer]:
+                  - /url: /customer/items/cmos4bk62000klnys2fvzhcab
+                - generic [ref=e248]:
+                  - generic [ref=e249]: $109.00
+                  - button "Add Post Oak Smoked USDA Prime Half Brisket to cart" [ref=e251]: +
+        - generic [ref=e252]:
+          - generic [ref=e253]:
+            - heading "BBQ" [level=2] [ref=e254]
+            - generic [ref=e255]:
+              - generic [ref=e256]:
+                - generic [ref=e257]:
+                  - generic [ref=e258]:
+                    - heading "BBQ Meat Lovers Special for 10" [level=3] [ref=e259]
+                    - paragraph [ref=e260]: Kings BBQ · Kinston, NC
+                  - generic [ref=e261]: $139.00
+                - generic [ref=e262]:
+                  - link "Details" [ref=e263] [cursor=pointer]:
+                    - /url: /customer/items/cmos4bk62000ilnys8wqlm8ze
+                  - button "Add to cart" [ref=e265]
+              - generic [ref=e266]:
+                - generic [ref=e267]:
+                  - generic [ref=e268]:
+                    - heading "BBQ Rib Tips - Serves 10-15" [level=3] [ref=e269]
+                    - paragraph [ref=e270]: Bludso's BBQ · Los Angeles, CA
+                  - generic [ref=e271]: $109.00
+                - generic [ref=e272]:
+                  - link "Details" [ref=e273] [cursor=pointer]:
+                    - /url: /customer/items/cmos4bk62000plnysgwyl1jz0
+                  - button "Add to cart" [ref=e275]
+              - generic [ref=e276]:
+                - generic [ref=e277]:
+                  - generic [ref=e278]:
+                    - heading "BBQ Ribs & Pulled Pork Dinner for 6" [level=3] [ref=e279]
+                    - paragraph [ref=e280]: The Shed BBQ & Blues Joint · Ocean Springs, MS
+                  - generic [ref=e281]: $109.00
+                - generic [ref=e282]:
+                  - link "Details" [ref=e283] [cursor=pointer]:
+                    - /url: /customer/items/cmos4bk62000nlnysudll4rzx
+                  - button "Add to cart" [ref=e285]
+              - generic [ref=e286]:
+                - generic [ref=e287]:
+                  - generic [ref=e288]:
+                    - heading "Best of Texas BBQ Combo - Serves 14" [level=3] [ref=e289]
+                    - paragraph [ref=e290]: Snow's BBQ · Lexington, TX
+                  - generic [ref=e291]: $269.00
+                - generic [ref=e292]:
+                  - link "Details" [ref=e293] [cursor=pointer]:
+                    - /url: /customer/items/cmos4bk62000llnyssejaf5em
+                  - button "Add to cart" [ref=e295]
+              - generic [ref=e296]:
+                - generic [ref=e297]:
+                  - generic [ref=e298]:
+                    - heading "Carolina BBQ Oink Sampler" [level=3] [ref=e299]
+                    - paragraph [ref=e300]: Kings BBQ · Kinston, NC
+                  - generic [ref=e301]: $89.00
+                - generic [ref=e302]:
+                  - link "Details" [ref=e303] [cursor=pointer]:
+                    - /url: /customer/items/cmos4bk62000blnysqmjfvo6s
+                  - button "Add to cart" [ref=e305]
+              - generic [ref=e306]:
+                - generic [ref=e307]:
+                  - generic [ref=e308]:
+                    - heading "Choose Your Own World Championship BBQ - 4 Pack" [level=3] [ref=e309]
+                    - paragraph [ref=e310]: Big Bob Gibson Bar-B-Q · Decatur, AL
+                  - generic [ref=e311]: $109.95
+                - generic [ref=e312]:
+                  - link "Details" [ref=e313] [cursor=pointer]:
+                    - /url: /customer/items/cmos4bk62000mlnyss5tbwdsw
+                  - button "Add to cart" [ref=e315]
+              - generic [ref=e316]:
+                - generic [ref=e317]:
+                  - generic [ref=e318]:
+                    - heading "Guy's BBQ Trash Can Nachos + Caliente Margaritas" [level=3] [ref=e319]
+                    - paragraph [ref=e320]: Guy Fieri · Flavortown, USA
+                  - generic [ref=e321]: $95.00
+                - generic [ref=e322]:
+                  - link "Details" [ref=e323] [cursor=pointer]:
+                    - /url: /customer/items/cmos4bk62000slnysfqzjkpfg
+                  - button "Add to cart" [ref=e325]
+              - generic [ref=e326]:
+                - generic [ref=e327]:
+                  - generic [ref=e328]:
+                    - heading "Hog Heaven - Pulled Pork + Sausage Links" [level=3] [ref=e329]
+                    - paragraph [ref=e330]: Joe's KC BBQ · Kansas City, KS
+                  - generic [ref=e331]: $69.99
+                - generic [ref=e332]:
+                  - link "Details" [ref=e333] [cursor=pointer]:
+                    - /url: /customer/items/cmos4bk62000olnyso7s6ve4f
+                  - button "Add to cart" [ref=e335]
+              - generic [ref=e336]:
+                - generic [ref=e337]:
+                  - generic [ref=e338]:
+                    - heading "Joe's KC Ribs, Brisket & Burnt Ends" [level=3] [ref=e339]
+                    - paragraph [ref=e340]: Joe's KC BBQ · Kansas City, KS
+                  - generic [ref=e341]: $110.99
+                - generic [ref=e342]:
+                  - link "Details" [ref=e343] [cursor=pointer]:
+                    - /url: /customer/items/cmos4bk62000alnys7ean1246
+                  - button "Add to cart" [ref=e345]
+              - generic [ref=e346]:
+                - generic [ref=e347]:
+                  - generic [ref=e348]:
+                    - heading "Just the Meat BBQ Faves for 6" [level=3] [ref=e349]
+                    - paragraph [ref=e350]: Famous Dave's · Minneapolis, MN
+                  - generic [ref=e351]: $109.00
+                - generic [ref=e352]:
+                  - link "Details" [ref=e353] [cursor=pointer]:
+                    - /url: /customer/items/cmos4bk62000rlnysvewps9xm
+                  - button "Add to cart" [ref=e355]
+              - generic [ref=e356]:
+                - generic [ref=e357]:
+                  - generic [ref=e358]:
+                    - heading "Mini Trinity BBQ Combo - Brisket, Ribs & Links" [level=3] [ref=e359]
+                    - paragraph [ref=e360]: Bludso's BBQ · Los Angeles, CA
+                  - generic [ref=e361]: $139.00
+                - generic [ref=e362]:
+                  - link "Details" [ref=e363] [cursor=pointer]:
+                    - /url: /customer/items/cmos4bk62000hlnysh5pgcf1q
+                  - button "Add to cart" [ref=e365]
+              - generic [ref=e366]:
+                - generic [ref=e367]:
+                  - generic [ref=e368]:
+                    - heading "Post Oak Smoked USDA Prime Half Brisket" [level=3] [ref=e369]
+                    - paragraph [ref=e370]: Southside Market & Barbeque · Elgin, TX
+                  - generic [ref=e371]: $109.00
+                - generic [ref=e372]:
+                  - link "Details" [ref=e373] [cursor=pointer]:
+                    - /url: /customer/items/cmos4bk62000klnys2fvzhcab
+                  - button "Add to cart" [ref=e375]
+              - generic [ref=e376]:
+                - generic [ref=e377]:
+                  - generic [ref=e378]:
+                    - heading "Ribs & Chicken Combo Pack - Serves 6-8" [level=3] [ref=e379]
+                    - paragraph [ref=e380]: Dinosaur BBQ · Syracuse, NY
+                  - generic [ref=e381]: $129.00
+                - generic [ref=e382]:
+                  - link "Details" [ref=e383] [cursor=pointer]:
+                    - /url: /customer/items/cmos4bk62000tlnysp23hhwh2
+                  - button "Add to cart" [ref=e385]
+              - generic [ref=e386]:
+                - generic [ref=e387]:
+                  - generic [ref=e388]:
+                    - heading "Ribs & Pulled Pork Dinner for 4" [level=3] [ref=e389]
+                    - paragraph [ref=e390]: Central BBQ · Memphis, TN
+                  - generic [ref=e391]: $79.00
+                - generic [ref=e392]:
+                  - link "Details" [ref=e393] [cursor=pointer]:
+                    - /url: /customer/items/cmos4bk62000dlnysunl9ck8i
+                  - button "Add to cart" [ref=e395]
+              - generic [ref=e396]:
+                - generic [ref=e397]:
+                  - generic [ref=e398]:
+                    - heading "Ribs & Pulled Pork Dinner for 8" [level=3] [ref=e399]
+                    - paragraph [ref=e400]: Central BBQ · Memphis, TN
+                  - generic [ref=e401]: $109.00
+                - generic [ref=e402]:
+                  - link "Details" [ref=e403] [cursor=pointer]:
+                    - /url: /customer/items/cmos4bk62000glnys2glyai2g
+                  - button "Add to cart" [ref=e405]
+              - generic [ref=e406]:
+                - generic [ref=e407]:
+                  - generic [ref=e408]:
+                    - 'heading "Texas Monthly''s #1 BBQ Brisket" [level=3] [ref=e409]'
+                    - paragraph [ref=e410]: Snow's BBQ · Lexington, TX
+                  - generic [ref=e411]: $199.00
+                - generic [ref=e412]:
+                  - link "Details" [ref=e413] [cursor=pointer]:
+                    - /url: /customer/items/cmos4bk62000clnysjct65lbf
+                  - button "Add to cart" [ref=e415]
+              - generic [ref=e416]:
+                - generic [ref=e417]:
+                  - generic [ref=e418]:
+                    - heading "Texas-Sized Smoked Beef Ribs" [level=3] [ref=e419]
+                    - paragraph [ref=e420]: Terry Black's Barbecue · Austin, TX
+                  - generic [ref=e421]: $179.00
+                - generic [ref=e422]:
+                  - link "Details" [ref=e423] [cursor=pointer]:
+                    - /url: /customer/items/cmos4bk62000qlnysktby8wqw
+                  - button "Add to cart" [ref=e425]
+              - generic [ref=e426]:
+                - generic [ref=e427]:
+                  - generic [ref=e428]:
+                    - heading "The Big Ugly BBQ Dinner for 6" [level=3] [ref=e429]
+                    - paragraph [ref=e430]: Ugly Drum · Los Angeles, CA
+                  - generic [ref=e431]: $229.00
+                - generic [ref=e432]:
+                  - link "Details" [ref=e433] [cursor=pointer]:
+                    - /url: /customer/items/cmos4bk62000jlnysnkepmc0y
+                  - button "Add to cart" [ref=e435]
+              - generic [ref=e436]:
+                - generic [ref=e437]:
+                  - generic [ref=e438]:
+                    - heading "Whole Brisket + Texas Barbecue BBQ Sauce" [level=3] [ref=e439]
+                    - paragraph [ref=e440]: Franklin Barbecue · Austin, TX
+                  - generic [ref=e441]: $249.00
+                - generic [ref=e442]:
+                  - link "Details" [ref=e443] [cursor=pointer]:
+                    - /url: /customer/items/cmos4bk62000elnysqyemzopo
+                  - button "Add to cart" [ref=e445]
+              - generic [ref=e446]:
+                - generic [ref=e447]:
+                  - generic [ref=e448]:
+                    - heading "Whole Texas Smoked Brisket" [level=3] [ref=e449]
+                    - paragraph [ref=e450]: Terry Black's Barbecue · Austin, TX
+                  - generic [ref=e451]: $189.00
+                - generic [ref=e452]:
+                  - link "Details" [ref=e453] [cursor=pointer]:
+                    - /url: /customer/items/cmos4bk62000flnys0gki4olr
+                  - button "Add to cart" [ref=e455]
+          - generic [ref=e456]:
+            - heading "Breads" [level=2] [ref=e457]
+            - generic [ref=e458]:
+              - generic [ref=e459]:
+                - generic [ref=e460]:
+                  - generic [ref=e461]:
+                    - heading "Artichoke Bread Sampler - 4 Pack" [level=3] [ref=e462]
+                    - paragraph [ref=e463]: Arcangeli Grocery · Pescadero, CA
+                  - generic [ref=e464]: $59.00
+                - generic [ref=e465]:
+                  - link "Details" [ref=e466] [cursor=pointer]:
+                    - /url: /customer/items/cmos4bk6e0010lnys8sk2dfxz
+                  - button "Add to cart" [ref=e468]
+              - generic [ref=e469]:
+                - generic [ref=e470]:
+                  - generic [ref=e471]:
+                    - heading "Artisanal Bread - Choose Your Own 2 Pack" [level=3] [ref=e472]
+                    - paragraph [ref=e473]: High Street Philadelphia · Philadelphia, PA
+                  - generic [ref=e474]: $44.00
+                - generic [ref=e475]:
+                  - link "Details" [ref=e476] [cursor=pointer]:
+                    - /url: /customer/items/cmos4bk6e0018lnys7b9f4zfm
+                  - button "Add to cart" [ref=e478]
+              - generic [ref=e479]:
+                - generic [ref=e480]:
+                  - generic [ref=e481]:
+                    - heading "Artisanal Bread - Choose Your Own 3 Pack" [level=3] [ref=e482]
+                    - paragraph [ref=e483]: Orwashers Bakery · New York, NY
+                  - generic [ref=e484]: $45.00
+                - generic [ref=e485]:
+                  - link "Details" [ref=e486] [cursor=pointer]:
+                    - /url: /customer/items/cmos4bk6e000vlnys8i6aa54t
+                  - button "Add to cart" [ref=e488]
+              - generic [ref=e489]:
+                - generic [ref=e490]:
+                  - generic [ref=e491]:
+                    - heading "Artisanal Bread - Choose Your Own 6 Pack" [level=3] [ref=e492]
+                    - paragraph [ref=e493]: Orwashers Bakery · New York, NY
+                  - generic [ref=e494]: $69.00
+                - generic [ref=e495]:
+                  - link "Details" [ref=e496] [cursor=pointer]:
+                    - /url: /customer/items/cmos4bk6e000zlnysmlj5hdc4
+                  - button "Add to cart" [ref=e498]
+              - generic [ref=e499]:
+                - generic [ref=e500]:
+                  - generic [ref=e501]:
+                    - heading "Artisanal Bread Best Sellers - 3 Pack" [level=3] [ref=e502]
+                    - paragraph [ref=e503]: Orwashers Bakery · New York, NY
+                  - generic [ref=e504]: $45.00
+                - generic [ref=e505]:
+                  - link "Details" [ref=e506] [cursor=pointer]:
+                    - /url: /customer/items/cmos4bk6e0019lnysdow54jdr
+                  - button "Add to cart" [ref=e508]
+              - generic [ref=e509]:
+                - generic [ref=e510]:
+                  - generic [ref=e511]:
+                    - heading "Babka - Choose Your Own 2 Pack" [level=3] [ref=e512]
+                    - paragraph [ref=e513]: Kossar's Bagels & Bialys · New York, NY
+                  - generic [ref=e514]: $59.00
+                - generic [ref=e515]:
+                  - link "Details" [ref=e516] [cursor=pointer]:
+                    - /url: /customer/items/cmos4bk6e0016lnysjwchi09c
+                  - button "Add to cart" [ref=e518]
+              - generic [ref=e519]:
+                - generic [ref=e520]:
+                  - generic [ref=e521]:
+                    - heading "Banana Bread- Choose Your Own 6 Pack" [level=3] [ref=e522]
+                    - paragraph [ref=e523]: Maui Banana Bread Co · Lahaina, HI
+                  - generic [ref=e524]: $59.00
+                - generic [ref=e525]:
+                  - link "Details" [ref=e526] [cursor=pointer]:
+                    - /url: /customer/items/cmos4bk6e0012lnysp0z27j7t
+                  - button "Add to cart" [ref=e528]
+              - generic [ref=e529]:
+                - generic [ref=e530]:
+                  - generic [ref=e531]:
+                    - heading "Bavarian Soft Pretzel Twists - 10 Pack" [level=3] [ref=e532]
+                    - paragraph [ref=e533]: Milwaukee Pretzel Company · Milwaukee, WI
+                  - generic [ref=e534]: $39.00
+                - generic [ref=e535]:
+                  - link "Details" [ref=e536] [cursor=pointer]:
+                    - /url: /customer/items/cmos4bk6e0011lnyssdqcfl0f
+                  - button "Add to cart" [ref=e538]
+              - generic [ref=e539]:
+                - generic [ref=e540]:
+                  - generic [ref=e541]:
+                    - heading "Choose Your Own Gourmet Breadsticks - 15-lb. Pack" [level=3] [ref=e542]
+                    - paragraph [ref=e543]: Claudio's Specialty Breads · Castroville, CA
+                  - generic [ref=e544]: $170.00
+                - generic [ref=e545]:
+                  - link "Details" [ref=e546] [cursor=pointer]:
+                    - /url: /customer/items/cmos4bk6e001dlnysj4eemuhw
+                  - button "Add to cart" [ref=e548]
+              - generic [ref=e549]:
+                - generic [ref=e550]:
+                  - generic [ref=e551]:
+                    - heading "Classic Clam Chowder and Bread Bowls Kit - 4 Pack" [level=3] [ref=e552]
+                    - paragraph [ref=e553]: Boudin Bakery · San Francisco, CA
+                  - generic [ref=e554]: $49.00
+                - generic [ref=e555]:
+                  - link "Details" [ref=e556] [cursor=pointer]:
+                    - /url: /customer/items/cmos4bk6e0015lnysh73h73u4
+                  - button "Add to cart" [ref=e558]
+              - generic [ref=e559]:
+                - generic [ref=e560]:
+                  - generic [ref=e561]:
+                    - heading "Corn Cheese Bread - 2 Pack" [level=3] [ref=e562]
+                    - paragraph [ref=e563]: Calic Bread · Los Angeles, CA
+                  - generic [ref=e564]: $89.00
+                - generic [ref=e565]:
+                  - link "Details" [ref=e566] [cursor=pointer]:
+                    - /url: /customer/items/cmos4bk6e000wlnysa1vxd18p
+                  - button "Add to cart" [ref=e568]
+              - generic [ref=e569]:
+                - generic [ref=e570]:
+                  - generic [ref=e571]:
+                    - heading "Essa Bagel Baker's Dozen (Kosher)" [level=3] [ref=e572]
+                    - paragraph [ref=e573]: Essa Bagel · New York, NY
+                  - generic [ref=e574]: $59.00
+                - generic [ref=e575]:
+                  - link "Details" [ref=e576] [cursor=pointer]:
+                    - /url: /customer/items/cmos4bk6e001blnysitzxdvwc
+                  - button "Add to cart" [ref=e578]
+              - generic [ref=e579]:
+                - generic [ref=e580]:
+                  - generic [ref=e581]:
+                    - heading "Hot & Spicy Cheese Bread - 2 Pack" [level=3] [ref=e582]
+                    - paragraph [ref=e583]: Stella's of Madison · Madison, WI
+                  - generic [ref=e584]: $39.00
+                - generic [ref=e585]:
+                  - link "Details" [ref=e586] [cursor=pointer]:
+                    - /url: /customer/items/cmos4bk6e0014lnysiikcvnmz
+                  - button "Add to cart" [ref=e588]
+              - generic [ref=e589]:
+                - generic [ref=e590]:
+                  - generic [ref=e591]:
+                    - heading "Italian Bread - 2 Loaves" [level=3] [ref=e592]
+                    - paragraph [ref=e593]: Tomaro's Bakery · Clarksburg, WV
+                  - generic [ref=e594]: $35.00
+                - generic [ref=e595]:
+                  - link "Details" [ref=e596] [cursor=pointer]:
+                    - /url: /customer/items/cmos4bk6e001alnysyrinryr7
+                  - button "Add to cart" [ref=e598]
+              - generic [ref=e599]:
+                - generic [ref=e600]:
+                  - generic [ref=e601]:
+                    - heading "Japanese Milk Bread - 2 Loaves" [level=3] [ref=e602]
+                    - paragraph [ref=e603]: Craftsman and Wolves · San Francisco, CA
+                  - generic [ref=e604]: $55.00
+                - generic [ref=e605]:
+                  - link "Details" [ref=e606] [cursor=pointer]:
+                    - /url: /customer/items/cmos4bk6e000ylnysjs9iw0mu
+                  - button "Add to cart" [ref=e608]
+              - generic [ref=e609]:
+                - generic [ref=e610]:
+                  - generic [ref=e611]:
+                    - heading "Original Garlic Cream Cheese Bread - 2 Pack" [level=3] [ref=e612]
+                    - paragraph [ref=e613]: Calic Bread · Los Angeles, CA
+                  - generic [ref=e614]: $79.00
+                - generic [ref=e615]:
+                  - link "Details" [ref=e616] [cursor=pointer]:
+                    - /url: /customer/items/cmos4bk6e0017lnysmwrmf6wq
+                  - button "Add to cart" [ref=e618]
+              - generic [ref=e619]:
+                - generic [ref=e620]:
+                  - generic [ref=e621]:
+                    - heading "Pain au Chocolat - 8 Pack" [level=3] [ref=e622]
+                    - paragraph [ref=e623]: Ceci-Cela Patisserie · Brooklyn, NY
+                  - generic [ref=e624]: $49.00
+                - generic [ref=e625]:
+                  - link "Details" [ref=e626] [cursor=pointer]:
+                    - /url: /customer/items/cmos4bk6e001clnysu689bssl
+                  - button "Add to cart" [ref=e628]
+              - generic [ref=e629]:
+                - generic [ref=e630]:
+                  - generic [ref=e631]:
+                    - heading "Pretzel Lover's Combo Pack" [level=3] [ref=e632]
+                    - paragraph [ref=e633]: Milwaukee Pretzel Company · Milwaukee, WI
+                  - generic [ref=e634]: $79.00
+                - generic [ref=e635]:
+                  - link "Details" [ref=e636] [cursor=pointer]:
+                    - /url: /customer/items/cmos4bk6e001elnys2z7q636t
+                  - button "Add to cart" [ref=e638]
+              - generic [ref=e639]:
+                - generic [ref=e640]:
+                  - generic [ref=e641]:
+                    - heading "Stuffed Bread Loaves - Choose Your Own 2 Pack" [level=3] [ref=e642]
+                    - paragraph [ref=e643]: Antique Bar & Bakery · Hoboken, NJ
+                  - generic [ref=e644]: $59.00
+                - generic [ref=e645]:
+                  - link "Details" [ref=e646] [cursor=pointer]:
+                    - /url: /customer/items/cmos4bk6e0013lnyswxyz4jya
+                  - button "Add to cart" [ref=e648]
+              - generic [ref=e649]:
+                - generic [ref=e650]:
+                  - generic [ref=e651]:
+                    - heading "Tartine Bread Loaves - Choose Your Own 2 Pack" [level=3] [ref=e652]
+                    - paragraph [ref=e653]: Tartine Bakery · San Francisco, CA
+                  - generic [ref=e654]: $39.00
+                - generic [ref=e655]:
+                  - link "Details" [ref=e656] [cursor=pointer]:
+                    - /url: /customer/items/cmos4bk6e000xlnysgezm6ba0
+                  - button "Add to cart" [ref=e658]
+          - generic [ref=e659]:
+            - heading "Burgers" [level=2] [ref=e660]
+            - generic [ref=e661]:
+              - generic [ref=e662]:
+                - generic [ref=e663]:
+                  - generic [ref=e664]:
+                    - heading "American Wagyu Burger Party Pack" [level=3] [ref=e665]
+                    - paragraph [ref=e666]: Holy Grail Steak Co. · San Francisco, CA
+                  - generic [ref=e667]: $199.00
+                - generic [ref=e668]:
+                  - link "Details" [ref=e669] [cursor=pointer]:
+                    - /url: /customer/items/cmos4bk6x001wlnysaub8iv0s
+                  - button "Add to cart" [ref=e671]
+              - generic [ref=e672]:
+                - generic [ref=e673]:
+                  - generic [ref=e674]:
+                    - heading "Best Damn Cheeseburger Kit - 8 Pack" [level=3] [ref=e675]
+                    - paragraph [ref=e676]: 4505 Burgers & BBQ · San Francisco, CA
+                  - generic [ref=e677]: $89.00
+                - generic [ref=e678]:
+                  - link "Details" [ref=e679] [cursor=pointer]:
+                    - /url: /customer/items/cmos4bk6y001xlnysqmpw3ws5
+                  - button "Add to cart" [ref=e681]
+              - generic [ref=e682]:
+                - generic [ref=e683]:
+                  - generic [ref=e684]:
+                    - heading "Blue Aged Cheddar Jalapeno Burgers - 6 Pack" [level=3] [ref=e685]
+                    - paragraph [ref=e686]: Old Homestead Steakhouse · New York, NY
+                  - generic [ref=e687]: $139.00
+                - generic [ref=e688]:
+                  - link "Details" [ref=e689] [cursor=pointer]:
+                    - /url: /customer/items/cmos4bk6x001ulnys4y83m1ji
+                  - button "Add to cart" [ref=e691]
+              - generic [ref=e692]:
+                - generic [ref=e693]:
+                  - generic [ref=e694]:
+                    - heading "Burger Au Poivre Kit - 4 Pack" [level=3] [ref=e695]
+                    - paragraph [ref=e696]: Raoul's · New York, NY
+                  - generic [ref=e697]: $99.00
+                - generic [ref=e698]:
+                  - link "Details" [ref=e699] [cursor=pointer]:
+                    - /url: /customer/items/cmos4bk6x001olnysiefeg60v
+                  - button "Add to cart" [ref=e701]
+              - generic [ref=e702]:
+                - generic [ref=e703]:
+                  - generic [ref=e704]:
+                    - heading "Burger Bash Pack" [level=3] [ref=e705]
+                    - paragraph [ref=e706]: Pat LaFrieda Meats · North Bergen, NJ
+                  - generic [ref=e707]: $109.00
+                - generic [ref=e708]:
+                  - link "Details" [ref=e709] [cursor=pointer]:
+                    - /url: /customer/items/cmos4bk6x001nlnysils82yto
+                  - button "Add to cart" [ref=e711]
+              - generic [ref=e712]:
+                - generic [ref=e713]:
+                  - generic [ref=e714]:
+                    - heading "Burger Blend - 4 lbs." [level=3] [ref=e715]
+                    - paragraph [ref=e716]: Flannery Beef · San Rafael, CA
+                  - generic [ref=e717]: $79.00
+                - generic [ref=e718]:
+                  - link "Details" [ref=e719] [cursor=pointer]:
+                    - /url: /customer/items/cmos4bk6x001plnyssla25b9s
+                  - button "Add to cart" [ref=e721]
+              - generic [ref=e722]:
+                - generic [ref=e723]:
+                  - generic [ref=e724]:
+                    - heading "Burger Bomb Kit for 6" [level=3] [ref=e725]
+                    - paragraph [ref=e726]: Old Homestead Steakhouse · New York, NY
+                  - generic [ref=e727]: $129.00
+                - generic [ref=e728]:
+                  - link "Details" [ref=e729] [cursor=pointer]:
+                    - /url: /customer/items/cmos4bk6x001llnyswydtim00
+                  - button "Add to cart" [ref=e731]
+              - generic [ref=e732]:
+                - generic [ref=e733]:
+                  - generic [ref=e734]:
+                    - heading "Classic Juicy Lucy Burgers + Sweet Potato Puffs - 4 Pack" [level=3] [ref=e735]
+                    - paragraph [ref=e736]: 5-8 Club · Minneapolis, MN
+                  - generic [ref=e737]: $99.00
+                - generic [ref=e738]:
+                  - link "Details" [ref=e739] [cursor=pointer]:
+                    - /url: /customer/items/cmos4bk6x001slnys46gik1bc
+                  - button "Add to cart" [ref=e741]
+              - generic [ref=e742]:
+                - generic [ref=e743]:
+                  - generic [ref=e744]:
+                    - heading "Double Stack Burger Kit for 4" [level=3] [ref=e745]
+                    - paragraph [ref=e746]: Holeman & Finch · Atlanta, GA
+                  - generic [ref=e747]: $79.00
+                - generic [ref=e748]:
+                  - link "Details" [ref=e749] [cursor=pointer]:
+                    - /url: /customer/items/cmos4bk6x001mlnys0evse999
+                  - button "Add to cart" [ref=e751]
+              - generic [ref=e752]:
+                - generic [ref=e753]:
+                  - generic [ref=e754]:
+                    - heading "Foie Gras Teriyaki Burger Kit - 8 Pack" [level=3] [ref=e755]
+                    - paragraph [ref=e756]: HALL by Odo · New York, NY
+                  - generic [ref=e757]: $139.00
+                - generic [ref=e758]:
+                  - link "Details" [ref=e759] [cursor=pointer]:
+                    - /url: /customer/items/cmos4bk6y001ylnyslic22nya
+                  - button "Add to cart" [ref=e761]
+              - generic [ref=e762]:
+                - generic [ref=e763]:
+                  - generic [ref=e764]:
+                    - heading "Gott's Complete Cheeseburger Kit for 4" [level=3] [ref=e765]
+                    - paragraph [ref=e766]: Gott's Roadside · St. Helena, CA
+                  - generic [ref=e767]: $99.00
+                - generic [ref=e768]:
+                  - link "Details" [ref=e769] [cursor=pointer]:
+                    - /url: /customer/items/cmos4bk6x001ilnysd30cnfbi
+                  - button "Add to cart" [ref=e771]
+              - generic [ref=e772]:
+                - generic [ref=e773]:
+                  - generic [ref=e774]:
+                    - heading "Gott's Complete Cheeseburger Kit for 8" [level=3] [ref=e775]
+                    - paragraph [ref=e776]: Gott's Roadside · St. Helena, CA
+                  - generic [ref=e777]: $149.00
+                - generic [ref=e778]:
+                  - link "Details" [ref=e779] [cursor=pointer]:
+                    - /url: /customer/items/cmos4bk6x001qlnyshs25s03y
+                  - button "Add to cart" [ref=e781]
+              - generic [ref=e782]:
+                - generic [ref=e783]:
+                  - generic [ref=e784]:
+                    - heading "Gramercy Tavern Burger + Kielbasa Combo" [level=3] [ref=e785]
+                    - paragraph [ref=e786]: Gramercy Tavern · New York, NY
+                  - generic [ref=e787]: $149.00
+                - generic [ref=e788]:
+                  - link "Details" [ref=e789] [cursor=pointer]:
+                    - /url: /customer/items/cmos4bk6x001rlnysj6te70x9
+                  - button "Add to cart" [ref=e791]
+              - generic [ref=e792]:
+                - generic [ref=e793]:
+                  - generic [ref=e794]:
+                    - heading "Juicy Lucifer Burger Kit for 4" [level=3] [ref=e795]
+                    - paragraph [ref=e796]: Hell's Kitchen · Minneapolis, MN
+                  - generic [ref=e797]: $79.00
+                - generic [ref=e798]:
+                  - link "Details" [ref=e799] [cursor=pointer]:
+                    - /url: /customer/items/cmos4bk6y001zlnyswvag5aac
+                  - button "Add to cart" [ref=e801]
+              - generic [ref=e802]:
+                - generic [ref=e803]:
+                  - generic [ref=e804]:
+                    - heading "Juicy Lucy Burger Kit - 5 Pack" [level=3] [ref=e805]
+                    - paragraph [ref=e806]: Whitmans · New York, NY
+                  - generic [ref=e807]: $79.00
+                - generic [ref=e808]:
+                  - link "Details" [ref=e809] [cursor=pointer]:
+                    - /url: /customer/items/cmos4bk6x001tlnysgt86kx4e
+                  - button "Add to cart" [ref=e811]
+              - generic [ref=e812]:
+                - generic [ref=e813]:
+                  - generic [ref=e814]:
+                    - heading "Shake Shack ShackBurger® – 8 Pack" [level=3] [ref=e815]
+                    - paragraph [ref=e816]: Shake Shack · New York, NY
+                  - generic [ref=e817]: $49.00
+                - generic [ref=e818]:
+                  - link "Details" [ref=e819] [cursor=pointer]:
+                    - /url: /customer/items/cmos4bk6x001hlnysod3xxj46
+                  - button "Add to cart" [ref=e821]
+              - generic [ref=e822]:
+                - generic [ref=e823]:
+                  - generic [ref=e824]:
+                    - heading "Shake Shack Shackburger® – 16 Pack" [level=3] [ref=e825]
+                    - paragraph [ref=e826]: Shake Shack · New York, NY
+                  - generic [ref=e827]: $89.00
+                - generic [ref=e828]:
+                  - link "Details" [ref=e829] [cursor=pointer]:
+                    - /url: /customer/items/cmos4bk6x001jlnysunh372qg
+                  - button "Add to cart" [ref=e831]
+              - generic [ref=e832]:
+                - generic [ref=e833]:
+                  - generic [ref=e834]:
+                    - heading "The Gramercy Tavern Burger - 4 Pack" [level=3] [ref=e835]
+                    - paragraph [ref=e836]: Gramercy Tavern · New York, NY
+                  - generic [ref=e837]: $99.00
+                - generic [ref=e838]:
+                  - link "Details" [ref=e839] [cursor=pointer]:
+                    - /url: /customer/items/cmos4bk6x001glnysx7kyyj4t
+                  - button "Add to cart" [ref=e841]
+              - generic [ref=e842]:
+                - generic [ref=e843]:
+                  - generic [ref=e844]:
+                    - heading "Wagyu Burger Patties - 12 Pack" [level=3] [ref=e845]
+                    - paragraph [ref=e846]: Westholme Wagyu · Queensland, Australia
+                  - generic [ref=e847]: $129.00
+                - generic [ref=e848]:
+                  - link "Details" [ref=e849] [cursor=pointer]:
+                    - /url: /customer/items/cmos4bk6x001klnysensufobx
+                  - button "Add to cart" [ref=e851]
+              - generic [ref=e852]:
+                - generic [ref=e853]:
+                  - generic [ref=e854]:
+                    - heading "Wagyu Burger Patties - 6 Pack" [level=3] [ref=e855]
+                    - paragraph [ref=e856]: Westholme Wagyu · Queensland, Australia
+                  - generic [ref=e857]: $89.00
+                - generic [ref=e858]:
+                  - link "Details" [ref=e859] [cursor=pointer]:
+                    - /url: /customer/items/cmos4bk6x001vlnysk5v7vwis
+                  - button "Add to cart" [ref=e861]
+          - generic [ref=e862]:
+            - heading "Chocolates" [level=2] [ref=e863]
+            - generic [ref=e864]:
+              - generic [ref=e865]:
+                - generic [ref=e866]:
+                  - generic [ref=e867]:
+                    - heading "20 Layer Chocolate Peanut Butter Cake" [level=3] [ref=e868]
+                    - paragraph [ref=e869]: LAVO · New York, NY
+                  - generic [ref=e870]: $105.00
+                - generic [ref=e871]:
+                  - link "Details" [ref=e872] [cursor=pointer]:
+                    - /url: /customer/items/cmos4bk7r002hlnysa3bjb2n6
+                  - button "Add to cart" [ref=e874]
+              - generic [ref=e875]:
+                - generic [ref=e876]:
+                  - generic [ref=e877]:
+                    - heading "Chocolate Cheesecake - 6\"" [level=3] [ref=e878]
+                    - paragraph [ref=e879]: The Nuns of New Skete · Cambridge, NY
+                  - generic [ref=e880]: $49.00
+                - generic [ref=e881]:
+                  - link "Details" [ref=e882] [cursor=pointer]:
+                    - /url: /customer/items/cmos4bk7r0029lnysddcpjbgk
+                  - button "Add to cart" [ref=e884]
+              - generic [ref=e885]:
+                - generic [ref=e886]:
+                  - generic [ref=e887]:
+                    - heading "Chocolate Covered Cupcake - 6 Pack" [level=3] [ref=e888]
+                    - paragraph [ref=e889]: Brooklyn Cupcake · Brooklyn, NY
+                  - generic [ref=e890]: $65.00
+                - generic [ref=e891]:
+                  - link "Details" [ref=e892] [cursor=pointer]:
+                    - /url: /customer/items/cmos4bk7r0025lnys1pss6l3y
+                  - button "Add to cart" [ref=e894]
+              - generic [ref=e895]:
+                - generic [ref=e896]:
+                  - generic [ref=e897]:
+                    - heading "Chocolate Fudge Rainbow Cake" [level=3] [ref=e898]
+                    - paragraph [ref=e899]: Carlo's Bakery · Hoboken, NJ
+                  - generic [ref=e900]: $69.95
+                - generic [ref=e901]:
+                  - link "Details" [ref=e902] [cursor=pointer]:
+                    - /url: /customer/items/cmos4bk7r002jlnysn81a8f07
+                  - button "Add to cart" [ref=e904]
+              - generic [ref=e905]:
+                - generic [ref=e906]:
+                  - generic [ref=e907]:
+                    - heading "Chocolate Ganache Fudge Brownie" [level=3] [ref=e908]
+                    - paragraph [ref=e909]: Colts Chocolate · Nashville, TN
+                  - generic [ref=e910]: $45.00
+                - generic [ref=e911]:
+                  - link "Details" [ref=e912] [cursor=pointer]:
+                    - /url: /customer/items/cmos4bk7r0026lnysngtbf60b
+                  - button "Add to cart" [ref=e914]
+              - generic [ref=e915]:
+                - generic [ref=e916]:
+                  - generic [ref=e917]:
+                    - heading "Chocolate Mousse Supreme Cake" [level=3] [ref=e918]
+                    - paragraph [ref=e919]: Carousel Cakes · Nanuet, NY
+                  - generic [ref=e920]: $49.00
+                - generic [ref=e921]:
+                  - link "Details" [ref=e922] [cursor=pointer]:
+                    - /url: /customer/items/cmos4bk7r002alnysq37p3ura
+                  - button "Add to cart" [ref=e924]
+              - generic [ref=e925]:
+                - generic [ref=e926]:
+                  - generic [ref=e927]:
+                    - heading "Chocolate Outrage Cake" [level=3] [ref=e928]
+                    - paragraph [ref=e929]: Carousel Cakes · Nanuet, NY
+                  - generic [ref=e930]: $49.00
+                - generic [ref=e931]:
+                  - link "Details" [ref=e932] [cursor=pointer]:
+                    - /url: /customer/items/cmos4bk7r002ilnys5kzhmf94
+                  - button "Add to cart" [ref=e934]
+              - generic [ref=e935]:
+                - generic [ref=e936]:
+                  - generic [ref=e937]:
+                    - heading "Chocolate Pretzel Passion Gift Assortment" [level=3] [ref=e938]
+                    - paragraph [ref=e939]: Sugar Plum · Forty Fort, PA
+                  - generic [ref=e940]: $69.00
+                - generic [ref=e941]:
+                  - link "Details" [ref=e942] [cursor=pointer]:
+                    - /url: /customer/items/cmos4bk7r002clnysrbco32hg
+                  - button "Add to cart" [ref=e944]
+              - generic [ref=e945]:
+                - generic [ref=e946]:
+                  - generic [ref=e947]:
+                    - heading "Chocolate Stack - 12 Bars" [level=3] [ref=e948]
+                    - paragraph [ref=e949]: Kreuther Handcrafted Chocolate · New York, NY
+                  - generic [ref=e950]: $99.00
+                - generic [ref=e951]:
+                  - link "Details" [ref=e952] [cursor=pointer]:
+                    - /url: /customer/items/cmos4bk7q0022lnysvftiqcit
+                  - button "Add to cart" [ref=e954]
+              - generic [ref=e955]:
+                - generic [ref=e956]:
+                  - generic [ref=e957]:
+                    - heading "Chocolate Tease Gift Box" [level=3] [ref=e958]
+                    - paragraph [ref=e959]: Cake Chicago · Chicago, IL
+                  - generic [ref=e960]: $89.00
+                - generic [ref=e961]:
+                  - link "Details" [ref=e962] [cursor=pointer]:
+                    - /url: /customer/items/cmos4bk7r002dlnystercnq51
+                  - button "Add to cart" [ref=e964]
+              - generic [ref=e965]:
+                - generic [ref=e966]:
+                  - generic [ref=e967]:
+                    - heading "Chocolate Whoopie Pies" [level=3] [ref=e968]
+                    - paragraph [ref=e969]: McClure's Bakery · Gap, PA
+                  - generic [ref=e970]: $35.00
+                - generic [ref=e971]:
+                  - link "Details" [ref=e972] [cursor=pointer]:
+                    - /url: /customer/items/cmos4bk7r002flnysdfeairn7
+                  - button "Add to cart" [ref=e974]
+              - generic [ref=e975]:
+                - generic [ref=e976]:
+                  - generic [ref=e977]:
+                    - heading "Double Chocolate Cheesecake with Ghirardelli® Chocolate" [level=3] [ref=e978]
+                    - paragraph [ref=e979]: Eli's Cheesecake Company · Chicago, IL
+                  - generic [ref=e980]: $74.00
+                - generic [ref=e981]:
+                  - link "Details" [ref=e982] [cursor=pointer]:
+                    - /url: /customer/items/cmos4bk7r0028lnysludkvbzb
+                  - button "Add to cart" [ref=e984]
+              - generic [ref=e985]:
+                - generic [ref=e986]:
+                  - generic [ref=e987]:
+                    - heading "Famous Chocolate Pizza - 3 Pack" [level=3] [ref=e988]
+                    - paragraph [ref=e989]: Craig's LA · West Hollywood, CA
+                  - generic [ref=e990]: $69.00
+                - generic [ref=e991]:
+                  - link "Details" [ref=e992] [cursor=pointer]:
+                    - /url: /customer/items/cmos4bk7r002blnys0rt8leba
+                  - button "Add to cart" [ref=e994]
+              - generic [ref=e995]:
+                - generic [ref=e996]:
+                  - generic [ref=e997]:
+                    - heading "German Chocolate Killer Brownie®" [level=3] [ref=e998]
+                    - paragraph [ref=e999]: Killer Brownie® · Dayton, OH
+                  - generic [ref=e1000]: $39.99
+                - generic [ref=e1001]:
+                  - link "Details" [ref=e1002] [cursor=pointer]:
+                    - /url: /customer/items/cmos4bk7q0023lnysvk6phcca
+                  - button "Add to cart" [ref=e1004]
+              - generic [ref=e1005]:
+                - generic [ref=e1006]:
+                  - generic [ref=e1007]:
+                    - heading "Jacques’ World Famous Chocolate Chip Cookies - 12 Pack" [level=3] [ref=e1008]
+                    - paragraph [ref=e1009]: Jacques Torres Chocolate · New York, NY
+                  - generic [ref=e1010]: $69.95
+                - generic [ref=e1011]:
+                  - link "Details" [ref=e1012] [cursor=pointer]:
+                    - /url: /customer/items/cmos4bk7r002klnyspinq9ux2
+                  - button "Add to cart" [ref=e1014]
+              - generic [ref=e1015]:
+                - generic [ref=e1016]:
+                  - generic [ref=e1017]:
+                    - heading "Jacques’ World Famous Chocolate Chip Cookies - 6 Pack" [level=3] [ref=e1018]
+                    - paragraph [ref=e1019]: Jacques Torres Chocolate · New York, NY
+                  - generic [ref=e1020]: $39.95
+                - generic [ref=e1021]:
+                  - link "Details" [ref=e1022] [cursor=pointer]:
+                    - /url: /customer/items/cmos4bk7q0021lnysko6fjmjv
+                  - button "Add to cart" [ref=e1024]
+              - generic [ref=e1025]:
+                - generic [ref=e1026]:
+                  - generic [ref=e1027]:
+                    - heading "Outrageous Dark Chocolate Chocolate Chunk Cookies - 12 Pack" [level=3] [ref=e1028]
+                    - paragraph [ref=e1029]: Sweet Hedy · Miami, FL
+                  - generic [ref=e1030]: $64.00
+                - generic [ref=e1031]:
+                  - link "Details" [ref=e1032] [cursor=pointer]:
+                    - /url: /customer/items/cmos4bk7r002glnyspooyj6t3
+                  - button "Add to cart" [ref=e1034]
+              - generic [ref=e1035]:
+                - generic [ref=e1036]:
+                  - generic [ref=e1037]:
+                    - heading "Raspberry Chocolate Pie" [level=3] [ref=e1038]
+                    - paragraph [ref=e1039]: Pietisserie · Oakland, CA
+                  - generic [ref=e1040]: $79.00
+                - generic [ref=e1041]:
+                  - link "Details" [ref=e1042] [cursor=pointer]:
+                    - /url: /customer/items/cmos4bk7q0024lnyspu4jyqqw
+                  - button "Add to cart" [ref=e1044]
+              - generic [ref=e1045]:
+                - generic [ref=e1046]:
+                  - generic [ref=e1047]:
+                    - heading "Triple Chocolate Killer Brownies®" [level=3] [ref=e1048]
+                    - paragraph [ref=e1049]: Killer Brownie® · Dayton, OH
+                  - generic [ref=e1050]: $39.99
+                - generic [ref=e1051]:
+                  - link "Details" [ref=e1052] [cursor=pointer]:
+                    - /url: /customer/items/cmos4bk7r002elnys9x06cj8x
+                  - button "Add to cart" [ref=e1054]
+              - generic [ref=e1055]:
+                - generic [ref=e1056]:
+                  - generic [ref=e1057]:
+                    - heading "Whisky Dark Chocolate Cake" [level=3] [ref=e1058]
+                    - paragraph [ref=e1059]: Lady M Confections · New York, NY
+                  - generic [ref=e1060]: $125.00
+                - generic [ref=e1061]:
+                  - link "Details" [ref=e1062] [cursor=pointer]:
+                    - /url: /customer/items/cmos4bk7r0027lnysemaqlrd0
+                  - button "Add to cart" [ref=e1064]
+          - generic [ref=e1065]:
+            - heading "Desserts" [level=2] [ref=e1066]
+            - generic [ref=e1067]:
+              - generic [ref=e1068]:
+                - generic [ref=e1069]:
+                  - generic [ref=e1070]:
+                    - heading "Assorted Rice Krispie Treats - 12 Pack" [level=3] [ref=e1071]
+                    - paragraph [ref=e1072]: Treat House · New York, NY
+                  - generic [ref=e1073]: $49.00
+                - generic [ref=e1074]:
+                  - link "Details" [ref=e1075] [cursor=pointer]:
+                    - /url: /customer/items/cmos4bk84002vlnysnot40ta3
+                  - button "Add to cart" [ref=e1077]
+              - generic [ref=e1078]:
+                - generic [ref=e1079]:
+                  - generic [ref=e1080]:
+                    - heading "Best Seller Cupcake Dozen" [level=3] [ref=e1081]
+                    - paragraph [ref=e1082]: Crave Cupcakes · Houston, TX
+                  - generic [ref=e1083]: $89.00
+                - generic [ref=e1084]:
+                  - link "Details" [ref=e1085] [cursor=pointer]:
+                    - /url: /customer/items/cmos4bk84002plnysp9tkqsdx
+                  - button "Add to cart" [ref=e1087]
+              - generic [ref=e1088]:
+                - generic [ref=e1089]:
+                  - generic [ref=e1090]:
+                    - heading "Breads Chocolate and Cinnamon Babka - 3 Pack" [level=3] [ref=e1091]
+                    - paragraph [ref=e1092]: Breads Bakery · New York, NY
+                  - generic [ref=e1093]: $49.95
+                - generic [ref=e1094]:
+                  - link "Details" [ref=e1095] [cursor=pointer]:
+                    - /url: /customer/items/cmos4bk840030lnys52x4mlzb
+                  - button "Add to cart" [ref=e1097]
+              - generic [ref=e1098]:
+                - generic [ref=e1099]:
+                  - generic [ref=e1100]:
+                    - heading "Brooklyn Blackout Cookie + Brownie Combo Pack - 2 Tins" [level=3] [ref=e1101]
+                    - paragraph [ref=e1102]: Brooklyn Blackout Company · Brooklyn, NY
+                  - generic [ref=e1103]: $89.00
+                - generic [ref=e1104]:
+                  - link "Details" [ref=e1105] [cursor=pointer]:
+                    - /url: /customer/items/cmos4bk84002olnysi80ul6cj
+                  - button "Add to cart" [ref=e1107]
+              - generic [ref=e1108]:
+                - generic [ref=e1109]:
+                  - generic [ref=e1110]:
+                    - heading "Brooklyn Blackout Cupcake Jars" [level=3] [ref=e1111]
+                    - paragraph [ref=e1112]: Brooklyn Cupcake · Brooklyn, NY
+                  - generic [ref=e1113]: $79.00
+                - generic [ref=e1114]:
+                  - link "Details" [ref=e1115] [cursor=pointer]:
+                    - /url: /customer/items/cmos4bk84002zlnys4f6jukj6
+                  - button "Add to cart" [ref=e1117]
+              - generic [ref=e1118]:
+                - generic [ref=e1119]:
+                  - generic [ref=e1120]:
+                    - heading "Candy Cookie Cheesecake Sampler" [level=3] [ref=e1121]
+                    - paragraph [ref=e1122]: Eli's Cheesecake Company · Chicago, IL
+                  - generic [ref=e1123]: $79.00
+                - generic [ref=e1124]:
+                  - link "Details" [ref=e1125] [cursor=pointer]:
+                    - /url: /customer/items/cmos4bk84002xlnyszww9navr
+                  - button "Add to cart" [ref=e1127]
+              - generic [ref=e1128]:
+                - generic [ref=e1129]:
+                  - generic [ref=e1130]:
+                    - heading "Chocolate Marshmallows" [level=3] [ref=e1131]
+                    - paragraph [ref=e1132]: Colts Chocolate · Nashville, TN
+                  - generic [ref=e1133]: $25.00
+                - generic [ref=e1134]:
+                  - link "Details" [ref=e1135] [cursor=pointer]:
+                    - /url: /customer/items/cmos4bk84002ylnysvo2qan88
+                  - button "Add to cart" [ref=e1137]
+              - generic [ref=e1138]:
+                - generic [ref=e1139]:
+                  - generic [ref=e1140]:
+                    - heading "Choose Your Own Ice Cream Donuts - 6 Pack" [level=3] [ref=e1141]
+                    - paragraph [ref=e1142]: Elegant Desserts · Brooklyn, NY
+                  - generic [ref=e1143]: $69.00
+                - generic [ref=e1144]:
+                  - link "Details" [ref=e1145] [cursor=pointer]:
+                    - /url: /customer/items/cmos4bk84002qlnysdab7pqf2
+                  - button "Add to cart" [ref=e1147]
+              - generic [ref=e1148]:
+                - generic [ref=e1149]:
+                  - generic [ref=e1150]:
+                    - heading "Cinnamon Rolls and Honey Bees Sampler Pack" [level=3] [ref=e1151]
+                    - paragraph [ref=e1152]: Weikel's Bakery · La Grange, TX
+                  - generic [ref=e1153]: $69.00
+                - generic [ref=e1154]:
+                  - link "Details" [ref=e1155] [cursor=pointer]:
+                    - /url: /customer/items/cmos4bk840032lnyswk8knu2a
+                  - button "Add to cart" [ref=e1157]
+              - generic [ref=e1158]:
+                - generic [ref=e1159]:
+                  - generic [ref=e1160]:
+                    - heading "Dessert Bar Care Package" [level=3] [ref=e1161]
+                    - paragraph [ref=e1162]: Bread and Roses Bakery · Wells, ME
+                  - generic [ref=e1163]: $65.00
+                - generic [ref=e1164]:
+                  - link "Details" [ref=e1165] [cursor=pointer]:
+                    - /url: /customer/items/cmos4bk84002slnysrthgh281
+                  - button "Add to cart" [ref=e1167]
+              - generic [ref=e1168]:
+                - generic [ref=e1169]:
+                  - generic [ref=e1170]:
+                    - heading "Dessert Bars - Choose Your Own 9 Pack" [level=3] [ref=e1171]
+                    - paragraph [ref=e1172]: The Gingered Peach · Lawrence Twp, NJ
+                  - generic [ref=e1173]: $49.00
+                - generic [ref=e1174]:
+                  - link "Details" [ref=e1175] [cursor=pointer]:
+                    - /url: /customer/items/cmos4bk840031lnys1kaak1iz
+                  - button "Add to cart" [ref=e1177]
+              - generic [ref=e1178]:
+                - generic [ref=e1179]:
+                  - generic [ref=e1180]:
+                    - heading "Donut Cookies - 12 Pack" [level=3] [ref=e1181]
+                    - paragraph [ref=e1182]: Stan's Donuts · Chicago, IL
+                  - generic [ref=e1183]: $49.00
+                - generic [ref=e1184]:
+                  - link "Details" [ref=e1185] [cursor=pointer]:
+                    - /url: /customer/items/cmos4bk84002tlnysqzn7h4au
+                  - button "Add to cart" [ref=e1187]
+              - generic [ref=e1188]:
+                - generic [ref=e1189]:
+                  - generic [ref=e1190]:
+                    - heading "Gulab Jamun Ice Cream Cakes - 2 Pack" [level=3] [ref=e1191]
+                    - paragraph [ref=e1192]: Malai Ice Cream · Brooklyn, NY
+                  - generic [ref=e1193]: $79.00
+                - generic [ref=e1194]:
+                  - link "Details" [ref=e1195] [cursor=pointer]:
+                    - /url: /customer/items/cmos4bk84002ulnysrukpzvjv
+                  - button "Add to cart" [ref=e1197]
+              - generic [ref=e1198]:
+                - generic [ref=e1199]:
+                  - generic [ref=e1200]:
+                    - heading "Ice Cream - Choose Your Own 6 Pints" [level=3] [ref=e1201]
+                    - paragraph [ref=e1202]: Graeter's Ice Cream · Cincinnati, OH
+                  - generic [ref=e1203]: $79.95
+                - generic [ref=e1204]:
+                  - link "Details" [ref=e1205] [cursor=pointer]:
+                    - /url: /customer/items/cmos4bk84002wlnyswew5nzhx
+                  - button "Add to cart" [ref=e1207]
+              - generic [ref=e1208]:
+                - generic [ref=e1209]:
+                  - generic [ref=e1210]:
+                    - heading "Jewish Classics Dessert Pack" [level=3] [ref=e1211]
+                    - paragraph [ref=e1212]: Ess-a-Bagel · New York, NY
+                  - generic [ref=e1213]: $89.95
+                - generic [ref=e1214]:
+                  - link "Details" [ref=e1215] [cursor=pointer]:
+                    - /url: /customer/items/cmos4bk84002rlnyse4738p68
+                  - button "Add to cart" [ref=e1217]
+              - generic [ref=e1218]:
+                - generic [ref=e1219]:
+                  - generic [ref=e1220]:
+                    - heading "Original Cannoli Pie" [level=3] [ref=e1221]
+                    - paragraph [ref=e1222]: The Cannoli Pie Company · Bridgeport, CT
+                  - generic [ref=e1223]: $69.00
+                - generic [ref=e1224]:
+                  - link "Details" [ref=e1225] [cursor=pointer]:
+                    - /url: /customer/items/cmos4bk84002mlnysyjn2i094
+                  - button "Add to cart" [ref=e1227]
+              - generic [ref=e1228]:
+                - generic [ref=e1229]:
+                  - generic [ref=e1230]:
+                    - heading "Sea-Salted Caramel Swirl Cheesecake" [level=3] [ref=e1231]
+                    - paragraph [ref=e1232]: Cotton Blues Cheesecake Company · Hattiesburg, MS
+                  - generic [ref=e1233]: $65.00
+                - generic [ref=e1234]:
+                  - link "Details" [ref=e1235] [cursor=pointer]:
+                    - /url: /customer/items/cmos4bk84002nlnysfj6p7b3q
+                  - button "Add to cart" [ref=e1237]
+          - generic [ref=e1238]:
+            - heading "Drinks" [level=2] [ref=e1239]
+            - generic [ref=e1240]:
+              - generic [ref=e1241]:
+                - generic [ref=e1242]:
+                  - generic [ref=e1243]:
+                    - heading "\"Knock-You-Naked\" Margarita Mix" [level=3] [ref=e1244]
+                    - paragraph [ref=e1245]: Fat Mama's Tamales · Natchez, MS
+                  - generic [ref=e1246]: $39.00
+                - generic [ref=e1247]:
+                  - link "Details" [ref=e1248] [cursor=pointer]:
+                    - /url: /customer/items/cmos4bk8g003jlnysegdgt3vy
+                  - button "Add to cart" [ref=e1250]
+              - generic [ref=e1251]:
+                - generic [ref=e1252]:
+                  - generic [ref=e1253]:
+                    - heading "\"Knock-You-Naked\" Strawberry Margarita Mix" [level=3] [ref=e1254]
+                    - paragraph [ref=e1255]: Fat Mama's Tamales · Natchez, MS
+                  - generic [ref=e1256]: $39.00
+                - generic [ref=e1257]:
+                  - link "Details" [ref=e1258] [cursor=pointer]:
+                    - /url: /customer/items/cmos4bk8g003clnysm4hbbyqy
+                  - button "Add to cart" [ref=e1260]
+              - generic [ref=e1261]:
+                - generic [ref=e1262]:
+                  - generic [ref=e1263]:
+                    - heading "Chickpea Chiller Kit for 6" [level=3] [ref=e1264]
+                    - paragraph [ref=e1265]: The Hummus & Pita Co. · New York, NY
+                  - generic [ref=e1266]: $89.00
+                - generic [ref=e1267]:
+                  - link "Details" [ref=e1268] [cursor=pointer]:
+                    - /url: /customer/items/cmos4bk8g003ilnyszmu60b70
+                  - button "Add to cart" [ref=e1270]
+              - generic [ref=e1271]:
+                - generic [ref=e1272]:
+                  - generic [ref=e1273]:
+                    - heading "Cocktail Party 4 PACK" [level=3] [ref=e1274]
+                    - paragraph [ref=e1275]: Rick's Picks · New York, NY
+                  - generic [ref=e1276]: $49.00
+                - generic [ref=e1277]:
+                  - link "Details" [ref=e1278] [cursor=pointer]:
+                    - /url: /customer/items/cmos4bk8g003hlnysa7mmyizo
+                  - button "Add to cart" [ref=e1280]
+              - generic [ref=e1281]:
+                - generic [ref=e1282]:
+                  - generic [ref=e1283]:
+                    - heading "Evan Williams Gourmet Mint Julep Mix" [level=3] [ref=e1284]
+                    - paragraph [ref=e1285]: Evan Williams · Louisville, KY
+                  - generic [ref=e1286]: $25.00
+                - generic [ref=e1287]:
+                  - link "Details" [ref=e1288] [cursor=pointer]:
+                    - /url: /customer/items/cmos4bk8f003blnysu12jijev
+                  - button "Add to cart" [ref=e1290]
+              - generic [ref=e1291]:
+                - generic [ref=e1292]:
+                  - generic [ref=e1293]:
+                    - heading "Evan Williams Gourmet Mint Julep Mix - 2 Pack" [level=3] [ref=e1294]
+                    - paragraph [ref=e1295]: Evan Williams · Louisville, KY
+                  - generic [ref=e1296]: $39.00
+                - generic [ref=e1297]:
+                  - link "Details" [ref=e1298] [cursor=pointer]:
+                    - /url: /customer/items/cmos4bk8f0038lnyskw401ff0
+                  - button "Add to cart" [ref=e1300]
+              - generic [ref=e1301]:
+                - generic [ref=e1302]:
+                  - generic [ref=e1303]:
+                    - heading "Guy's Caliente Margaritas for 12" [level=3] [ref=e1304]
+                    - paragraph [ref=e1305]: Guy Fieri · Flavortown, USA
+                  - generic [ref=e1306]: $69.00
+                - generic [ref=e1307]:
+                  - link "Details" [ref=e1308] [cursor=pointer]:
+                    - /url: /customer/items/cmos4bk8f0035lnysdoefd4rj
+                  - button "Add to cart" [ref=e1310]
+              - generic [ref=e1311]:
+                - generic [ref=e1312]:
+                  - generic [ref=e1313]:
+                    - heading "Hazelnut Mocha Cold Brew Concentrate - 6 Pack" [level=3] [ref=e1314]
+                    - paragraph [ref=e1315]: Grady's Cold Brew · New York, NY
+                  - generic [ref=e1316]: $60.00
+                - generic [ref=e1317]:
+                  - link "Details" [ref=e1318] [cursor=pointer]:
+                    - /url: /customer/items/cmos4bk8g003klnysw4opf5ie
+                  - button "Add to cart" [ref=e1320]
+              - generic [ref=e1321]:
+                - generic [ref=e1322]:
+                  - generic [ref=e1323]:
+                    - heading "Hong Kong Boba Tea Kit for 6" [level=3] [ref=e1324]
+                    - paragraph [ref=e1325]: New Territories · New York, NY
+                  - generic [ref=e1326]: $59.00
+                - generic [ref=e1327]:
+                  - link "Details" [ref=e1328] [cursor=pointer]:
+                    - /url: /customer/items/cmos4bk8f0034lnysqhn2ollg
+                  - button "Add to cart" [ref=e1330]
+              - generic [ref=e1331]:
+                - generic [ref=e1332]:
+                  - generic [ref=e1333]:
+                    - heading "Low Sugar Juice Cleanse-7 Pack" [level=3] [ref=e1334]
+                    - paragraph [ref=e1335]: Juice Press · New York, NY
+                  - generic [ref=e1336]: $79.00
+                - generic [ref=e1337]:
+                  - link "Details" [ref=e1338] [cursor=pointer]:
+                    - /url: /customer/items/cmos4bk8g003nlnysk8kwtv4m
+                  - button "Add to cart" [ref=e1340]
+              - generic [ref=e1341]:
+                - generic [ref=e1342]:
+                  - generic [ref=e1343]:
+                    - heading "Margarita Mix" [level=3] [ref=e1344]
+                    - paragraph [ref=e1345]: Johnny Sanchez · New Orleans, LA
+                  - generic [ref=e1346]: $59.00
+                - generic [ref=e1347]:
+                  - link "Details" [ref=e1348] [cursor=pointer]:
+                    - /url: /customer/items/cmos4bk8f0039lnysy77kvub4
+                  - button "Add to cart" [ref=e1350]
+              - generic [ref=e1351]:
+                - generic [ref=e1352]:
+                  - generic [ref=e1353]:
+                    - heading "Mr. Grumpy Milkshake Kit for 8" [level=3] [ref=e1354]
+                    - paragraph [ref=e1355]: New Territories · New York, NY
+                  - generic [ref=e1356]: $109.00
+                - generic [ref=e1357]:
+                  - link "Details" [ref=e1358] [cursor=pointer]:
+                    - /url: /customer/items/cmos4bk8g003mlnys5tb0b5mh
+                  - button "Add to cart" [ref=e1360]
+              - generic [ref=e1361]:
+                - generic [ref=e1362]:
+                  - generic [ref=e1363]:
+                    - heading "New Orleans Hurricane Mix" [level=3] [ref=e1364]
+                    - paragraph [ref=e1365]: Franco's Hurricane Mix · Natchitoches, LA
+                  - generic [ref=e1366]: $39.00
+                - generic [ref=e1367]:
+                  - link "Details" [ref=e1368] [cursor=pointer]:
+                    - /url: /customer/items/cmos4bk8f0037lnysci85qa3c
+                  - button "Add to cart" [ref=e1370]
+              - generic [ref=e1371]:
+                - generic [ref=e1372]:
+                  - generic [ref=e1373]:
+                    - heading "Old Honey Barn Mint Julep - 750ml Fifth" [level=3] [ref=e1374]
+                    - paragraph [ref=e1375]: Old Honey Barn Mint Julep · Louisville, KY
+                  - generic [ref=e1376]: $34.00
+                - generic [ref=e1377]:
+                  - link "Details" [ref=e1378] [cursor=pointer]:
+                    - /url: /customer/items/cmos4bk8g003glnysh0y017ix
+                  - button "Add to cart" [ref=e1380]
+              - generic [ref=e1381]:
+                - generic [ref=e1382]:
+                  - generic [ref=e1383]:
+                    - heading "Old Honey Barn Mint Julep Mixer - 200ml Flask" [level=3] [ref=e1384]
+                    - paragraph [ref=e1385]: Old Honey Barn Mint Julep · Louisville, KY
+                  - generic [ref=e1386]: $25.00
+                - generic [ref=e1387]:
+                  - link "Details" [ref=e1388] [cursor=pointer]:
+                    - /url: /customer/items/cmos4bk8g003llnysxbfjq8un
+                  - button "Add to cart" [ref=e1390]
+              - generic [ref=e1391]:
+                - generic [ref=e1392]:
+                  - generic [ref=e1393]:
+                    - heading "Organic Shots Bundle-12 Pack" [level=3] [ref=e1394]
+                    - paragraph [ref=e1395]: Juice Press · New York, NY
+                  - generic [ref=e1396]: $69.00
+                - generic [ref=e1397]:
+                  - link "Details" [ref=e1398] [cursor=pointer]:
+                    - /url: /customer/items/cmos4bk8g003dlnys0rutvk9l
+                  - button "Add to cart" [ref=e1400]
+              - generic [ref=e1401]:
+                - generic [ref=e1402]:
+                  - generic [ref=e1403]:
+                    - heading "Papaya King - Tropical Drink" [level=3] [ref=e1404]
+                    - paragraph [ref=e1405]: Papaya King · New York, NY
+                  - generic [ref=e1406]: $69.00
+                - generic [ref=e1407]:
+                  - link "Details" [ref=e1408] [cursor=pointer]:
+                    - /url: /customer/items/cmos4bk8g003elnyszyvwj68b
+                  - button "Add to cart" [ref=e1410]
+              - generic [ref=e1411]:
+                - generic [ref=e1412]:
+                  - generic [ref=e1413]:
+                    - heading "Unicorn Parade Milkshake Kit for 8" [level=3] [ref=e1414]
+                    - paragraph [ref=e1415]: New Territories · New York, NY
+                  - generic [ref=e1416]: $109.00
+                - generic [ref=e1417]:
+                  - link "Details" [ref=e1418] [cursor=pointer]:
+                    - /url: /customer/items/cmos4bk8g003flnysibjngchv
+                  - button "Add to cart" [ref=e1420]
+              - generic [ref=e1421]:
+                - generic [ref=e1422]:
+                  - generic [ref=e1423]:
+                    - heading "Woodford Reserve Mint Julep Syrup" [level=3] [ref=e1424]
+                    - paragraph [ref=e1425]: Woodford Reserve · Louisville, KY
+                  - generic [ref=e1426]: $39.00
+                - generic [ref=e1427]:
+                  - link "Details" [ref=e1428] [cursor=pointer]:
+                    - /url: /customer/items/cmos4bk8f0036lnyszkvf67ad
+                  - button "Add to cart" [ref=e1430]
+              - generic [ref=e1431]:
+                - generic [ref=e1432]:
+                  - generic [ref=e1433]:
+                    - heading "Woodford Reserve Mint Julep Syrup - 2 Pack" [level=3] [ref=e1434]
+                    - paragraph [ref=e1435]: Woodford Reserve · Louisville, KY
+                  - generic [ref=e1436]: $59.00
+                - generic [ref=e1437]:
+                  - link "Details" [ref=e1438] [cursor=pointer]:
+                    - /url: /customer/items/cmos4bk8f003alnyskiml894b
+                  - button "Add to cart" [ref=e1440]
+          - generic [ref=e1441]:
+            - heading "Fried Chicken" [level=2] [ref=e1442]
+            - generic [ref=e1443]:
+              - generic [ref=e1444]:
+                - generic [ref=e1445]:
+                  - generic [ref=e1446]:
+                    - heading "\"Game Day\" Jumbo Fried Chicken Wings - 24 Pack" [level=3] [ref=e1447]
+                    - paragraph [ref=e1448]: Blue Ribbon · New York, NY
+                  - generic [ref=e1449]: $119.00
+                - generic [ref=e1450]:
+                  - link "Details" [ref=e1451] [cursor=pointer]:
+                    - /url: /customer/items/cmos4bk8v0044lnys2dqiy81h
+                  - button "Add to cart" [ref=e1453]
+              - generic [ref=e1454]:
+                - generic [ref=e1455]:
+                  - generic [ref=e1456]:
+                    - heading "\"The Bird\" Fried Chicken for 4" [level=3] [ref=e1457]
+                    - paragraph [ref=e1458]: Blue Ribbon · New York, NY
+                  - generic [ref=e1459]: $99.00
+                - generic [ref=e1460]:
+                  - link "Details" [ref=e1461] [cursor=pointer]:
+                    - /url: /customer/items/cmos4bk8u003rlnysjo5pydkj
+                  - button "Add to cart" [ref=e1463]
+              - generic [ref=e1464]:
+                - generic [ref=e1465]:
+                  - generic [ref=e1466]:
+                    - heading "\"The Coop\" Complete Fried Chicken Dinner for 4" [level=3] [ref=e1467]
+                    - paragraph [ref=e1468]: Blue Ribbon · New York, NY
+                  - generic [ref=e1469]: $119.00
+                - generic [ref=e1470]:
+                  - link "Details" [ref=e1471] [cursor=pointer]:
+                    - /url: /customer/items/cmos4bk8u003plnystgst9x1w
+                  - button "Add to cart" [ref=e1473]
+              - generic [ref=e1474]:
+                - generic [ref=e1475]:
+                  - generic [ref=e1476]:
+                    - heading "\"The Family Bird\" Fried Chicken for 8" [level=3] [ref=e1477]
+                    - paragraph [ref=e1478]: Blue Ribbon · New York, NY
+                  - generic [ref=e1479]: $169.00
+                - generic [ref=e1480]:
+                  - link "Details" [ref=e1481] [cursor=pointer]:
+                    - /url: /customer/items/cmos4bk8v003ulnysit43fu8s
+                  - button "Add to cart" [ref=e1483]
+              - generic [ref=e1484]:
+                - generic [ref=e1485]:
+                  - generic [ref=e1486]:
+                    - heading "\"The Family Coop\" Complete Fried Chicken Dinner for 8-10" [level=3] [ref=e1487]
+                    - paragraph [ref=e1488]: Blue Ribbon · New York, NY
+                  - generic [ref=e1489]: $189.00
+                - generic [ref=e1490]:
+                  - link "Details" [ref=e1491] [cursor=pointer]:
+                    - /url: /customer/items/cmos4bk8v003tlnys96nvbq0k
+                  - button "Add to cart" [ref=e1493]
+              - generic [ref=e1494]:
+                - generic [ref=e1495]:
+                  - generic [ref=e1496]:
+                    - heading "Carla Hall’s Nashville Hot Fried Chicken Dinner for 4-6" [level=3] [ref=e1497]
+                    - paragraph [ref=e1498]: Chef Carla Hall · Washington, DC
+                  - generic [ref=e1499]: $189.00
+                - generic [ref=e1500]:
+                  - link "Details" [ref=e1501] [cursor=pointer]:
+                    - /url: /customer/items/cmos4bk8v0047lnysrsz0w4vn
+                  - button "Add to cart" [ref=e1503]
+              - generic [ref=e1504]:
+                - generic [ref=e1505]:
+                  - generic [ref=e1506]:
+                    - heading "Chicken Tenders - 25 Pack" [level=3] [ref=e1507]
+                    - paragraph [ref=e1508]: Shaq's Big Chicken · Las Vegas, NV
+                  - generic [ref=e1509]: $79.00
+                - generic [ref=e1510]:
+                  - link "Details" [ref=e1511] [cursor=pointer]:
+                    - /url: /customer/items/cmos4bk8v0043lnys2oy1vtcw
+                  - button "Add to cart" [ref=e1513]
+              - generic [ref=e1514]:
+                - generic [ref=e1515]:
+                  - generic [ref=e1516]:
+                    - heading "Fried Chicken & Jumbo Wings for 6" [level=3] [ref=e1517]
+                    - paragraph [ref=e1518]: Blue Ribbon · New York, NY
+                  - generic [ref=e1519]: $159.00
+                - generic [ref=e1520]:
+                  - link "Details" [ref=e1521] [cursor=pointer]:
+                    - /url: /customer/items/cmos4bk8v0048lnysjes6ojvc
+                  - button "Add to cart" [ref=e1523]
+              - generic [ref=e1524]:
+                - generic [ref=e1525]:
+                  - generic [ref=e1526]:
+                    - heading "Fried Chicken Biscuit Sandwich Kit" [level=3] [ref=e1527]
+                    - paragraph [ref=e1528]: Sunrise Biscuit Kitchen · Chapel Hill, NC
+                  - generic [ref=e1529]: $109.00
+                - generic [ref=e1530]:
+                  - link "Details" [ref=e1531] [cursor=pointer]:
+                    - /url: /customer/items/cmos4bk8u003slnysjtxh9mb9
+                  - button "Add to cart" [ref=e1533]
+              - generic [ref=e1534]:
+                - generic [ref=e1535]:
+                  - generic [ref=e1536]:
+                    - heading "Fried Chicken Dinner Kit for 2-4" [level=3] [ref=e1537]
+                    - paragraph [ref=e1538]: Yardbird · Miami Beach, FL
+                  - generic [ref=e1539]: $89.00
+                - generic [ref=e1540]:
+                  - link "Details" [ref=e1541] [cursor=pointer]:
+                    - /url: /customer/items/cmos4bk8v003xlnysagm8wm6p
+                  - button "Add to cart" [ref=e1543]
+              - generic [ref=e1544]:
+                - generic [ref=e1545]:
+                  - generic [ref=e1546]:
+                    - heading "Fried Chicken Sandwich Combo Kit for 6" [level=3] [ref=e1547]
+                    - paragraph [ref=e1548]: Shaq's Big Chicken · Las Vegas, NV
+                  - generic [ref=e1549]: $79.00
+                - generic [ref=e1550]:
+                  - link "Details" [ref=e1551] [cursor=pointer]:
+                    - /url: /customer/items/cmos4bk8v003ylnysosark6rk
+                  - button "Add to cart" [ref=e1553]
+              - generic [ref=e1554]:
+                - generic [ref=e1555]:
+                  - generic [ref=e1556]:
+                    - heading "Hot Chicken - 2 Whole Birds" [level=3] [ref=e1557]
+                    - paragraph [ref=e1558]: Hattie B's Hot Chicken · Nashville, TN
+                  - generic [ref=e1559]: $139.00
+                - generic [ref=e1560]:
+                  - link "Details" [ref=e1561] [cursor=pointer]:
+                    - /url: /customer/items/cmos4bk8v0045lnysm6hns8sk
+                  - button "Add to cart" [ref=e1563]
+              - generic [ref=e1564]:
+                - generic [ref=e1565]:
+                  - generic [ref=e1566]:
+                    - heading "Hot Chicken - Whole Bird" [level=3] [ref=e1567]
+                    - paragraph [ref=e1568]: Hattie B's Hot Chicken · Nashville, TN
+                  - generic [ref=e1569]: $89.00
+                - generic [ref=e1570]:
+                  - link "Details" [ref=e1571] [cursor=pointer]:
+                    - /url: /customer/items/cmos4bk8u003qlnys9ju05suo
+                  - button "Add to cart" [ref=e1573]
+              - generic [ref=e1574]:
+                - generic [ref=e1575]:
+                  - generic [ref=e1576]:
+                    - heading "Japanese Fried Chicken Dinner Kit for 2" [level=3] [ref=e1577]
+                    - paragraph [ref=e1578]: En Japanese Brasserie · New York, NY
+                  - generic [ref=e1579]: $69.00
+                - generic [ref=e1580]:
+                  - link "Details" [ref=e1581] [cursor=pointer]:
+                    - /url: /customer/items/cmos4bk8v0041lnys6hq9pztu
+                  - button "Add to cart" [ref=e1583]
+              - generic [ref=e1584]:
+                - generic [ref=e1585]:
+                  - generic [ref=e1586]:
+                    - heading "Jumbo Hot Chicken Wings - 12 Pack" [level=3] [ref=e1587]
+                    - paragraph [ref=e1588]: Hattie B's Hot Chicken · Nashville, TN
+                  - generic [ref=e1589]: $109.00
+                - generic [ref=e1590]:
+                  - link "Details" [ref=e1591] [cursor=pointer]:
+                    - /url: /customer/items/cmos4bk8v0040lnysaidb4khm
+                  - button "Add to cart" [ref=e1593]
+              - generic [ref=e1594]:
+                - generic [ref=e1595]:
+                  - generic [ref=e1596]:
+                    - heading "Marcus’ Hot Honey Chicken & Cornbread Waffles Kit for 4" [level=3] [ref=e1597]
+                    - paragraph [ref=e1598]: Marcus Samuelsson's Streetbird · Harlem, NY
+                  - generic [ref=e1599]: $99.00
+                - generic [ref=e1600]:
+                  - link "Details" [ref=e1601] [cursor=pointer]:
+                    - /url: /customer/items/cmos4bk8v003wlnys3q9jj3ih
+                  - button "Add to cart" [ref=e1603]
+              - generic [ref=e1604]:
+                - generic [ref=e1605]:
+                  - generic [ref=e1606]:
+                    - heading "Nashville Hot Chicken Family Meal for 8" [level=3] [ref=e1607]
+                    - paragraph [ref=e1608]: Big Shake's Hot Chicken · Franklin, TN
+                  - generic [ref=e1609]: $129.00
+                - generic [ref=e1610]:
+                  - link "Details" [ref=e1611] [cursor=pointer]:
+                    - /url: /customer/items/cmos4bk8v003vlnysizjst8ya
+                  - button "Add to cart" [ref=e1613]
+              - generic [ref=e1614]:
+                - generic [ref=e1615]:
+                  - generic [ref=e1616]:
+                    - heading "Picnic Chicken Sandwich Kit for 4" [level=3] [ref=e1617]
+                    - paragraph [ref=e1618]: Motel Fried Chicken · Philadelphia, PA
+                  - generic [ref=e1619]: $79.00
+                - generic [ref=e1620]:
+                  - link "Details" [ref=e1621] [cursor=pointer]:
+                    - /url: /customer/items/cmos4bk8v003zlnysh0ci3yzc
+                  - button "Add to cart" [ref=e1623]
+              - generic [ref=e1624]:
+                - generic [ref=e1625]:
+                  - generic [ref=e1626]:
+                    - heading "Wayfare Tavern Fried Chicken - 10 Pieces" [level=3] [ref=e1627]
+                    - paragraph [ref=e1628]: Wayfare Tavern · San Francisco, CA
+                  - generic [ref=e1629]: $89.00
+                - generic [ref=e1630]:
+                  - link "Details" [ref=e1631] [cursor=pointer]:
+                    - /url: /customer/items/cmos4bk8v0046lnysd9kuylbt
+                  - button "Add to cart" [ref=e1633]
+              - generic [ref=e1634]:
+                - generic [ref=e1635]:
+                  - generic [ref=e1636]:
+                    - heading "World Famous Hot Chicken & Waffles for 6" [level=3] [ref=e1637]
+                    - paragraph [ref=e1638]: Big Shake's Hot Chicken · Franklin, TN
+                  - generic [ref=e1639]: $99.00
+                - generic [ref=e1640]:
+                  - link "Details" [ref=e1641] [cursor=pointer]:
+                    - /url: /customer/items/cmos4bk8v0042lnysr34sj2ug
+                  - button "Add to cart" [ref=e1643]
+          - generic [ref=e1644]:
+            - heading "Ice Cream" [level=2] [ref=e1645]
+            - generic [ref=e1646]:
+              - generic [ref=e1647]:
+                - generic [ref=e1648]:
+                  - generic [ref=e1649]:
+                    - heading "4 Pint Ice Cream + 6 Cream'wich Combo" [level=3] [ref=e1650]
+                    - paragraph [ref=e1651]: Cream'wich · Manhattan Beach, CA
+                  - generic [ref=e1652]: $109.00
+                - generic [ref=e1653]:
+                  - link "Details" [ref=e1654] [cursor=pointer]:
+                    - /url: /customer/items/cmos4bk99004olnysefi1m2w2
+                  - button "Add to cart" [ref=e1656]
+              - generic [ref=e1657]:
+                - generic [ref=e1658]:
+                  - generic [ref=e1659]:
+                    - heading "Best Seller Ice Cream Pack - 6 Pints" [level=3] [ref=e1660]
+                    - paragraph [ref=e1661]: Bridgeman's Ice Cream · Woodbury, MN
+                  - generic [ref=e1662]: $99.00
+                - generic [ref=e1663]:
+                  - link "Details" [ref=e1664] [cursor=pointer]:
+                    - /url: /customer/items/cmos4bk99004nlnysnof1p302
+                  - button "Add to cart" [ref=e1666]
+              - generic [ref=e1667]:
+                - generic [ref=e1668]:
+                  - generic [ref=e1669]:
+                    - heading "Best Sellers Ice Cream Collection - 6 Pints" [level=3] [ref=e1670]
+                    - paragraph [ref=e1671]: Crank & Boom Craft Ice Cream · Lexington, KY
+                  - generic [ref=e1672]: $99.00
+                - generic [ref=e1673]:
+                  - link "Details" [ref=e1674] [cursor=pointer]:
+                    - /url: /customer/items/cmos4bk99004flnysi5nmfavr
+                  - button "Add to cart" [ref=e1676]
+              - generic [ref=e1677]:
+                - generic [ref=e1678]:
+                  - generic [ref=e1679]:
+                    - heading "Build Your Own Ice Cream Sandwich Kit - 6 Pack" [level=3] [ref=e1680]
+                    - paragraph [ref=e1681]: The Baked Bear · San Diego, CA
+                  - generic [ref=e1682]: $84.00
+                - generic [ref=e1683]:
+                  - link "Details" [ref=e1684] [cursor=pointer]:
+                    - /url: /customer/items/cmos4bk99004klnysf54avw0v
+                  - button "Add to cart" [ref=e1686]
+              - generic [ref=e1687]:
+                - generic [ref=e1688]:
+                  - generic [ref=e1689]:
+                    - heading "Build Your Own Ice Cream Sandwich Kit - 9 Pack" [level=3] [ref=e1690]
+                    - paragraph [ref=e1691]: The Baked Bear · San Diego, CA
+                  - generic [ref=e1692]: $99.00
+                - generic [ref=e1693]:
+                  - link "Details" [ref=e1694] [cursor=pointer]:
+                    - /url: /customer/items/cmos4bk99004plnysl36qywhy
+                  - button "Add to cart" [ref=e1696]
+              - generic [ref=e1697]:
+                - generic [ref=e1698]:
+                  - generic [ref=e1699]:
+                    - heading "Choose Your Own Ice Cream - 5 Pints" [level=3] [ref=e1700]
+                    - paragraph [ref=e1701]: Ice Cream Jubilee · Washington, DC
+                  - generic [ref=e1702]: $89.00
+                - generic [ref=e1703]:
+                  - link "Details" [ref=e1704] [cursor=pointer]:
+                    - /url: /customer/items/cmos4bk99004glnysj9zuzzv5
+                  - button "Add to cart" [ref=e1706]
+              - generic [ref=e1707]:
+                - generic [ref=e1708]:
+                  - generic [ref=e1709]:
+                    - heading "Choose Your Own Ice Cream Sandwich - 8 Pack" [level=3] [ref=e1710]
+                    - paragraph [ref=e1711]: Nye's Cream Sandwiches · Wilmington, NC
+                  - generic [ref=e1712]: $79.00
+                - generic [ref=e1713]:
+                  - link "Details" [ref=e1714] [cursor=pointer]:
+                    - /url: /customer/items/cmos4bk99004clnysr5fpxiuj
+                  - button "Add to cart" [ref=e1716]
+              - generic [ref=e1717]:
+                - generic [ref=e1718]:
+                  - generic [ref=e1719]:
+                    - heading "Cookie Monster Ice Cream Sandwich - 8 Pack" [level=3] [ref=e1720]
+                    - paragraph [ref=e1721]: Nightingale Ice Cream Sandwiches · Richmond, VA
+                  - generic [ref=e1722]: $75.00
+                - generic [ref=e1723]:
+                  - link "Details" [ref=e1724] [cursor=pointer]:
+                    - /url: /customer/items/cmos4bk99004mlnys3b7yu0s6
+                  - button "Add to cart" [ref=e1726]
+              - generic [ref=e1727]:
+                - generic [ref=e1728]:
+                  - generic [ref=e1729]:
+                    - heading "Flavors of Kentucky Ice Cream Collection - 6 Pints" [level=3] [ref=e1730]
+                    - paragraph [ref=e1731]: Crank & Boom Craft Ice Cream · Lexington, KY
+                  - generic [ref=e1732]: $99.00
+                - generic [ref=e1733]:
+                  - link "Details" [ref=e1734] [cursor=pointer]:
+                    - /url: /customer/items/cmos4bk99004rlnyse8eojkox
+                  - button "Add to cart" [ref=e1736]
+              - generic [ref=e1737]:
+                - generic [ref=e1738]:
+                  - generic [ref=e1739]:
+                    - heading "Gelato & Sorbetto Minis - 12 pack" [level=3] [ref=e1740]
+                    - paragraph [ref=e1741]: Nancy Silverton's Nancy's Fancy · Los Angeles, CA
+                  - generic [ref=e1742]: $94.00
+                - generic [ref=e1743]:
+                  - link "Details" [ref=e1744] [cursor=pointer]:
+                    - /url: /customer/items/cmos4bk99004ilnysb7wl9z51
+                  - button "Add to cart" [ref=e1746]
+              - generic [ref=e1747]:
+                - generic [ref=e1748]:
+                  - generic [ref=e1749]:
+                    - heading "Ice Cream - Choose Your Own 12 Pints" [level=3] [ref=e1750]
+                    - paragraph [ref=e1751]: Graeter's Ice Cream · Cincinnati, OH
+                  - generic [ref=e1752]: $119.95
+                - generic [ref=e1753]:
+                  - link "Details" [ref=e1754] [cursor=pointer]:
+                    - /url: /customer/items/cmos4bk99004elnysufts3c34
+                  - button "Add to cart" [ref=e1756]
+              - generic [ref=e1757]:
+                - generic [ref=e1758]:
+                  - generic [ref=e1759]:
+                    - heading "Ice Cream - Choose Your Own 5 Pints" [level=3] [ref=e1760]
+                    - paragraph [ref=e1761]: The Baked Bear · San Diego, CA
+                  - generic [ref=e1762]: $99.00
+                - generic [ref=e1763]:
+                  - link "Details" [ref=e1764] [cursor=pointer]:
+                    - /url: /customer/items/cmos4bk99004alnysf4yex1lz
+                  - button "Add to cart" [ref=e1766]
+              - generic [ref=e1767]:
+                - generic [ref=e1768]:
+                  - generic [ref=e1769]:
+                    - heading "Ice Cream - Choose Your Own 6 Pints" [level=3] [ref=e1770]
+                    - paragraph [ref=e1771]: Museum of Ice Cream · New York, NY
+                  - generic [ref=e1772]: $99.00
+                - generic [ref=e1773]:
+                  - link "Details" [ref=e1774] [cursor=pointer]:
+                    - /url: /customer/items/cmos4bk99004blnys9wpi15fw
+                  - button "Add to cart" [ref=e1776]
+              - generic [ref=e1777]:
+                - generic [ref=e1778]:
+                  - generic [ref=e1779]:
+                    - heading "Ice Cream - Choose Your Own 6 Pints" [level=3] [ref=e1780]
+                    - paragraph [ref=e1781]: Malai Ice Cream · Brooklyn, NY
+                  - generic [ref=e1782]: $109.00
+                - generic [ref=e1783]:
+                  - link "Details" [ref=e1784] [cursor=pointer]:
+                    - /url: /customer/items/cmos4bk99004dlnyslui1dxyg
+                  - button "Add to cart" [ref=e1786]
+              - generic [ref=e1787]:
+                - generic [ref=e1788]:
+                  - generic [ref=e1789]:
+                    - heading "Layered Ice Cream Sundae Jar - Choose Your Own 6 Pack" [level=3] [ref=e1790]
+                    - paragraph [ref=e1791]: The Yard Milkshake Bar · Gulf Shores, AL
+                  - generic [ref=e1792]: $125.00
+                - generic [ref=e1793]:
+                  - link "Details" [ref=e1794] [cursor=pointer]:
+                    - /url: /customer/items/cmos4bk99004llnys6rbaqpqs
+                  - button "Add to cart" [ref=e1796]
+              - generic [ref=e1797]:
+                - generic [ref=e1798]:
+                  - generic [ref=e1799]:
+                    - heading "Meringue Topped Ice Cream - Choose Your Own 6 Pints" [level=3] [ref=e1800]
+                    - paragraph [ref=e1801]: Bona Bona Ice Cream · Port Chester, NY
+                  - generic [ref=e1802]: $99.00
+                - generic [ref=e1803]:
+                  - link "Details" [ref=e1804] [cursor=pointer]:
+                    - /url: /customer/items/cmos4bk99004qlnysq4vopvl8
+                  - button "Add to cart" [ref=e1806]
+              - generic [ref=e1807]:
+                - generic [ref=e1808]:
+                  - generic [ref=e1809]:
+                    - heading "Mochi Ice Cream - Choose Your Own 12 Pack" [level=3] [ref=e1810]
+                    - paragraph [ref=e1811]: Mochii · New York, NY
+                  - generic [ref=e1812]: $75.00
+                - generic [ref=e1813]:
+                  - link "Details" [ref=e1814] [cursor=pointer]:
+                    - /url: /customer/items/cmos4bk99004jlnysh21wqrzl
+                  - button "Add to cart" [ref=e1816]
+              - generic [ref=e1817]:
+                - generic [ref=e1818]:
+                  - generic [ref=e1819]:
+                    - heading "Panna's Choice Ice Cream 6-Pack" [level=3] [ref=e1820]
+                    - paragraph [ref=e1821]: Caffè Panna Ice Cream · New York, NY
+                  - generic [ref=e1822]: $109.00
+                - generic [ref=e1823]:
+                  - link "Details" [ref=e1824] [cursor=pointer]:
+                    - /url: /customer/items/cmos4bk99004hlnysqfud61on
+                  - button "Add to cart" [ref=e1826]
+          - generic [ref=e1827]:
+            - heading "Pizzas" [level=2] [ref=e1828]
+            - generic [ref=e1829]:
+              - generic [ref=e1830]:
+                - generic [ref=e1831]:
+                  - generic [ref=e1832]:
+                    - heading "Brooklyn Pizza - Choose Your Own 10 Pack" [level=3] [ref=e1833]
+                    - paragraph [ref=e1834]: Paesan’s Pizza · Albany, NY
+                  - generic [ref=e1835]: $99.00
+                - generic [ref=e1836]:
+                  - link "Details" [ref=e1837] [cursor=pointer]:
+                    - /url: /customer/items/cmos4bk9o0051lnys3r136yhs
+                  - button "Add to cart" [ref=e1839]
+              - generic [ref=e1840]:
+                - generic [ref=e1841]:
+                  - generic [ref=e1842]:
+                    - heading "Brooklyn Pizza - Choose Your Own 5 Pack" [level=3] [ref=e1843]
+                    - paragraph [ref=e1844]: Paesan’s Pizza · Albany, NY
+                  - generic [ref=e1845]: $69.00
+                - generic [ref=e1846]:
+                  - link "Details" [ref=e1847] [cursor=pointer]:
+                    - /url: /customer/items/cmos4bk9o004xlnys7hx1delj
+                  - button "Add to cart" [ref=e1849]
+              - generic [ref=e1850]:
+                - generic [ref=e1851]:
+                  - generic [ref=e1852]:
+                    - heading "Buffalo Style Pepperoni Pizza - 2 Pack" [level=3] [ref=e1853]
+                    - paragraph [ref=e1854]: Picasso's Pizza · Buffalo, NY
+                  - generic [ref=e1855]: $89.00
+                - generic [ref=e1856]:
+                  - link "Details" [ref=e1857] [cursor=pointer]:
+                    - /url: /customer/items/cmos4bk9o0056lnysjy4wkoql
+                  - button "Add to cart" [ref=e1859]
+              - generic [ref=e1860]:
+                - generic [ref=e1861]:
+                  - generic [ref=e1862]:
+                    - heading "Chicago Deep Dish Pizza - 2 Pack" [level=3] [ref=e1863]
+                    - paragraph [ref=e1864]: My Pi Pizza · Chicago, IL
+                  - generic [ref=e1865]: $99.00
+                - generic [ref=e1866]:
+                  - link "Details" [ref=e1867] [cursor=pointer]:
+                    - /url: /customer/items/cmos4bk9o005blnys8bwhty1f
+                  - button "Add to cart" [ref=e1869]
+              - generic [ref=e1870]:
+                - generic [ref=e1871]:
+                  - generic [ref=e1872]:
+                    - heading "Chicago Deep Dish Pizza - 4 Pack" [level=3] [ref=e1873]
+                    - paragraph [ref=e1874]: My Pi Pizza · Chicago, IL
+                  - generic [ref=e1875]: $129.00
+                - generic [ref=e1876]:
+                  - link "Details" [ref=e1877] [cursor=pointer]:
+                    - /url: /customer/items/cmos4bk9o004ylnysay8vgcin
+                  - button "Add to cart" [ref=e1879]
+              - generic [ref=e1880]:
+                - generic [ref=e1881]:
+                  - generic [ref=e1882]:
+                    - heading "Choose Your Own - 3 Pizzas" [level=3] [ref=e1883]
+                    - paragraph [ref=e1884]: Heggies Pizza · Milaca, MN
+                  - generic [ref=e1885]: $79.00
+                - generic [ref=e1886]:
+                  - link "Details" [ref=e1887] [cursor=pointer]:
+                    - /url: /customer/items/cmos4bk9o0053lnys00wkkvlk
+                  - button "Add to cart" [ref=e1889]
+              - generic [ref=e1890]:
+                - generic [ref=e1891]:
+                  - generic [ref=e1892]:
+                    - heading "Choose Your Own Deep Dish Pizza - 3 Pack" [level=3] [ref=e1893]
+                    - paragraph [ref=e1894]: Bartolini’s · Chicago, IL
+                  - generic [ref=e1895]: $139.00
+                - generic [ref=e1896]:
+                  - link "Details" [ref=e1897] [cursor=pointer]:
+                    - /url: /customer/items/cmos4bk9o004wlnyst7xvr462
+                  - button "Add to cart" [ref=e1899]
+              - generic [ref=e1900]:
+                - generic [ref=e1901]:
+                  - generic [ref=e1902]:
+                    - heading "Choose Your Own Pizza - 3 Pack" [level=3] [ref=e1903]
+                    - paragraph [ref=e1904]: Tony's Pizza Napoletana · San Francisco, CA
+                  - generic [ref=e1905]: $99.00
+                - generic [ref=e1906]:
+                  - link "Details" [ref=e1907] [cursor=pointer]:
+                    - /url: /customer/items/cmos4bk9o004zlnysmkm002qp
+                  - button "Add to cart" [ref=e1909]
+              - generic [ref=e1910]:
+                - generic [ref=e1911]:
+                  - generic [ref=e1912]:
+                    - heading "Choose Your Own Thin Crust Pizza - 4 Pack" [level=3] [ref=e1913]
+                    - paragraph [ref=e1914]: Bartolini’s · Chicago, IL
+                  - generic [ref=e1915]: $139.00
+                - generic [ref=e1916]:
+                  - link "Details" [ref=e1917] [cursor=pointer]:
+                    - /url: /customer/items/cmos4bk9o004tlnysbatgq7a3
+                  - button "Add to cart" [ref=e1919]
+              - generic [ref=e1920]:
+                - generic [ref=e1921]:
+                  - generic [ref=e1922]:
+                    - heading "Detroit Pizza - Choose Your Own Pizza 3 Pack" [level=3] [ref=e1923]
+                    - paragraph [ref=e1924]: Detroit Style Pizza Co · Detroit, MI
+                  - generic [ref=e1925]: $85.00
+                - generic [ref=e1926]:
+                  - link "Details" [ref=e1927] [cursor=pointer]:
+                    - /url: /customer/items/cmos4bk9o0054lnysq4krip0h
+                  - button "Add to cart" [ref=e1929]
+              - generic [ref=e1930]:
+                - generic [ref=e1931]:
+                  - generic [ref=e1932]:
+                    - heading "NY Style Pizza - Choose Your Own 3 Pack" [level=3] [ref=e1933]
+                    - paragraph [ref=e1934]: Rubirosa Pizza · New York, NY
+                  - generic [ref=e1935]: $99.00
+                - generic [ref=e1936]:
+                  - link "Details" [ref=e1937] [cursor=pointer]:
+                    - /url: /customer/items/cmos4bk9o005alnyskkmzplmd
+                  - button "Add to cart" [ref=e1939]
+              - generic [ref=e1940]:
+                - generic [ref=e1941]:
+                  - generic [ref=e1942]:
+                    - heading "Neapolitan Pizza - Choose Your Own 3 Pack" [level=3] [ref=e1943]
+                    - paragraph [ref=e1944]: Motorino Pizzeria · New York, NY
+                  - generic [ref=e1945]: $99.00
+                - generic [ref=e1946]:
+                  - link "Details" [ref=e1947] [cursor=pointer]:
+                    - /url: /customer/items/cmos4bk9o0057lnystj29b41g
+                  - button "Add to cart" [ref=e1949]
+              - generic [ref=e1950]:
+                - generic [ref=e1951]:
+                  - generic [ref=e1952]:
+                    - heading "New Haven-Style Mozzarella Pizza - 6 Pack" [level=3] [ref=e1953]
+                    - paragraph [ref=e1954]: Zuppardi's Apizza · West Haven, CT
+                  - generic [ref=e1955]: $78.00
+                - generic [ref=e1956]:
+                  - link "Details" [ref=e1957] [cursor=pointer]:
+                    - /url: /customer/items/cmos4bk9o0052lnysr8efayu4
+                  - button "Add to cart" [ref=e1959]
+              - generic [ref=e1960]:
+                - generic [ref=e1961]:
+                  - generic [ref=e1962]:
+                    - heading "New Haven-Style Pizza - 6 Pack (Choose Your Own)" [level=3] [ref=e1963]
+                    - paragraph [ref=e1964]: Zuppardi's Apizza · West Haven, CT
+                  - generic [ref=e1965]: $79.00
+                - generic [ref=e1966]:
+                  - link "Details" [ref=e1967] [cursor=pointer]:
+                    - /url: /customer/items/cmos4bk9o004ulnys9mck64b6
+                  - button "Add to cart" [ref=e1969]
+              - generic [ref=e1970]:
+                - generic [ref=e1971]:
+                  - generic [ref=e1972]:
+                    - heading "Pan-Style Deep Dish Pizza - Choose Your Own 4 Pack" [level=3] [ref=e1973]
+                    - paragraph [ref=e1974]: Pequod's Pizza · Chicago, IL
+                  - generic [ref=e1975]: $119.00
+                - generic [ref=e1976]:
+                  - link "Details" [ref=e1977] [cursor=pointer]:
+                    - /url: /customer/items/cmos4bk9o0055lnys0x26fmgz
+                  - button "Add to cart" [ref=e1979]
+              - generic [ref=e1980]:
+                - generic [ref=e1981]:
+                  - generic [ref=e1982]:
+                    - heading "Pizza - Choose Your Own 4 Pack" [level=3] [ref=e1983]
+                    - paragraph [ref=e1984]: Regina Pizzeria · Boston, MA
+                  - generic [ref=e1985]: $99.00
+                - generic [ref=e1986]:
+                  - link "Details" [ref=e1987] [cursor=pointer]:
+                    - /url: /customer/items/cmos4bk9o005clnysmzl3cjv6
+                  - button "Add to cart" [ref=e1989]
+              - generic [ref=e1990]:
+                - generic [ref=e1991]:
+                  - generic [ref=e1992]:
+                    - heading "Plain Thin Crust Pizza - 4 Pack" [level=3] [ref=e1993]
+                    - paragraph [ref=e1994]: The Columbia Inn · Montville, NJ
+                  - generic [ref=e1995]: $79.00
+                - generic [ref=e1996]:
+                  - link "Details" [ref=e1997] [cursor=pointer]:
+                    - /url: /customer/items/cmos4bk9o0050lnys355c3qzh
+                  - button "Add to cart" [ref=e1999]
+              - generic [ref=e2000]:
+                - generic [ref=e2001]:
+                  - generic [ref=e2002]:
+                    - heading "Thin Crust Pizza - Choose Your Own 4 Pack" [level=3] [ref=e2003]
+                    - paragraph [ref=e2004]: Bill's Pizza & Pub · Chicago, IL
+                  - generic [ref=e2005]: $119.00
+                - generic [ref=e2006]:
+                  - link "Details" [ref=e2007] [cursor=pointer]:
+                    - /url: /customer/items/cmos4bk9o0059lnysur6gne55
+                  - button "Add to cart" [ref=e2009]
+              - generic [ref=e2010]:
+                - generic [ref=e2011]:
+                  - generic [ref=e2012]:
+                    - heading "Wood Fired Pizza 6 Pack" [level=3] [ref=e2013]
+                    - paragraph [ref=e2014]: Roberta's Pizza · Brooklyn, NY
+                  - generic [ref=e2015]: $119.00
+                - generic [ref=e2016]:
+                  - link "Details" [ref=e2017] [cursor=pointer]:
+                    - /url: /customer/items/cmos4bk9o0058lnysol6b7uq7
+                  - button "Add to cart" [ref=e2019]
+              - generic [ref=e2020]:
+                - generic [ref=e2021]:
+                  - generic [ref=e2022]:
+                    - heading "Wood Fired Pizzas Best Seller - 4 Pack" [level=3] [ref=e2023]
+                    - paragraph [ref=e2024]: Pizzeria Bianco · Phoenix, AZ
+                  - generic [ref=e2025]: $129.00
+                - generic [ref=e2026]:
+                  - link "Details" [ref=e2027] [cursor=pointer]:
+                    - /url: /customer/items/cmos4bk9o004vlnys4vne9bsi
+                  - button "Add to cart" [ref=e2029]
+          - generic [ref=e2030]:
+            - heading "Pork" [level=2] [ref=e2031]
+            - generic [ref=e2032]:
+              - generic [ref=e2033]:
+                - generic [ref=e2034]:
+                  - generic [ref=e2035]:
+                    - heading "Carolina Pulled Pork Sandwich Pack" [level=3] [ref=e2036]
+                    - paragraph [ref=e2037]: Kings BBQ · Kinston, NC
+                  - generic [ref=e2038]: $89.00
+                - generic [ref=e2039]:
+                  - link "Details" [ref=e2040] [cursor=pointer]:
+                    - /url: /customer/items/cmos4bka0005qlnysztrs3nsk
+                  - button "Add to cart" [ref=e2042]
+              - generic [ref=e2043]:
+                - generic [ref=e2044]:
+                  - generic [ref=e2045]:
+                    - heading "Double Bone-in Heritage Berkshire Pork Chops - 4 Pack" [level=3] [ref=e2046]
+                    - paragraph [ref=e2047]: Gastros Craft Meats · Woonsocket, RI
+                  - generic [ref=e2048]: $129.00
+                - generic [ref=e2049]:
+                  - link "Details" [ref=e2050] [cursor=pointer]:
+                    - /url: /customer/items/cmos4bka0005glnys0jtfgraq
+                  - button "Add to cart" [ref=e2052]
+              - generic [ref=e2053]:
+                - generic [ref=e2054]:
+                  - generic [ref=e2055]:
+                    - heading "Joe's KC Ribs & Pulled Pork" [level=3] [ref=e2056]
+                    - paragraph [ref=e2057]: Joe's KC BBQ · Kansas City, KS
+                  - generic [ref=e2058]: $94.99
+                - generic [ref=e2059]:
+                  - link "Details" [ref=e2060] [cursor=pointer]:
+                    - /url: /customer/items/cmos4bka0005tlnysy62cxa7z
+                  - button "Add to cart" [ref=e2062]
+              - generic [ref=e2063]:
+                - generic [ref=e2064]:
+                  - generic [ref=e2065]:
+                    - heading "Kurobuta Pork Belly" [level=3] [ref=e2066]
+                    - paragraph [ref=e2067]: Snake River Farms · Boise, ID
+                  - generic [ref=e2068]: $139.00
+                - generic [ref=e2069]:
+                  - link "Details" [ref=e2070] [cursor=pointer]:
+                    - /url: /customer/items/cmos4bka0005jlnysinosd1yq
+                  - button "Add to cart" [ref=e2072]
+              - generic [ref=e2073]:
+                - generic [ref=e2074]:
+                  - generic [ref=e2075]:
+                    - heading "Memphis Pulled Pork Shoulder - 4 lbs." [level=3] [ref=e2076]
+                    - paragraph [ref=e2077]: Charlie Vergos' Rendezvous · Memphis, TN
+                  - generic [ref=e2078]: $109.00
+                - generic [ref=e2079]:
+                  - link "Details" [ref=e2080] [cursor=pointer]:
+                    - /url: /customer/items/cmos4bka0005olnysohs5b7uf
+                  - button "Add to cart" [ref=e2082]
+              - generic [ref=e2083]:
+                - generic [ref=e2084]:
+                  - generic [ref=e2085]:
+                    - heading "Porchetta \"Siu Yuk\" + Chimichurri Sauce - 2 lbs." [level=3] [ref=e2086]
+                    - paragraph [ref=e2087]: Rice Box · Los Angeles, CA
+                  - generic [ref=e2088]: $129.00
+                - generic [ref=e2089]:
+                  - link "Details" [ref=e2090] [cursor=pointer]:
+                    - /url: /customer/items/cmos4bka0005klnys086nugjm
+                  - button "Add to cart" [ref=e2092]
+              - generic [ref=e2093]:
+                - generic [ref=e2094]:
+                  - generic [ref=e2095]:
+                    - heading "Pork Ribs" [level=3] [ref=e2096]
+                    - paragraph [ref=e2097]: Southside Market & Barbeque · Elgin, TX
+                  - generic [ref=e2098]: $79.00
+                - generic [ref=e2099]:
+                  - link "Details" [ref=e2100] [cursor=pointer]:
+                    - /url: /customer/items/cmos4bka0005slnyskninsfwz
+                  - button "Add to cart" [ref=e2102]
+              - generic [ref=e2103]:
+                - generic [ref=e2104]:
+                  - generic [ref=e2105]:
+                    - heading "Pork Steaks" [level=3] [ref=e2106]
+                    - paragraph [ref=e2107]: Southside Market & Barbeque · Elgin, TX
+                  - generic [ref=e2108]: $69.00
+                - generic [ref=e2109]:
+                  - link "Details" [ref=e2110] [cursor=pointer]:
+                    - /url: /customer/items/cmos4bka0005hlnys9vid2fr8
+                  - button "Add to cart" [ref=e2112]
+              - generic [ref=e2113]:
+                - generic [ref=e2114]:
+                  - generic [ref=e2115]:
+                    - heading "Pork Tenderloin Sandwich - 4 Pack" [level=3] [ref=e2116]
+                    - paragraph [ref=e2117]: Nick's Kitchen · Huntington, IN
+                  - generic [ref=e2118]: $79.00
+                - generic [ref=e2119]:
+                  - link "Details" [ref=e2120] [cursor=pointer]:
+                    - /url: /customer/items/cmos4bka0005llnysfxyo9q47
+                  - button "Add to cart" [ref=e2122]
+              - generic [ref=e2123]:
+                - generic [ref=e2124]:
+                  - generic [ref=e2125]:
+                    - heading "Pulled Pork - 4 lbs." [level=3] [ref=e2126]
+                    - paragraph [ref=e2127]: Peg Leg Porker · Nashville, TN
+                  - generic [ref=e2128]: $129.00
+                - generic [ref=e2129]:
+                  - link "Details" [ref=e2130] [cursor=pointer]:
+                    - /url: /customer/items/cmos4bka0005nlnyskb3b5aj5
+                  - button "Add to cart" [ref=e2132]
+              - generic [ref=e2133]:
+                - generic [ref=e2134]:
+                  - generic [ref=e2135]:
+                    - heading "Pulled Pork Pack - Serves 6-8" [level=3] [ref=e2136]
+                    - paragraph [ref=e2137]: Central BBQ · Memphis, TN
+                  - generic [ref=e2138]: $89.00
+                - generic [ref=e2139]:
+                  - link "Details" [ref=e2140] [cursor=pointer]:
+                    - /url: /customer/items/cmos4bka0005plnysxah58ad4
+                  - button "Add to cart" [ref=e2142]
+              - generic [ref=e2143]:
+                - generic [ref=e2144]:
+                  - generic [ref=e2145]:
+                    - heading "Pulled Pork Pierogis" [level=3] [ref=e2146]
+                    - paragraph [ref=e2147]: Baba & Pops · Denver, CO
+                  - generic [ref=e2148]: $79.00
+                - generic [ref=e2149]:
+                  - link "Details" [ref=e2150] [cursor=pointer]:
+                    - /url: /customer/items/cmos4bka0005ulnyscqq9mq12
+                  - button "Add to cart" [ref=e2152]
+              - generic [ref=e2153]:
+                - generic [ref=e2154]:
+                  - generic [ref=e2155]:
+                    - heading "Roast Pork Sandwich Kit for 4" [level=3] [ref=e2156]
+                    - paragraph [ref=e2157]: Tommy DiNic's · Philadelphia, PA
+                  - generic [ref=e2158]: $99.00
+                - generic [ref=e2159]:
+                  - link "Details" [ref=e2160] [cursor=pointer]:
+                    - /url: /customer/items/cmos4bka0005elnysj90kt94u
+                  - button "Add to cart" [ref=e2162]
+              - generic [ref=e2163]:
+                - generic [ref=e2164]:
+                  - generic [ref=e2165]:
+                    - heading "Roast Pork Sandwich Kit for 8" [level=3] [ref=e2166]
+                    - paragraph [ref=e2167]: Tommy DiNic's · Philadelphia, PA
+                  - generic [ref=e2168]: $159.00
+                - generic [ref=e2169]:
+                  - link "Details" [ref=e2170] [cursor=pointer]:
+                    - /url: /customer/items/cmos4bka0005mlnys839rqvj1
+                  - button "Add to cart" [ref=e2172]
+              - generic [ref=e2173]:
+                - generic [ref=e2174]:
+                  - generic [ref=e2175]:
+                    - heading "Slaughterhouse Five - Brisket + Pork + Sausage + Turkey" [level=3] [ref=e2176]
+                    - paragraph [ref=e2177]: Joe's KC BBQ · Kansas City, KS
+                  - generic [ref=e2178]: $128.99
+                - generic [ref=e2179]:
+                  - link "Details" [ref=e2180] [cursor=pointer]:
+                    - /url: /customer/items/cmos4bka0005ilnysn47av17u
+                  - button "Add to cart" [ref=e2182]
+              - generic [ref=e2183]:
+                - generic [ref=e2184]:
+                  - generic [ref=e2185]:
+                    - heading "Smoked Whole BBQ Pork Shoulder - Serves 10-15" [level=3] [ref=e2186]
+                    - paragraph [ref=e2187]: Bludso's BBQ · Los Angeles, CA
+                  - generic [ref=e2188]: $129.00
+                - generic [ref=e2189]:
+                  - link "Details" [ref=e2190] [cursor=pointer]:
+                    - /url: /customer/items/cmos4bka0005flnysgz9gcecf
+                  - button "Add to cart" [ref=e2192]
+              - generic [ref=e2193]:
+                - generic [ref=e2194]:
+                  - generic [ref=e2195]:
+                    - heading "Stone Porter Beer Pork Chops - 4 Pack" [level=3] [ref=e2196]
+                    - paragraph [ref=e2197]: Seaside Market · Cardiff by the Sea, CA
+                  - generic [ref=e2198]: $119.00
+                - generic [ref=e2199]:
+                  - link "Details" [ref=e2200] [cursor=pointer]:
+                    - /url: /customer/items/cmos4bka0005rlnysqjqulohb
+                  - button "Add to cart" [ref=e2202]
+              - generic [ref=e2203]:
+                - generic [ref=e2204]:
+                  - generic [ref=e2205]:
+                    - heading "Whole Pork Belly - 5 lbs." [level=3] [ref=e2206]
+                    - paragraph [ref=e2207]: Roegels Barbecue · Houston, TX
+                  - generic [ref=e2208]: $149.00
+                - generic [ref=e2209]:
+                  - link "Details" [ref=e2210] [cursor=pointer]:
+                    - /url: /customer/items/cmos4bka0005wlnysgv7lpi8q
+                  - button "Add to cart" [ref=e2212]
+              - generic [ref=e2213]:
+                - generic [ref=e2214]:
+                  - generic [ref=e2215]:
+                    - heading "Whole Smoked Pork Shoulder" [level=3] [ref=e2216]
+                    - paragraph [ref=e2217]: Blue Smoke · New York, NY
+                  - generic [ref=e2218]: $129.00
+                - generic [ref=e2219]:
+                  - link "Details" [ref=e2220] [cursor=pointer]:
+                    - /url: /customer/items/cmos4bka0005vlnys2m5ks2ay
+                  - button "Add to cart" [ref=e2222]
+          - generic [ref=e2223]:
+            - heading "Sandwiches" [level=2] [ref=e2224]
+            - generic [ref=e2225]:
+              - generic [ref=e2226]:
+                - generic [ref=e2227]:
+                  - generic [ref=e2228]:
+                    - heading "\"The Gothamist\" Prosciutto + Burrata Sandwich Kit - 4 Pack" [level=3] [ref=e2229]
+                    - paragraph [ref=e2230]: Alidoro · New York, NY
+                  - generic [ref=e2231]: $99.00
+                - generic [ref=e2232]:
+                  - link "Details" [ref=e2233] [cursor=pointer]:
+                    - /url: /customer/items/cmos4bka8005ylnysj4eg10b5
+                  - button "Add to cart" [ref=e2235]
+              - generic [ref=e2236]:
+                - generic [ref=e2237]:
+                  - generic [ref=e2238]:
+                    - heading "\"The Matthew\" Prosciutto + Mozzarella Sandwich Kit - 4 Pack" [level=3] [ref=e2239]
+                    - paragraph [ref=e2240]: Alidoro · New York, NY
+                  - generic [ref=e2241]: $99.00
+                - generic [ref=e2242]:
+                  - link "Details" [ref=e2243] [cursor=pointer]:
+                    - /url: /customer/items/cmos4bka9006blnysqc2rwgb6
+                  - button "Add to cart" [ref=e2245]
+              - generic [ref=e2246]:
+                - generic [ref=e2247]:
+                  - generic [ref=e2248]:
+                    - heading "\"The Pinocchio\" Prosciutto + Soppressata + Mozzarella Sandwich Kit - 4 Pack" [level=3] [ref=e2249]
+                    - paragraph [ref=e2250]: Alidoro · New York, NY
+                  - generic [ref=e2251]: $99.00
+                - generic [ref=e2252]:
+                  - link "Details" [ref=e2253] [cursor=pointer]:
+                    - /url: /customer/items/cmos4bka90065lnysnk47kmd6
+                  - button "Add to cart" [ref=e2255]
+              - generic [ref=e2256]:
+                - generic [ref=e2257]:
+                  - generic [ref=e2258]:
+                    - heading "A Monster Sandwich Kit for 4" [level=3] [ref=e2259]
+                    - paragraph [ref=e2260]: Sarge's Deli · New York, NY
+                  - generic [ref=e2261]: $129.00
+                - generic [ref=e2262]:
+                  - link "Details" [ref=e2263] [cursor=pointer]:
+                    - /url: /customer/items/cmos4bka90066lnysvbpd04j3
+                  - button "Add to cart" [ref=e2265]
+              - generic [ref=e2266]:
+                - generic [ref=e2267]:
+                  - generic [ref=e2268]:
+                    - heading "Campo's Philly Cheesesteaks & Hoagies Combo - 4 Pack" [level=3] [ref=e2269]
+                    - paragraph [ref=e2270]: Campo's Philly Cheesesteaks · Philadelphia, PA
+                  - generic [ref=e2271]: $109.00
+                - generic [ref=e2272]:
+                  - link "Details" [ref=e2273] [cursor=pointer]:
+                    - /url: /customer/items/cmos4bka90064lnyse5jlb3nd
+                  - button "Add to cart" [ref=e2275]
+              - generic [ref=e2276]:
+                - generic [ref=e2277]:
+                  - generic [ref=e2278]:
+                    - heading "Famous Cuban Sandwich Kit for 4" [level=3] [ref=e2279]
+                    - paragraph [ref=e2280]: Versailles Restaurant · Miami, FL
+                  - generic [ref=e2281]: $79.00
+                - generic [ref=e2282]:
+                  - link "Details" [ref=e2283] [cursor=pointer]:
+                    - /url: /customer/items/cmos4bka90069lnyswmh2c87n
+                  - button "Add to cart" [ref=e2285]
+              - generic [ref=e2286]:
+                - generic [ref=e2287]:
+                  - generic [ref=e2288]:
+                    - heading "Grilled Specialty Sandwich 4 Pack" [level=3] [ref=e2289]
+                    - paragraph [ref=e2290]: Sam LaGrassa's · Boston, MA
+                  - generic [ref=e2291]: $125.00
+                - generic [ref=e2292]:
+                  - link "Details" [ref=e2293] [cursor=pointer]:
+                    - /url: /customer/items/cmos4bka90067lnysnfiyaezv
+                  - button "Add to cart" [ref=e2295]
+              - generic [ref=e2296]:
+                - generic [ref=e2297]:
+                  - generic [ref=e2298]:
+                    - heading "Italian Beef Sandwich Kit - 8 Pack" [level=3] [ref=e2299]
+                    - paragraph [ref=e2300]: Buona Italian Beef · Chicago, IL
+                  - generic [ref=e2301]: $99.00
+                - generic [ref=e2302]:
+                  - link "Details" [ref=e2303] [cursor=pointer]:
+                    - /url: /customer/items/cmos4bka90063lnysmsiwsdhn
+                  - button "Add to cart" [ref=e2305]
+              - generic [ref=e2306]:
+                - generic [ref=e2307]:
+                  - generic [ref=e2308]:
+                    - heading "Italian Sandwich Kit Best Sellers - 4 Pack" [level=3] [ref=e2309]
+                    - paragraph [ref=e2310]: Alidoro · New York, NY
+                  - generic [ref=e2311]: $99.00
+                - generic [ref=e2312]:
+                  - link "Details" [ref=e2313] [cursor=pointer]:
+                    - /url: /customer/items/cmos4bka90061lnysrw4eh0no
+                  - button "Add to cart" [ref=e2315]
+              - generic [ref=e2316]:
+                - generic [ref=e2317]:
+                  - generic [ref=e2318]:
+                    - heading "Italian Sandwich Kits - Choose Your Own 4 Pack" [level=3] [ref=e2319]
+                    - paragraph [ref=e2320]: Alidoro · New York, NY
+                  - generic [ref=e2321]: $99.00
+                - generic [ref=e2322]:
+                  - link "Details" [ref=e2323] [cursor=pointer]:
+                    - /url: /customer/items/cmos4bka9006alnysg92r4sk2
+                  - button "Add to cart" [ref=e2325]
+              - generic [ref=e2326]:
+                - generic [ref=e2327]:
+                  - generic [ref=e2328]:
+                    - heading "Legendary Brisket Z-Man Sandwich Kit - 8 Pack" [level=3] [ref=e2329]
+                    - paragraph [ref=e2330]: Joe's KC BBQ · Kansas City, KS
+                  - generic [ref=e2331]: $99.99
+                - generic [ref=e2332]:
+                  - link "Details" [ref=e2333] [cursor=pointer]:
+                    - /url: /customer/items/cmos4bka90068lnyssz4mjsga
+                  - button "Add to cart" [ref=e2335]
+              - generic [ref=e2336]:
+                - generic [ref=e2337]:
+                  - generic [ref=e2338]:
+                    - heading "Meet the Reubens Sandwich Kit for 4-6" [level=3] [ref=e2339]
+                    - paragraph [ref=e2340]: Junior's Cheesecake · Brooklyn, NY
+                  - generic [ref=e2341]: $89.00
+                - generic [ref=e2342]:
+                  - link "Details" [ref=e2343] [cursor=pointer]:
+                    - /url: /customer/items/cmos4bka90062lnysyk3hj2yf
+                  - button "Add to cart" [ref=e2345]
+              - generic [ref=e2346]:
+                - generic [ref=e2347]:
+                  - generic [ref=e2348]:
+                    - heading "Primanti Bros Sandwich Pack - (Choose Your Meat)" [level=3] [ref=e2349]
+                    - paragraph [ref=e2350]: Primanti Bros. · Pittsburgh, PA
+                  - generic [ref=e2351]: $89.00
+                - generic [ref=e2352]:
+                  - link "Details" [ref=e2353] [cursor=pointer]:
+                    - /url: /customer/items/cmos4bka9005zlnyscexy7idb
+                  - button "Add to cart" [ref=e2355]
+              - generic [ref=e2356]:
+                - generic [ref=e2357]:
+                  - generic [ref=e2358]:
+                    - heading "Reuben Sandwich Kit (serves 2-4)" [level=3] [ref=e2359]
+                    - paragraph [ref=e2360]: Liebman's Kosher Deli · Bronx, NY
+                  - generic [ref=e2361]: $109.00
+                - generic [ref=e2362]:
+                  - link "Details" [ref=e2363] [cursor=pointer]:
+                    - /url: /customer/items/cmos4bka9006clnys0qv034rk
+                  - button "Add to cart" [ref=e2365]
+              - generic [ref=e2366]:
+                - generic [ref=e2367]:
+                  - generic [ref=e2368]:
+                    - heading "Ugly Buns \"Burnt End\" Sandwich Kit - 6 Pack" [level=3] [ref=e2369]
+                    - paragraph [ref=e2370]: Ugly Drum · Los Angeles, CA
+                  - generic [ref=e2371]: $109.00
+                - generic [ref=e2372]:
+                  - link "Details" [ref=e2373] [cursor=pointer]:
+                    - /url: /customer/items/cmos4bka90060lnysui5ej68k
+                  - button "Add to cart" [ref=e2375]
+          - generic [ref=e2376]:
+            - heading "Sausages" [level=2] [ref=e2377]
+            - generic [ref=e2378]:
+              - generic [ref=e2379]:
+                - generic [ref=e2380]:
+                  - generic [ref=e2381]:
+                    - heading "BBQ Sausage Sampler - 15 Pack" [level=3] [ref=e2382]
+                    - paragraph [ref=e2383]: Roegels Barbecue · Houston, TX
+                  - generic [ref=e2384]: $89.00
+                - generic [ref=e2385]:
+                  - link "Details" [ref=e2386] [cursor=pointer]:
+                    - /url: /customer/items/cmos4bkaj006plnysftmbjpfm
+                  - button "Add to cart" [ref=e2388]
+              - generic [ref=e2389]:
+                - generic [ref=e2390]:
+                  - generic [ref=e2391]:
+                    - heading "Bacon Wrapped Cheddar Jalapeño Sausage Slammers" [level=3] [ref=e2392]
+                    - paragraph [ref=e2393]: Southside Market & Barbeque · Elgin, TX
+                  - generic [ref=e2394]: $79.00
+                - generic [ref=e2395]:
+                  - link "Details" [ref=e2396] [cursor=pointer]:
+                    - /url: /customer/items/cmos4bkaj006hlnys6prt4l5v
+                  - button "Add to cart" [ref=e2398]
+              - generic [ref=e2399]:
+                - generic [ref=e2400]:
+                  - generic [ref=e2401]:
+                    - heading "Ball Park Tailgate Sampler for 12" [level=3] [ref=e2402]
+                    - paragraph [ref=e2403]: Esposito Sausage · New York, NY
+                  - generic [ref=e2404]: $69.00
+                - generic [ref=e2405]:
+                  - link "Details" [ref=e2406] [cursor=pointer]:
+                    - /url: /customer/items/cmos4bkaj006qlnysszeq6nks
+                  - button "Add to cart" [ref=e2408]
+              - generic [ref=e2409]:
+                - generic [ref=e2410]:
+                  - generic [ref=e2411]:
+                    - heading "Boudin + Sausage Sampler" [level=3] [ref=e2412]
+                    - paragraph [ref=e2413]: Hebert's Specialty Meats · Maurice, LA
+                  - generic [ref=e2414]: $99.00
+                - generic [ref=e2415]:
+                  - link "Details" [ref=e2416] [cursor=pointer]:
+                    - /url: /customer/items/cmos4bkaj006llnysqpljr7ww
+                  - button "Add to cart" [ref=e2418]
+              - generic [ref=e2419]:
+                - generic [ref=e2420]:
+                  - generic [ref=e2421]:
+                    - heading "Brats - Choose Your Own 10 Pack" [level=3] [ref=e2422]
+                    - paragraph [ref=e2423]: State Street Brats · Madison, WI
+                  - generic [ref=e2424]: $59.00
+                - generic [ref=e2425]:
+                  - link "Details" [ref=e2426] [cursor=pointer]:
+                    - /url: /customer/items/cmos4bkaj006mlnysjhekpdyr
+                  - button "Add to cart" [ref=e2428]
+              - generic [ref=e2429]:
+                - generic [ref=e2430]:
+                  - generic [ref=e2431]:
+                    - heading "Chicken Sausage Sampler for 10" [level=3] [ref=e2432]
+                    - paragraph [ref=e2433]: Esposito Sausage · New York, NY
+                  - generic [ref=e2434]: $69.00
+                - generic [ref=e2435]:
+                  - link "Details" [ref=e2436] [cursor=pointer]:
+                    - /url: /customer/items/cmos4bkaj006klnysbu8qat25
+                  - button "Add to cart" [ref=e2438]
+              - generic [ref=e2439]:
+                - generic [ref=e2440]:
+                  - generic [ref=e2441]:
+                    - heading "Fresh Ribeye Sausage" [level=3] [ref=e2442]
+                    - paragraph [ref=e2443]: Hebert's Specialty Meats · Maurice, LA
+                  - generic [ref=e2444]: $59.00
+                - generic [ref=e2445]:
+                  - link "Details" [ref=e2446] [cursor=pointer]:
+                    - /url: /customer/items/cmos4bkaj006flnysr1fhhxlr
+                  - button "Add to cart" [ref=e2448]
+              - generic [ref=e2449]:
+                - generic [ref=e2450]:
+                  - generic [ref=e2451]:
+                    - heading "Grandpa's Sweet Italian Sausage - 3 lbs." [level=3] [ref=e2452]
+                    - paragraph [ref=e2453]: Pat LaFrieda Meats · North Bergen, NJ
+                  - generic [ref=e2454]: $33.00
+                - generic [ref=e2455]:
+                  - link "Details" [ref=e2456] [cursor=pointer]:
+                    - /url: /customer/items/cmos4bkaj006vlnys3f5e387g
+                  - button "Add to cart" [ref=e2458]
+              - generic [ref=e2459]:
+                - generic [ref=e2460]:
+                  - generic [ref=e2461]:
+                    - heading "Hot Italian Sausage For 12" [level=3] [ref=e2462]
+                    - paragraph [ref=e2463]: Esposito Sausage · New York, NY
+                  - generic [ref=e2464]: $69.00
+                - generic [ref=e2465]:
+                  - link "Details" [ref=e2466] [cursor=pointer]:
+                    - /url: /customer/items/cmos4bkaj006tlnys1fw41hrj
+                  - button "Add to cart" [ref=e2468]
+              - generic [ref=e2469]:
+                - generic [ref=e2470]:
+                  - generic [ref=e2471]:
+                    - heading "Jalapeno and Cheddar Texas Smoked Sausage" [level=3] [ref=e2472]
+                    - paragraph [ref=e2473]: Terry Black's Barbecue · Austin, TX
+                  - generic [ref=e2474]: $89.00
+                - generic [ref=e2475]:
+                  - link "Details" [ref=e2476] [cursor=pointer]:
+                    - /url: /customer/items/cmos4bkaj006ilnysr8c6ayic
+                  - button "Add to cart" [ref=e2478]
+              - generic [ref=e2479]:
+                - generic [ref=e2480]:
+                  - generic [ref=e2481]:
+                    - heading "Korean BBQ Grilling Sausage - Choose Your Own 12 Pack" [level=3] [ref=e2482]
+                    - paragraph [ref=e2483]: Seoul Sausage · Los Angeles, CA
+                  - generic [ref=e2484]: $75.00
+                - generic [ref=e2485]:
+                  - link "Details" [ref=e2486] [cursor=pointer]:
+                    - /url: /customer/items/cmos4bkaj006nlnystr9tl7ql
+                  - button "Add to cart" [ref=e2488]
+              - generic [ref=e2489]:
+                - generic [ref=e2490]:
+                  - generic [ref=e2491]:
+                    - heading "Original Texas Smoked Sausage" [level=3] [ref=e2492]
+                    - paragraph [ref=e2493]: Terry Black's Barbecue · Austin, TX
+                  - generic [ref=e2494]: $89.00
+                - generic [ref=e2495]:
+                  - link "Details" [ref=e2496] [cursor=pointer]:
+                    - /url: /customer/items/cmos4bkaj006elnyskj9w12p3
+                  - button "Add to cart" [ref=e2498]
+              - generic [ref=e2499]:
+                - generic [ref=e2500]:
+                  - generic [ref=e2501]:
+                    - heading "Sausage Sampler For 10" [level=3] [ref=e2502]
+                    - paragraph [ref=e2503]: Esposito Sausage · New York, NY
+                  - generic [ref=e2504]: $69.00
+                - generic [ref=e2505]:
+                  - link "Details" [ref=e2506] [cursor=pointer]:
+                    - /url: /customer/items/cmos4bkaj006glnysupjij2au
+                  - button "Add to cart" [ref=e2508]
+              - generic [ref=e2509]:
+                - generic [ref=e2510]:
+                  - generic [ref=e2511]:
+                    - heading "Sausages & Franks - Choose Your Own 4 Pack" [level=3] [ref=e2512]
+                    - paragraph [ref=e2513]: Weaver's of Wellsville · Wellsville, PA
+                  - generic [ref=e2514]: $69.00
+                - generic [ref=e2515]:
+                  - link "Details" [ref=e2516] [cursor=pointer]:
+                    - /url: /customer/items/cmos4bkaj006olnys3th0l5kd
+                  - button "Add to cart" [ref=e2518]
+              - generic [ref=e2519]:
+                - generic [ref=e2520]:
+                  - generic [ref=e2521]:
+                    - heading "Sausages - Choose Your Own 24 Pack" [level=3] [ref=e2522]
+                    - paragraph [ref=e2523]: Gastros Craft Meats · Woonsocket, RI
+                  - generic [ref=e2524]: $109.00
+                - generic [ref=e2525]:
+                  - link "Details" [ref=e2526] [cursor=pointer]:
+                    - /url: /customer/items/cmos4bkaj006slnysexqvf6zp
+                  - button "Add to cart" [ref=e2528]
+              - generic [ref=e2529]:
+                - generic [ref=e2530]:
+                  - generic [ref=e2531]:
+                    - heading "Signature Sausage Feast for 20" [level=3] [ref=e2532]
+                    - paragraph [ref=e2533]: Esposito Sausage · New York, NY
+                  - generic [ref=e2534]: $129.00
+                - generic [ref=e2535]:
+                  - link "Details" [ref=e2536] [cursor=pointer]:
+                    - /url: /customer/items/cmos4bkaj006ulnysh24bqr6t
+                  - button "Add to cart" [ref=e2538]
+              - generic [ref=e2539]:
+                - generic [ref=e2540]:
+                  - generic [ref=e2541]:
+                    - heading "Smoked Andouille Sausage" [level=3] [ref=e2542]
+                    - paragraph [ref=e2543]: Comeaux's · Lafayette, LA
+                  - generic [ref=e2544]: $49.00
+                - generic [ref=e2545]:
+                  - link "Details" [ref=e2546] [cursor=pointer]:
+                    - /url: /customer/items/cmos4bkaj006wlnysluwkzkv7
+                  - button "Add to cart" [ref=e2548]
+              - generic [ref=e2549]:
+                - generic [ref=e2550]:
+                  - generic [ref=e2551]:
+                    - heading "Toulouse Sausage Coil - 3 Pack" [level=3] [ref=e2552]
+                    - paragraph [ref=e2553]: Fabrique Délices · Hayward, CA
+                  - generic [ref=e2554]: $89.00
+                - generic [ref=e2555]:
+                  - link "Details" [ref=e2556] [cursor=pointer]:
+                    - /url: /customer/items/cmos4bkaj006jlnys71zt7fga
+                  - button "Add to cart" [ref=e2558]
+              - generic [ref=e2559]:
+                - generic [ref=e2560]:
+                  - generic [ref=e2561]:
+                    - heading "Wild Game Sausage Best Seller - 9 Pack" [level=3] [ref=e2562]
+                    - paragraph [ref=e2563]: Broken Arrow Ranch · Ingram, TX
+                  - generic [ref=e2564]: $85.00
+                - generic [ref=e2565]:
+                  - link "Details" [ref=e2566] [cursor=pointer]:
+                    - /url: /customer/items/cmos4bkaj006rlnysq1qa3uok
+                  - button "Add to cart" [ref=e2568]
+          - generic [ref=e2569]:
+            - heading "Steaks" [level=2] [ref=e2570]
+            - generic [ref=e2571]:
+              - generic [ref=e2572]:
+                - generic [ref=e2573]:
+                  - generic [ref=e2574]:
+                    - heading "2 Choice Bone-In Ribeyes + 2 Choice New York Strip Steaks" [level=3] [ref=e2575]
+                    - paragraph [ref=e2576]: Niman Ranch · Brea, CA
+                  - generic [ref=e2577]: $139.00
+                - generic [ref=e2578]:
+                  - link "Details" [ref=e2579] [cursor=pointer]:
+                    - /url: /customer/items/cmos4bkap007hlnys7blv2qv3
+                  - button "Add to cart" [ref=e2581]
+              - generic [ref=e2582]:
+                - generic [ref=e2583]:
+                  - generic [ref=e2584]:
+                    - heading "American Wagyu Gold Grade Top Sirloins" [level=3] [ref=e2585]
+                    - paragraph [ref=e2586]: Snake River Farms · Boise, ID
+                  - generic [ref=e2587]: $119.00
+                - generic [ref=e2588]:
+                  - link "Details" [ref=e2589] [cursor=pointer]:
+                    - /url: /customer/items/cmos4bkap0073lnysd3x6lg04
+                  - button "Add to cart" [ref=e2591]
+              - generic [ref=e2592]:
+                - generic [ref=e2593]:
+                  - generic [ref=e2594]:
+                    - heading "Bone-in Rib Steak" [level=3] [ref=e2595]
+                    - paragraph [ref=e2596]: Old Homestead Steakhouse · New York, NY
+                  - generic [ref=e2597]: $159.00
+                - generic [ref=e2598]:
+                  - link "Details" [ref=e2599] [cursor=pointer]:
+                    - /url: /customer/items/cmos4bkap0072lnysfqhwktt9
+                  - button "Add to cart" [ref=e2601]
+              - generic [ref=e2602]:
+                - generic [ref=e2603]:
+                  - generic [ref=e2604]:
+                    - heading "California Reserve Filet Mignon Steak" [level=3] [ref=e2605]
+                    - paragraph [ref=e2606]: Flannery Beef · San Rafael, CA
+                  - generic [ref=e2607]: $22.00
+                - generic [ref=e2608]:
+                  - link "Details" [ref=e2609] [cursor=pointer]:
+                    - /url: /customer/items/cmos4bkap0078lnyssdsf6vhv
+                  - button "Add to cart" [ref=e2611]
+              - generic [ref=e2612]:
+                - generic [ref=e2613]:
+                  - generic [ref=e2614]:
+                    - heading "California Reserve Filet Mignon Steaks - 6 Pack" [level=3] [ref=e2615]
+                    - paragraph [ref=e2616]: Flannery Beef · San Rafael, CA
+                  - generic [ref=e2617]: $159.00
+                - generic [ref=e2618]:
+                  - link "Details" [ref=e2619] [cursor=pointer]:
+                    - /url: /customer/items/cmos4bkap007clnysgamywmg0
+                  - button "Add to cart" [ref=e2621]
+              - generic [ref=e2622]:
+                - generic [ref=e2623]:
+                  - generic [ref=e2624]:
+                    - heading "California Reserve Filet Mignon Steaks Gift Box" [level=3] [ref=e2625]
+                    - paragraph [ref=e2626]: Flannery Beef · San Rafael, CA
+                  - generic [ref=e2627]: $129.00
+                - generic [ref=e2628]:
+                  - link "Details" [ref=e2629] [cursor=pointer]:
+                    - /url: /customer/items/cmos4bkap006ylnys6b5itrim
+                  - button "Add to cart" [ref=e2631]
+              - generic [ref=e2632]:
+                - generic [ref=e2633]:
+                  - generic [ref=e2634]:
+                    - heading "California Reserve New York Steaks Gift Box" [level=3] [ref=e2635]
+                    - paragraph [ref=e2636]: Flannery Beef · San Rafael, CA
+                  - generic [ref=e2637]: $119.00
+                - generic [ref=e2638]:
+                  - link "Details" [ref=e2639] [cursor=pointer]:
+                    - /url: /customer/items/cmos4bkap007elnysq9dz4san
+                  - button "Add to cart" [ref=e2641]
+              - generic [ref=e2642]:
+                - generic [ref=e2643]:
+                  - generic [ref=e2644]:
+                    - heading "California Reserve Ribeye Steak - 12 oz" [level=3] [ref=e2645]
+                    - paragraph [ref=e2646]: Flannery Beef · San Rafael, CA
+                  - generic [ref=e2647]: $32.00
+                - generic [ref=e2648]:
+                  - link "Details" [ref=e2649] [cursor=pointer]:
+                    - /url: /customer/items/cmos4bkap0076lnys6ggg56k9
+                  - button "Add to cart" [ref=e2651]
+              - generic [ref=e2652]:
+                - generic [ref=e2653]:
+                  - generic [ref=e2654]:
+                    - heading "California Reserve Ribeye Steaks Gift Box" [level=3] [ref=e2655]
+                    - paragraph [ref=e2656]: Flannery Beef · San Rafael, CA
+                  - generic [ref=e2657]: $99.00
+                - generic [ref=e2658]:
+                  - link "Details" [ref=e2659] [cursor=pointer]:
+                    - /url: /customer/items/cmos4bkap006zlnysoeaut89l
+                  - button "Add to cart" [ref=e2661]
+              - generic [ref=e2662]:
+                - generic [ref=e2663]:
+                  - generic [ref=e2664]:
+                    - heading "Cardiff Crack Tri Tip - 2 Pack" [level=3] [ref=e2665]
+                    - paragraph [ref=e2666]: Seaside Market · Cardiff by the Sea, CA
+                  - generic [ref=e2667]: $169.00
+                - generic [ref=e2668]:
+                  - link "Details" [ref=e2669] [cursor=pointer]:
+                    - /url: /customer/items/cmos4bkap007blnys6u7wjx59
+                  - button "Add to cart" [ref=e2671]
+              - generic [ref=e2672]:
+                - generic [ref=e2673]:
+                  - generic [ref=e2674]:
+                    - heading "Chef Matt's Steak Sampler for 10-12" [level=3] [ref=e2675]
+                    - paragraph [ref=e2676]: Saltbrick Prime · New York, NY
+                  - generic [ref=e2677]: $179.00
+                - generic [ref=e2678]:
+                  - link "Details" [ref=e2679] [cursor=pointer]:
+                    - /url: /customer/items/cmos4bkap0071lnyschww7hko
+                  - button "Add to cart" [ref=e2681]
+              - generic [ref=e2682]:
+                - generic [ref=e2683]:
+                  - generic [ref=e2684]:
+                    - heading "Choice Strip Steak - 6 Pack" [level=3] [ref=e2685]
+                    - paragraph [ref=e2686]: Meats by Linz · Calumet City, IL
+                  - generic [ref=e2687]: $99.00
+                - generic [ref=e2688]:
+                  - link "Details" [ref=e2689] [cursor=pointer]:
+                    - /url: /customer/items/cmos4bkap007flnysndzsizb2
+                  - button "Add to cart" [ref=e2691]
+              - generic [ref=e2692]:
+                - generic [ref=e2693]:
+                  - generic [ref=e2694]:
+                    - heading "Dry-Aged Boneless Ribeye Steak Dinner Kit for 4" [level=3] [ref=e2695]
+                    - paragraph [ref=e2696]: Chef Francis Mallmann · Patagonia, Argentina
+                  - generic [ref=e2697]: $225.00
+                - generic [ref=e2698]:
+                  - link "Details" [ref=e2699] [cursor=pointer]:
+                    - /url: /customer/items/cmos4bkap0077lnys6l8xjj85
+                  - button "Add to cart" [ref=e2701]
+              - generic [ref=e2702]:
+                - generic [ref=e2703]:
+                  - generic [ref=e2704]:
+                    - heading "Dry-Aged USDA Prime Black Angus Porterhouse Steak - 2 Pack" [level=3] [ref=e2705]
+                    - paragraph [ref=e2706]: Pat LaFrieda Meats · North Bergen, NJ
+                  - generic [ref=e2707]: $96.70
+                - generic [ref=e2708]:
+                  - link "Details" [ref=e2709] [cursor=pointer]:
+                    - /url: /customer/items/cmos4bkap0075lnysa1siqto3
+                  - button "Add to cart" [ref=e2711]
+              - generic [ref=e2712]:
+                - generic [ref=e2713]:
+                  - generic [ref=e2714]:
+                    - heading "Ribeye & Filet Mignon Prime Steak Gift Box" [level=3] [ref=e2715]
+                    - paragraph [ref=e2716]: Churchill's Steakhouse · Spokane, WA
+                  - generic [ref=e2717]: $249.00
+                - generic [ref=e2718]:
+                  - link "Details" [ref=e2719] [cursor=pointer]:
+                    - /url: /customer/items/cmos4bkap007glnyssbe60s3j
+                  - button "Add to cart" [ref=e2721]
+              - generic [ref=e2722]:
+                - generic [ref=e2723]:
+                  - generic [ref=e2724]:
+                    - heading "Ribeye Prime Steak Gift Box" [level=3] [ref=e2725]
+                    - paragraph [ref=e2726]: Churchill's Steakhouse · Spokane, WA
+                  - generic [ref=e2727]: $229.00
+                - generic [ref=e2728]:
+                  - link "Details" [ref=e2729] [cursor=pointer]:
+                    - /url: /customer/items/cmos4bkap0074lnysjs3l03ux
+                  - button "Add to cart" [ref=e2731]
+              - generic [ref=e2732]:
+                - generic [ref=e2733]:
+                  - generic [ref=e2734]:
+                    - heading "Sausage + Wagyu Steak Sampler - Choose Your Own" [level=3] [ref=e2735]
+                    - paragraph [ref=e2736]: Gastros Craft Meats · Woonsocket, RI
+                  - generic [ref=e2737]: $165.00
+                - generic [ref=e2738]:
+                  - link "Details" [ref=e2739] [cursor=pointer]:
+                    - /url: /customer/items/cmos4bkap0079lnyssmf1ekqt
+                  - button "Add to cart" [ref=e2741]
+              - generic [ref=e2742]:
+                - generic [ref=e2743]:
+                  - generic [ref=e2744]:
+                    - heading "Steak Dinner Kit for 2" [level=3] [ref=e2745]
+                    - paragraph [ref=e2746]: Old Homestead Steakhouse · New York, NY
+                  - generic [ref=e2747]: $189.00
+                - generic [ref=e2748]:
+                  - link "Details" [ref=e2749] [cursor=pointer]:
+                    - /url: /customer/items/cmos4bkap007alnysjiplftsi
+                  - button "Add to cart" [ref=e2751]
+              - generic [ref=e2752]:
+                - generic [ref=e2753]:
+                  - generic [ref=e2754]:
+                    - heading "Steaks and Cakes Date Night Dinner for 2" [level=3] [ref=e2755]
+                    - paragraph [ref=e2756]: Chesapeake Bay Gourmet · Jessup, MD
+                  - generic [ref=e2757]: $129.00
+                - generic [ref=e2758]:
+                  - link "Details" [ref=e2759] [cursor=pointer]:
+                    - /url: /customer/items/cmos4bkap0070lnysv7p9aofn
+                  - button "Add to cart" [ref=e2761]
+              - generic [ref=e2762]:
+                - generic [ref=e2763]:
+                  - generic [ref=e2764]:
+                    - heading "Wagyu NY Strip Steak - 2 Pack" [level=3] [ref=e2765]
+                    - paragraph [ref=e2766]: Westholme Wagyu · Queensland, Australia
+                  - generic [ref=e2767]: $169.00
+                - generic [ref=e2768]:
+                  - link "Details" [ref=e2769] [cursor=pointer]:
+                    - /url: /customer/items/cmos4bkap007dlnyscfyyzg7v
+                  - button "Add to cart" [ref=e2771]
+          - generic [ref=e2772]:
+            - heading "Best Foods" [level=2] [ref=e2773]
+            - generic [ref=e2774]:
+              - generic [ref=e2775]:
+                - generic [ref=e2776]:
+                  - generic [ref=e2777]:
+                    - heading "Blue Ribbon Sushi - DIY Kit for 2" [level=3] [ref=e2778]
+                    - paragraph [ref=e2779]: Blue Ribbon Sushi · New York, NY
+                  - generic [ref=e2780]: $129.00
+                - generic [ref=e2781]:
+                  - link "Details" [ref=e2782] [cursor=pointer]:
+                    - /url: /customer/items/cmos4bkax007olnyscnnklgpb
+                  - button "Add to cart" [ref=e2784]
+              - generic [ref=e2785]:
+                - generic [ref=e2786]:
+                  - generic [ref=e2787]:
+                    - heading "Brown Butter Lobster Roll Kit - 4 Pack" [level=3] [ref=e2788]
+                    - paragraph [ref=e2789]: Eventide Oyster Co. · Portland, ME
+                  - generic [ref=e2790]: $99.00
+                - generic [ref=e2791]:
+                  - link "Details" [ref=e2792] [cursor=pointer]:
+                    - /url: /customer/items/cmos4bkax007llnysxjqpkm0d
+                  - button "Add to cart" [ref=e2794]
+              - generic [ref=e2795]:
+                - generic [ref=e2796]:
+                  - generic [ref=e2797]:
+                    - heading "Chinese Tea Smoked Whole Duck" [level=3] [ref=e2798]
+                    - paragraph [ref=e2799]: Shirley Chung's Ms. Chi · Los Angeles, CA
+                  - generic [ref=e2800]: $119.00
+                - generic [ref=e2801]:
+                  - link "Details" [ref=e2802] [cursor=pointer]:
+                    - /url: /customer/items/cmos4bkax007ulnysecwbgv45
+                  - button "Add to cart" [ref=e2804]
+              - generic [ref=e2805]:
+                - generic [ref=e2806]:
+                  - generic [ref=e2807]:
+                    - heading "Commander's Palace Three-Course Shrimp & Grits Dinner for 2" [level=3] [ref=e2808]
+                    - paragraph [ref=e2809]: Commander's Palace · New Orleans, LA
+                  - generic [ref=e2810]: $169.00
+                - generic [ref=e2811]:
+                  - link "Details" [ref=e2812] [cursor=pointer]:
+                    - /url: /customer/items/cmos4bkax007mlnys3w3w7np9
+                  - button "Add to cart" [ref=e2814]
+              - generic [ref=e2815]:
+                - generic [ref=e2816]:
+                  - generic [ref=e2817]:
+                    - heading "Mac and Cheese + Chicken Pot Pie Combo for 4" [level=3] [ref=e2818]
+                    - paragraph [ref=e2819]: Wolfgang Puck Catering · Los Angeles, CA
+                  - generic [ref=e2820]: $129.00
+                - generic [ref=e2821]:
+                  - link "Details" [ref=e2822] [cursor=pointer]:
+                    - /url: /customer/items/cmos4bkax007rlnysnbv3ago3
+                  - button "Add to cart" [ref=e2824]
+              - generic [ref=e2825]:
+                - generic [ref=e2826]:
+                  - generic [ref=e2827]:
+                    - heading "Marcus’ Fried Chicken Wings for 2" [level=3] [ref=e2828]
+                    - paragraph [ref=e2829]: Marcus Samuelsson's Streetbird · Harlem, NY
+                  - generic [ref=e2830]: $99.00
+                - generic [ref=e2831]:
+                  - link "Details" [ref=e2832] [cursor=pointer]:
+                    - /url: /customer/items/cmos4bkax007xlnyshlkpnb9t
+                  - button "Add to cart" [ref=e2834]
+              - generic [ref=e2835]:
+                - generic [ref=e2836]:
+                  - generic [ref=e2837]:
+                    - heading "Pasta Dinner for 4 - Choose Your Own" [level=3] [ref=e2838]
+                    - paragraph [ref=e2839]: Fox & the Knife · Boston, MA
+                  - generic [ref=e2840]: $99.00
+                - generic [ref=e2841]:
+                  - link "Details" [ref=e2842] [cursor=pointer]:
+                    - /url: /customer/items/cmos4bkax007wlnysf7r5czzl
+                  - button "Add to cart" [ref=e2844]
+              - generic [ref=e2845]:
+                - generic [ref=e2846]:
+                  - generic [ref=e2847]:
+                    - heading "Prime Galbi Steak Feast for 4" [level=3] [ref=e2848]
+                    - paragraph [ref=e2849]: Cote Korean Steakhouse · New York, NY
+                  - generic [ref=e2850]: $249.00
+                - generic [ref=e2851]:
+                  - link "Details" [ref=e2852] [cursor=pointer]:
+                    - /url: /customer/items/cmos4bkax007slnysjhc5syl7
+                  - button "Add to cart" [ref=e2854]
+              - generic [ref=e2855]:
+                - generic [ref=e2856]:
+                  - generic [ref=e2857]:
+                    - heading "The Classic Plateau Seafood Dinner for 2" [level=3] [ref=e2858]
+                    - paragraph [ref=e2859]: Blue Ribbon · New York, NY
+                  - generic [ref=e2860]: $139.00
+                - generic [ref=e2861]:
+                  - link "Details" [ref=e2862] [cursor=pointer]:
+                    - /url: /customer/items/cmos4bkax007qlnyss87s3s2n
+                  - button "Add to cart" [ref=e2864]
+              - generic [ref=e2865]:
+                - generic [ref=e2866]:
+                  - generic [ref=e2867]:
+                    - heading "Traditional Beef Empanadas with Llajua Sauce - 12 Pack" [level=3] [ref=e2868]
+                    - paragraph [ref=e2869]: Chef Francis Mallmann · Patagonia, Argentina
+                  - generic [ref=e2870]: $99.00
+                - generic [ref=e2871]:
+                  - link "Details" [ref=e2872] [cursor=pointer]:
+                    - /url: /customer/items/cmos4bkax007jlnyso9oo3kcv
+                  - button "Add to cart" [ref=e2874]
+              - generic [ref=e2875]:
+                - generic [ref=e2876]:
+                  - generic [ref=e2877]:
+                    - heading "Traditional Beef Empanadas with Llajua Sauce - 24 Pack" [level=3] [ref=e2878]
+                    - paragraph [ref=e2879]: Chef Francis Mallmann · Patagonia, Argentina
+                  - generic [ref=e2880]: $149.00
+                - generic [ref=e2881]:
+                  - link "Details" [ref=e2882] [cursor=pointer]:
+                    - /url: /customer/items/cmos4bkax007vlnysi3axgduy
+                  - button "Add to cart" [ref=e2884]
+              - generic [ref=e2885]:
+                - generic [ref=e2886]:
+                  - generic [ref=e2887]:
+                    - heading "Unconventional Texas BBQ Sampler for 4-6" [level=3] [ref=e2888]
+                    - paragraph [ref=e2889]: Underbelly by Chris Shepherd · Houston, TX
+                  - generic [ref=e2890]: $119.00
+                - generic [ref=e2891]:
+                  - link "Details" [ref=e2892] [cursor=pointer]:
+                    - /url: /customer/items/cmos4bkax007nlnyssyq2s1s6
+                  - button "Add to cart" [ref=e2894]
+              - generic [ref=e2895]:
+                - generic [ref=e2896]:
+                  - generic [ref=e2897]:
+                    - heading "Wood Fired Pizza - Choose Your Own 4 Pack" [level=3] [ref=e2898]
+                    - paragraph [ref=e2899]: Pizzeria Bianco · Phoenix, AZ
+                  - generic [ref=e2900]: $135.00
+                - generic [ref=e2901]:
+                  - link "Details" [ref=e2902] [cursor=pointer]:
+                    - /url: /customer/items/cmos4bkax007tlnysl2qamim7
+                  - button "Add to cart" [ref=e2904]
+              - generic [ref=e2905]:
+                - generic [ref=e2906]:
+                  - generic [ref=e2907]:
+                    - heading "Zahav Hummus & Salatim Spread" [level=3] [ref=e2908]
+                    - paragraph [ref=e2909]: Zahav · Philadelphia, PA
+                  - generic [ref=e2910]: $99.00
+                - generic [ref=e2911]:
+                  - link "Details" [ref=e2912] [cursor=pointer]:
+                    - /url: /customer/items/cmos4bkax007klnys6oa79flp
+                  - button "Add to cart" [ref=e2914]
+              - generic [ref=e2915]:
+                - generic [ref=e2916]:
+                  - generic [ref=e2917]:
+                    - heading "Zahav Lamb Shoulder Meal Kit" [level=3] [ref=e2918]
+                    - paragraph [ref=e2919]: Zahav · Philadelphia, PA
+                  - generic [ref=e2920]: $249.00
+                - generic [ref=e2921]:
+                  - link "Details" [ref=e2922] [cursor=pointer]:
+                    - /url: /customer/items/cmos4bkax007plnys06ingb4n
+                  - button "Add to cart" [ref=e2924]
+          - generic [ref=e2925]:
+            - heading "Our Foods" [level=2] [ref=e2926]
+            - generic [ref=e2928]:
+              - generic [ref=e2929]:
+                - generic [ref=e2930]:
+                  - heading "Pit Smoked BBQ Ham" [level=3] [ref=e2931]
+                  - paragraph [ref=e2932]: The Shed BBQ & Blues Joint · Ocean Springs, MS
+                - generic [ref=e2933]: $109.00
+              - generic [ref=e2934]:
+                - link "Details" [ref=e2935] [cursor=pointer]:
+                  - /url: /customer/items/cmos4bkb5007zlnys1uu9ybl8
+                - button "Add to cart" [ref=e2937]
+```
+
+# Test source
+
+```ts
+  1  | import { expect, test } from "@playwright/test";
+  2  | import { signInUser } from "./utils/auth";
+  3  | 
+  4  | test("category carousel marks the URL-selected chip as current", async ({ page }) => {
+  5  |   await signInUser(page, "customer1@example.com");
+  6  |   await page.goto("/customer");
+  7  | 
+  8  |   const carousel = page.getByRole("region", { name: "Menu categories" });
+> 9  |   await expect(carousel).toBeVisible();
+     |                          ^ Error: expect(locator).toBeVisible() failed
+  10 | 
+  11 |   const allChip = carousel.getByRole("tab", { name: "All" });
+  12 |   await expect(allChip).toHaveAttribute("aria-current", "page");
+  13 | 
+  14 |   const burgers = carousel.getByRole("tab", { name: "Burgers" });
+  15 |   await burgers.click();
+  16 | 
+  17 |   await expect(page).toHaveURL(/\/customer\?category=/);
+  18 |   await expect(burgers).toHaveAttribute("aria-current", "page");
+  19 |   await expect(allChip).not.toHaveAttribute("aria-current", "page");
+  20 | });
+  21 | 
+  22 | test("customer page has no horizontal page overflow at mobile width", async ({ page }) => {
+  23 |   await page.setViewportSize({ width: 375, height: 720 });
+  24 |   await signInUser(page, "customer1@example.com");
+  25 |   await page.goto("/customer");
+  26 | 
+  27 |   const overflow = await page.evaluate(() => {
+  28 |     const root = document.scrollingElement ?? document.documentElement;
+  29 |     return root.scrollWidth - root.clientWidth;
+  30 |   });
+  31 |   expect(overflow).toBeLessThanOrEqual(1);
+  32 | });
+  33 | 
+```

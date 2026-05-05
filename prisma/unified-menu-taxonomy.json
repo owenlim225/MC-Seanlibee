@@ -277,10 +277,10 @@
       "sub_category": "Chocolate & Baked Desserts"
     },
     {
-      "id": "bacon-wrapped-cheddar-jalape-o-sausage-slammers",
-      "name": "Bacon Wrapped Cheddar Jalape\u00f1o Sausage Slammers",
-      "normalized_name": "bacon-wrapped-cheddar-jalape-o-sausage-slammers",
-      "description": "Bacon Wrapped Cheddar Jalape\u00f1o Sausage Slammers",
+      "id": "bacon-wrapped-cheddar-jalapeno-sausage-slammers",
+      "name": "Bacon Wrapped Cheddar Jalapeño Sausage Slammers",
+      "normalized_name": "bacon-wrapped-cheddar-jalapeno-sausage-slammers",
+      "description": "Bacon Wrapped Cheddar Jalapeño Sausage Slammers",
       "image": null,
       "source_files": [
         "sausages.json"
@@ -543,13 +543,15 @@
       "source_files": [
         "best-foods.json"
       ],
-      "primary_category": "BBQ & Smoked Meats",
+      "primary_category": "Steaks & Premium Meats",
       "secondary_categories": [],
       "tags": [
-        "price:premium"
+        "price:premium",
+        "cuisine:japanese",
+        "meal:dinner"
       ],
       "best_seller": true,
-      "sub_category": "BBQ Combo Kits"
+      "sub_category": "Steak Dinner Kits"
     },
     {
       "id": "bone-in-rib-steak",
@@ -705,13 +707,14 @@
       "source_files": [
         "best-foods.json"
       ],
-      "primary_category": "BBQ & Smoked Meats",
+      "primary_category": "Burgers & Sandwiches",
       "secondary_categories": [],
       "tags": [
-        "price:mid"
+        "price:mid",
+        "meal:dinner"
       ],
       "best_seller": true,
-      "sub_category": "BBQ Combo Kits"
+      "sub_category": "Deli & Hot Sandwiches"
     },
     {
       "id": "buffalo-style-pepperoni-pizza-2-pack",
@@ -1009,9 +1012,9 @@
     },
     {
       "id": "carla-hall-s-nashville-hot-fried-chicken-dinner",
-      "name": "Carla Hall\u2019s Nashville Hot Fried Chicken Dinner for 4-6",
+      "name": "Carla Hall’s Nashville Hot Fried Chicken Dinner for 4-6",
       "normalized_name": "carla-hall-s-nashville-hot-fried-chicken-dinner",
-      "description": "Carla Hall\u2019s Nashville Hot Fried Chicken Dinner for 4-6",
+      "description": "Carla Hall’s Nashville Hot Fried Chicken Dinner for 4-6",
       "image": null,
       "source_files": [
         "fried-chicken.json"
@@ -1168,13 +1171,15 @@
       "source_files": [
         "drinks.json"
       ],
-      "primary_category": "BBQ & Smoked Meats",
+      "primary_category": "Drinks & Mixers",
       "secondary_categories": [],
       "tags": [
-        "price:mid"
+        "price:mid",
+        "meal:drink",
+        "type:beverage-kit"
       ],
       "best_seller": true,
-      "sub_category": "BBQ Combo Kits"
+      "sub_category": "Milkshake & Beverage Kits"
     },
     {
       "id": "chinese-tea-smoked-whole-duck",
@@ -1439,7 +1444,8 @@
       "primary_category": "Pizza & Breads",
       "secondary_categories": [],
       "tags": [
-        "price:budget"
+        "price:budget",
+        "meal:dinner"
       ],
       "best_seller": false,
       "sub_category": "Artisanal Breads"
@@ -1473,7 +1479,9 @@
       "primary_category": "Drinks & Mixers",
       "secondary_categories": [],
       "tags": [
-        "price:budget"
+        "price:budget",
+        "meal:drink",
+        "type:cocktail"
       ],
       "best_seller": false,
       "sub_category": "Cocktail Mixers"
@@ -1532,24 +1540,6 @@
       ],
       "best_seller": true,
       "sub_category": "Artisanal Breads"
-    },
-    {
-      "id": "custom-3-pizzas",
-      "name": "Choose Your Own - 3 Pizzas",
-      "normalized_name": "custom-3-pizzas",
-      "description": "Choose Your Own - 3 Pizzas",
-      "image": null,
-      "source_files": [
-        "pizzas.json"
-      ],
-      "primary_category": "Pizza & Breads",
-      "secondary_categories": [],
-      "tags": [
-        "cuisine:italian",
-        "price:mid"
-      ],
-      "best_seller": false,
-      "sub_category": "Regional Pizza Packs"
     },
     {
       "id": "custom-deep-dish-pizza-3-pack",
@@ -1793,9 +1783,9 @@
     },
     {
       "id": "double-chocolate-cheesecake-with-ghirardelli-chocolate",
-      "name": "Double Chocolate Cheesecake with Ghirardelli\u00ae Chocolate",
+      "name": "Double Chocolate Cheesecake with Ghirardelli® Chocolate",
       "normalized_name": "double-chocolate-cheesecake-with-ghirardelli-chocolate",
-      "description": "Double Chocolate Cheesecake with Ghirardelli\u00ae Chocolate",
+      "description": "Double Chocolate Cheesecake with Ghirardelli® Chocolate",
       "image": null,
       "source_files": [
         "chocolates.json"
@@ -2124,9 +2114,9 @@
     },
     {
       "id": "german-chocolate-killer-brownie",
-      "name": "German Chocolate Killer Brownie\u00ae",
+      "name": "German Chocolate Killer Brownie®",
       "normalized_name": "german-chocolate-killer-brownie",
-      "description": "German Chocolate Killer Brownie\u00ae",
+      "description": "German Chocolate Killer Brownie®",
       "image": null,
       "source_files": [
         "chocolates.json",
@@ -2240,9 +2230,9 @@
       "source_files": [
         "bbqs.json"
       ],
-      "primary_category": "Drinks & Mixers",
+      "primary_category": "BBQ & Smoked Meats",
       "secondary_categories": [
-        "BBQ & Smoked Meats"
+        "Drinks & Mixers"
       ],
       "tags": [
         "meal:dinner",
@@ -2250,7 +2240,7 @@
         "style:bbq"
       ],
       "best_seller": true,
-      "sub_category": "Cocktail Mixers"
+      "sub_category": "BBQ Combo Kits"
     },
     {
       "id": "guy-s-caliente-margaritas",
@@ -2264,7 +2254,9 @@
       "primary_category": "Drinks & Mixers",
       "secondary_categories": [],
       "tags": [
-        "price:mid"
+        "price:mid",
+        "meal:drink",
+        "type:cocktail"
       ],
       "best_seller": true,
       "sub_category": "Cocktail Mixers"
@@ -2281,7 +2273,9 @@
       "primary_category": "Drinks & Mixers",
       "secondary_categories": [],
       "tags": [
-        "price:mid"
+        "price:mid",
+        "meal:drink",
+        "type:coffee"
       ],
       "best_seller": false,
       "sub_category": "Coffee/Tea & Juice"
@@ -2319,7 +2313,9 @@
       "primary_category": "Drinks & Mixers",
       "secondary_categories": [],
       "tags": [
-        "price:budget"
+        "price:budget",
+        "meal:drink",
+        "type:tea"
       ],
       "best_seller": false,
       "sub_category": "Coffee/Tea & Juice"
@@ -2524,9 +2520,9 @@
     },
     {
       "id": "jacques-world-famous-chocolate-chip-cookies-12-pack",
-      "name": "Jacques\u2019 World Famous Chocolate Chip Cookies - 12 Pack",
+      "name": "Jacques’ World Famous Chocolate Chip Cookies - 12 Pack",
       "normalized_name": "jacques-world-famous-chocolate-chip-cookies-12-pack",
-      "description": "Jacques\u2019 World Famous Chocolate Chip Cookies - 12 Pack",
+      "description": "Jacques’ World Famous Chocolate Chip Cookies - 12 Pack",
       "image": null,
       "source_files": [
         "chocolates.json",
@@ -2543,9 +2539,9 @@
     },
     {
       "id": "jacques-world-famous-chocolate-chip-cookies-6-pack",
-      "name": "Jacques\u2019 World Famous Chocolate Chip Cookies - 6 Pack",
+      "name": "Jacques’ World Famous Chocolate Chip Cookies - 6 Pack",
       "normalized_name": "jacques-world-famous-chocolate-chip-cookies-6-pack",
-      "description": "Jacques\u2019 World Famous Chocolate Chip Cookies - 6 Pack",
+      "description": "Jacques’ World Famous Chocolate Chip Cookies - 6 Pack",
       "image": null,
       "source_files": [
         "chocolates.json",
@@ -2869,7 +2865,9 @@
       "primary_category": "Drinks & Mixers",
       "secondary_categories": [],
       "tags": [
-        "price:mid"
+        "price:mid",
+        "meal:drink",
+        "type:juice"
       ],
       "best_seller": true,
       "sub_category": "Coffee/Tea & Juice"
@@ -2883,19 +2881,22 @@
       "source_files": [
         "best-foods.json"
       ],
-      "primary_category": "Desserts & Ice Cream",
-      "secondary_categories": [],
+      "primary_category": "Steaks & Premium Meats",
+      "secondary_categories": [
+        "Fried Chicken & Wings"
+      ],
       "tags": [
-        "price:premium"
+        "price:premium",
+        "meal:dinner"
       ],
       "best_seller": false,
-      "sub_category": "Dessert Samplers"
+      "sub_category": "Steak Dinner Kits"
     },
     {
       "id": "marcus-fried-chicken-wings",
-      "name": "Marcus\u2019 Fried Chicken Wings for 2",
+      "name": "Marcus’ Fried Chicken Wings for 2",
       "normalized_name": "marcus-fried-chicken-wings",
-      "description": "Marcus\u2019 Fried Chicken Wings for 2",
+      "description": "Marcus’ Fried Chicken Wings for 2",
       "image": null,
       "source_files": [
         "best-foods.json"
@@ -2911,21 +2912,25 @@
     },
     {
       "id": "marcus-hot-honey-chicken-and-cornbread-waffles-kit",
-      "name": "Marcus\u2019 Hot Honey Chicken & Cornbread Waffles Kit for 4",
+      "name": "Marcus’ Hot Honey Chicken & Cornbread Waffles Kit for 4",
       "normalized_name": "marcus-hot-honey-chicken-and-cornbread-waffles-kit",
-      "description": "Marcus\u2019 Hot Honey Chicken & Cornbread Waffles Kit for 4",
+      "description": "Marcus’ Hot Honey Chicken & Cornbread Waffles Kit for 4",
       "image": null,
       "source_files": [
         "best-foods.json",
         "fried-chicken.json"
       ],
-      "primary_category": "Pizza & Breads",
-      "secondary_categories": [],
+      "primary_category": "Fried Chicken & Wings",
+      "secondary_categories": [
+        "Pizza & Breads"
+      ],
       "tags": [
-        "price:mid"
+        "price:mid",
+        "fried",
+        "meal:dinner"
       ],
       "best_seller": true,
-      "sub_category": "Artisanal Breads"
+      "sub_category": "Fried Chicken Meals"
     },
     {
       "id": "margarita-mix",
@@ -2939,7 +2944,9 @@
       "primary_category": "Drinks & Mixers",
       "secondary_categories": [],
       "tags": [
-        "price:budget"
+        "price:budget",
+        "meal:drink",
+        "type:cocktail-mixer"
       ],
       "best_seller": true,
       "sub_category": "Cocktail Mixers"
@@ -2953,16 +2960,14 @@
       "source_files": [
         "sandwiches.json"
       ],
-      "primary_category": "Desserts & Ice Cream",
-      "secondary_categories": [
-        "Burgers & Sandwiches"
-      ],
+      "primary_category": "Burgers & Sandwiches",
+      "secondary_categories": [],
       "tags": [
-        "meal:dessert",
-        "price:mid"
+        "price:mid",
+        "meal:dinner"
       ],
       "best_seller": true,
-      "sub_category": "Chocolate & Baked Desserts"
+      "sub_category": "Deli & Hot Sandwiches"
     },
     {
       "id": "memphis-pulled-pork-shoulder-4-lbs",
@@ -3049,7 +3054,9 @@
       "primary_category": "Drinks & Mixers",
       "secondary_categories": [],
       "tags": [
-        "price:mid"
+        "price:mid",
+        "meal:drink",
+        "type:milkshake"
       ],
       "best_seller": true,
       "sub_category": "Milkshake & Beverage Kits"
@@ -3349,7 +3356,9 @@
       "primary_category": "Drinks & Mixers",
       "secondary_categories": [],
       "tags": [
-        "price:mid"
+        "price:mid",
+        "meal:drink",
+        "type:juice"
       ],
       "best_seller": false,
       "sub_category": "Coffee/Tea & Juice"
@@ -3363,14 +3372,15 @@
       "source_files": [
         "best-foods.json"
       ],
-      "primary_category": "BBQ & Smoked Meats",
+      "primary_category": "Steaks & Premium Meats",
       "secondary_categories": [],
       "tags": [
         "meal:dinner",
-        "price:mid"
+        "price:mid",
+        "cuisine:italian"
       ],
       "best_seller": true,
-      "sub_category": "BBQ Combo Kits"
+      "sub_category": "Steak Dinner Kits"
     },
     {
       "id": "picnic-chicken-sandwich-kit",
@@ -3637,15 +3647,15 @@
       "source_files": [
         "porks.json"
       ],
-      "primary_category": "Desserts & Ice Cream",
-      "secondary_categories": [
-        "BBQ & Smoked Meats"
-      ],
+      "primary_category": "BBQ & Smoked Meats",
+      "secondary_categories": [],
       "tags": [
-        "price:mid"
+        "price:mid",
+        "meal:dinner",
+        "style:bbq"
       ],
       "best_seller": true,
-      "sub_category": "Chocolate & Baked Desserts"
+      "sub_category": "BBQ Combo Kits"
     },
     {
       "id": "raspberry-chocolate-pie",
@@ -3870,9 +3880,9 @@
     },
     {
       "id": "shake-shack-shackburger-16-pack",
-      "name": "Shake Shack Shackburger\u00ae \u2013 16 Pack",
+      "name": "Shake Shack Shackburger® – 16 Pack",
       "normalized_name": "shake-shack-shackburger-16-pack",
-      "description": "Shake Shack Shackburger\u00ae \u2013 16 Pack",
+      "description": "Shake Shack Shackburger® – 16 Pack",
       "image": null,
       "source_files": [
         "burgers.json"
@@ -3887,9 +3897,9 @@
     },
     {
       "id": "shake-shack-shackburger-8-pack",
-      "name": "Shake Shack ShackBurger\u00ae \u2013 8 Pack",
+      "name": "Shake Shack ShackBurger® – 8 Pack",
       "normalized_name": "shake-shack-shackburger-8-pack",
-      "description": "Shake Shack ShackBurger\u00ae \u2013 8 Pack",
+      "description": "Shake Shack ShackBurger® – 8 Pack",
       "image": null,
       "source_files": [
         "burgers.json"
@@ -4151,14 +4161,14 @@
       "source_files": [
         "best-foods.json"
       ],
-      "primary_category": "BBQ & Smoked Meats",
+      "primary_category": "Steaks & Premium Meats",
       "secondary_categories": [],
       "tags": [
         "meal:dinner",
         "price:premium"
       ],
       "best_seller": true,
-      "sub_category": "BBQ Combo Kits"
+      "sub_category": "Steak Dinner Kits"
     },
     {
       "id": "the-coop-complete-fried-chicken-dinner",
@@ -4360,9 +4370,9 @@
     },
     {
       "id": "triple-chocolate-killer-brownies",
-      "name": "Triple Chocolate Killer Brownies\u00ae",
+      "name": "Triple Chocolate Killer Brownies®",
       "normalized_name": "triple-chocolate-killer-brownies",
-      "description": "Triple Chocolate Killer Brownies\u00ae",
+      "description": "Triple Chocolate Killer Brownies®",
       "image": null,
       "source_files": [
         "chocolates.json"
@@ -4424,7 +4434,9 @@
       "primary_category": "Drinks & Mixers",
       "secondary_categories": [],
       "tags": [
-        "price:mid"
+        "price:mid",
+        "meal:drink",
+        "type:milkshake"
       ],
       "best_seller": true,
       "sub_category": "Milkshake & Beverage Kits"
@@ -4493,14 +4505,15 @@
       "source_files": [
         "fried-chicken.json"
       ],
-      "primary_category": "Desserts & Ice Cream",
+      "primary_category": "Fried Chicken & Wings",
       "secondary_categories": [],
       "tags": [
         "fried",
-        "price:mid"
+        "price:mid",
+        "meal:dinner"
       ],
       "best_seller": false,
-      "sub_category": "Chocolate & Baked Desserts"
+      "sub_category": "Fried Chicken Meals"
     },
     {
       "id": "whisky-dark-chocolate-cake",
@@ -4683,7 +4696,9 @@
       "primary_category": "Drinks & Mixers",
       "secondary_categories": [],
       "tags": [
-        "price:budget"
+        "price:budget",
+        "meal:drink",
+        "type:cocktail-mixer"
       ],
       "best_seller": false,
       "sub_category": "Cocktail Mixers"
@@ -4700,7 +4715,9 @@
       "primary_category": "Drinks & Mixers",
       "secondary_categories": [],
       "tags": [
-        "price:budget"
+        "price:budget",
+        "meal:drink",
+        "type:cocktail-mixer"
       ],
       "best_seller": true,
       "sub_category": "Cocktail Mixers"
@@ -4732,13 +4749,15 @@
       "source_files": [
         "best-foods.json"
       ],
-      "primary_category": "BBQ & Smoked Meats",
+      "primary_category": "Steaks & Premium Meats",
       "secondary_categories": [],
       "tags": [
-        "price:mid"
+        "price:mid",
+        "meal:dinner",
+        "cuisine:middle-eastern"
       ],
       "best_seller": false,
-      "sub_category": "BBQ Combo Kits"
+      "sub_category": "Steak Dinner Kits"
     },
     {
       "id": "zahav-lamb-shoulder-meal-kit",

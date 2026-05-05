@@ -1,5 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
-import { checkDemoPassword, constantTimeEqual } from "./demo-password";
+import { checkDemoPassword, constantTimeEqual, DEFAULT_DEMO_AUTH_PASSWORD } from "./demo-password";
 
 describe("constantTimeEqual", () => {
   it("returns true for identical strings", async () => {
@@ -29,13 +29,25 @@ describe("checkDemoPassword", () => {
     else process.env.DEMO_AUTH_PASSWORD = original;
   });
 
-  it("returns false when DEMO_AUTH_PASSWORD is unset", async () => {
-    await expect(checkDemoPassword("anything")).resolves.toBe(false);
+  it("falls back to default password when DEMO_AUTH_PASSWORD is unset in non-production", async () => {
+    await expect(checkDemoPassword(DEFAULT_DEMO_AUTH_PASSWORD)).resolves.toBe(true);
+    await expect(checkDemoPassword("anything-else")).resolves.toBe(false);
   });
 
   it("returns false when DEMO_AUTH_PASSWORD is empty", async () => {
     process.env.DEMO_AUTH_PASSWORD = "";
-    await expect(checkDemoPassword("anything")).resolves.toBe(false);
+    await expect(checkDemoPassword(DEFAULT_DEMO_AUTH_PASSWORD)).resolves.toBe(true);
+  });
+
+  it("returns false when DEMO_AUTH_PASSWORD is unset in production", async () => {
+    const originalNodeEnv = process.env.NODE_ENV;
+    try {
+      process.env.NODE_ENV = "production";
+      delete process.env.DEMO_AUTH_PASSWORD;
+      await expect(checkDemoPassword(DEFAULT_DEMO_AUTH_PASSWORD)).resolves.toBe(false);
+    } finally {
+      process.env.NODE_ENV = originalNodeEnv;
+    }
   });
 
   it("returns true on exact match", async () => {

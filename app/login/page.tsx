@@ -3,15 +3,16 @@ import { Card } from "@/components/ui/card";
 import { ErrorState } from "@/components/ui/error-state";
 import { PageHeader } from "@/components/ui/page-header";
 import { signInAction } from "@/app/login/actions";
+import { DEFAULT_DEMO_AUTH_PASSWORD } from "@/lib/auth/demo-password";
 
 export const metadata = { title: "Sign in · Food Ordering MVP" };
 
-const DEMO_ACCOUNTS: { name: string; email: string; role: string }[] = [
-  { name: "Sean", email: "sean@example.com", role: "Customer" },
-  { name: "Ginalyn", email: "ginalyn@example.com", role: "Customer" },
-  { name: "Christian", email: "christian@example.com", role: "Kitchen" },
-  { name: "Sherwin", email: "sherwin@example.com", role: "Driver" },
-  { name: "Marvin", email: "marvin@example.com", role: "Admin" },
+const DEMO_ACCOUNTS: { email: string; role: string }[] = [
+  { email: "customer1@example.com", role: "Customer" },
+  { email: "customer2@example.com", role: "Customer" },
+  { email: "kitchen@example.com", role: "Kitchen" },
+  { email: "driver@example.com", role: "Driver" },
+  { email: "admin@example.com", role: "Admin" },
 ];
 
 export default async function LoginPage({
@@ -20,6 +21,7 @@ export default async function LoginPage({
   searchParams: Promise<{ next?: string; error?: string }>;
 }) {
   const sp = await searchParams;
+  const demoPassword = process.env.DEMO_AUTH_PASSWORD ?? DEFAULT_DEMO_AUTH_PASSWORD;
 
   return (
     <div className="mx-auto flex w-full max-w-md flex-col gap-6 px-4">
@@ -62,12 +64,14 @@ export default async function LoginPage({
         <ul className="mt-2 flex flex-col gap-1 text-zinc-700 dark:text-zinc-300">
           {DEMO_ACCOUNTS.map((a) => (
             <li key={a.email} className="flex flex-wrap items-center justify-between gap-2">
-              <span className="font-medium">{a.name}</span>
               <span className="font-mono text-xs">{a.email}</span>
               <span className="text-xs text-zinc-500">{a.role}</span>
             </li>
           ))}
         </ul>
+        <p className="mt-2 text-xs text-zinc-500">
+          Shared password: <span className="font-mono">{demoPassword}</span>
+        </p>
       </details>
     </div>
   );
