@@ -1,9 +1,19 @@
 import Link from "next/link";
 
+const HEADER_HEIGHT_PX = 56;
+
 export function SiteHeader() {
   return (
-    <header className="border-b border-zinc-200 bg-white/80 backdrop-blur dark:border-zinc-800 dark:bg-zinc-950/80">
-      <div className="mx-auto flex max-w-6xl items-center justify-between gap-3 px-4 py-3">
+    <header
+      className="sticky top-0 z-30 border-b border-zinc-200 bg-white/90 backdrop-blur dark:border-zinc-800 dark:bg-zinc-950/90"
+      style={
+        {
+          "--site-header-h": `${HEADER_HEIGHT_PX}px`,
+          height: `${HEADER_HEIGHT_PX}px`,
+        } as React.CSSProperties
+      }
+    >
+      <div className="mx-auto flex h-full max-w-6xl items-center justify-between gap-3 px-4">
         <Link href="/" className="text-sm font-semibold tracking-tight">
           MC Food MVP
         </Link>

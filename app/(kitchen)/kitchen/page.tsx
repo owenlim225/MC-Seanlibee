@@ -1,6 +1,7 @@
 import { OrderStatus } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
 import { KitchenAdvanceButton } from "@/app/(kitchen)/kitchen/kitchen-advance-button";
+import { LiveRouterRefresh } from "@/components/live-router-refresh";
 import { Card } from "@/components/ui/card";
 import { EmptyState } from "@/components/ui/empty-state";
 import { MoneyText } from "@/components/ui/money-text";
@@ -45,6 +46,7 @@ export default async function KitchenQueuePage() {
 
   return (
     <div className="flex flex-col gap-6">
+      <LiveRouterRefresh />
       <PageHeader title="Kitchen queue" description="Advance orders from received → preparing → ready." />
 
       <div className="grid gap-4 lg:grid-cols-3">

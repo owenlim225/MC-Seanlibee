@@ -2,7 +2,7 @@
 
 import { Role } from "@prisma/client";
 import { revalidatePath } from "next/cache";
-import { requireRole } from "@/lib/auth";
+import { requireRoleLite } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { uploadImage } from "@/lib/storage";
 
@@ -12,7 +12,7 @@ function parseIntSafe(value: FormDataEntryValue | null, fallback: number): numbe
 }
 
 export async function createCategory(formData: FormData): Promise<void> {
-  await requireRole(Role.ADMIN);
+  await requireRoleLite(Role.ADMIN);
   const name = String(formData.get("name") ?? "").trim();
   const sortOrder = parseIntSafe(formData.get("sortOrder"), 0);
   if (!name) return;
@@ -21,7 +21,7 @@ export async function createCategory(formData: FormData): Promise<void> {
 }
 
 export async function createMenuItem(formData: FormData): Promise<void> {
-  await requireRole(Role.ADMIN);
+  await requireRoleLite(Role.ADMIN);
   const name = String(formData.get("name") ?? "").trim();
   const description = String(formData.get("description") ?? "").trim();
   const categoryId = String(formData.get("categoryId") ?? "").trim();
@@ -51,21 +51,21 @@ export async function createMenuItem(formData: FormData): Promise<void> {
 }
 
 export async function updateMenuItemAvailability(menuItemId: string, isAvailable: boolean): Promise<void> {
-  await requireRole(Role.ADMIN);
+  await requireRoleLite(Role.ADMIN);
   await prisma.menuItem.update({ where: { id: menuItemId }, data: { isAvailable } });
   revalidatePath("/admin/menu");
   revalidatePath("/customer");
 }
 
 export async function deleteMenuItem(menuItemId: string): Promise<void> {
-  await requireRole(Role.ADMIN);
+  await requireRoleLite(Role.ADMIN);
   await prisma.menuItem.delete({ where: { id: menuItemId } });
   revalidatePath("/admin/menu");
   revalidatePath("/customer");
 }
 
 export async function updateUserRoleForm(formData: FormData): Promise<void> {
-  await requireRole(Role.ADMIN);
+  await requireRoleLite(Role.ADMIN);
   const userId = String(formData.get("userId") ?? "").trim();
   const roleRaw = String(formData.get("role") ?? "").trim();
   if (!userId || !(Object.values(Role) as string[]).includes(roleRaw)) return;

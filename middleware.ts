@@ -22,7 +22,8 @@ export async function middleware(req: NextRequest) {
   const token = req.cookies.get("mc_session")?.value;
   if (!token) {
     const url = req.nextUrl.clone();
-    url.pathname = "/dev/role-switcher";
+    url.pathname = "/login";
+    url.search = "";
     url.searchParams.set("next", `${req.nextUrl.pathname}${req.nextUrl.search}`);
     return NextResponse.redirect(url);
   }
@@ -30,7 +31,8 @@ export async function middleware(req: NextRequest) {
   const payload = await verifySession(token, sessionSecret());
   if (!payload || payload.role !== roleNeeded) {
     const url = req.nextUrl.clone();
-    url.pathname = "/dev/role-switcher";
+    url.pathname = "/login";
+    url.search = "";
     url.searchParams.set("denied", "1");
     url.searchParams.set("next", `${req.nextUrl.pathname}${req.nextUrl.search}`);
     return NextResponse.redirect(url);

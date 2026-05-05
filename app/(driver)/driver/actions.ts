@@ -3,12 +3,12 @@
 import { OrderStatus, Role } from "@prisma/client";
 import { Prisma } from "@prisma/client";
 import { revalidatePath } from "next/cache";
-import { requireRole } from "@/lib/auth";
+import { requireRoleLite } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { realtime } from "@/lib/realtime";
 
 export async function claimOrder(orderId: string): Promise<{ ok: boolean }> {
-  const driver = await requireRole(Role.DRIVER);
+  const driver = await requireRoleLite(Role.DRIVER);
   try {
     await prisma.$transaction(async (tx) => {
       const order = await tx.order.findUnique({
@@ -35,7 +35,7 @@ export async function claimOrder(orderId: string): Promise<{ ok: boolean }> {
 }
 
 export async function markPickedUp(orderId: string): Promise<void> {
-  const driver = await requireRole(Role.DRIVER);
+  const driver = await requireRoleLite(Role.DRIVER);
   const assignment = await prisma.deliveryAssignment.findUnique({
     where: { orderId },
     include: { order: true },
@@ -60,7 +60,7 @@ export async function markPickedUp(orderId: string): Promise<void> {
 }
 
 export async function markDelivered(orderId: string): Promise<void> {
-  const driver = await requireRole(Role.DRIVER);
+  const driver = await requireRoleLite(Role.DRIVER);
   const assignment = await prisma.deliveryAssignment.findUnique({
     where: { orderId },
     include: { order: true },

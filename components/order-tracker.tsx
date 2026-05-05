@@ -2,9 +2,24 @@
 
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
+import { OrderStatus } from "@prisma/client";
 import { subscribeTabs } from "@/lib/realtime/browser";
 
-export function OrderTracker({ orderId }: { orderId: string }) {
+const ACTIVE_INTERVAL_MS = 2500;
+const TERMINAL_INTERVAL_MS = 15000;
+
+const TERMINAL_STATUSES: ReadonlySet<OrderStatus> = new Set([
+  OrderStatus.DELIVERED,
+  OrderStatus.CANCELED,
+]);
+
+export function OrderTracker({
+  orderId,
+  status,
+}: {
+  orderId: string;
+  status?: OrderStatus;
+}) {
   const router = useRouter();
 
   useEffect(() => {
@@ -12,12 +27,39 @@ export function OrderTracker({ orderId }: { orderId: string }) {
     const unsub = subscribeTabs((msg) => {
       if (msg.channel === channel) router.refresh();
     });
-    const poll = window.setInterval(() => router.refresh(), 2500);
+
+    let timer: number | undefined;
+    const intervalMs =
+      status && TERMINAL_STATUSES.has(status) ? TERMINAL_INTERVAL_MS : ACTIVE_INTERVAL_MS;
+
+    function start(): void {
+      stop();
+      timer = window.setInterval(() => router.refresh(), intervalMs);
+    }
+    function stop(): void {
+      if (timer !== undefined) {
+        window.clearInterval(timer);
+        timer = undefined;
+      }
+    }
+    function onVisibility(): void {
+      if (document.visibilityState === "visible") {
+        router.refresh();
+        start();
+      } else {
+        stop();
+      }
+    }
+
+    if (document.visibilityState === "visible") start();
+    document.addEventListener("visibilitychange", onVisibility);
+
     return () => {
+      stop();
+      document.removeEventListener("visibilitychange", onVisibility);
       unsub();
-      window.clearInterval(poll);
     };
-  }, [orderId, router]);
+  }, [orderId, status, router]);
 
   return null;
 }

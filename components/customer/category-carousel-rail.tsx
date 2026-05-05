@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
+import { useEffect, useRef, type KeyboardEvent } from "react";
 
 import { HorizontalScroller } from "@/components/customer/horizontal-scroller";
 
@@ -14,8 +15,10 @@ export type FeaturedCategoryEntry = CategoryCarouselEntry & {
   thumbnailUrl: string | null;
 };
 
+const ALL_KEY = "all";
+
 function isAllCategories(categoryParam: string | undefined): boolean {
-  return categoryParam === undefined || categoryParam === "all";
+  return categoryParam === undefined || categoryParam === ALL_KEY;
 }
 
 function chipClasses(active: boolean): string {
@@ -24,7 +27,7 @@ function chipClasses(active: boolean): string {
     : "border-zinc-200 bg-white text-zinc-900 dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-50";
 }
 
-/** Pill carousel synced with `?category=` (all / absent means full menu). */
+/** Sticky pill carousel synced with `?category=` (all / absent means full menu). */
 export function CategoryCarouselRail({
   categories,
   categoryParam,
@@ -33,31 +36,68 @@ export function CategoryCarouselRail({
   categoryParam: string | undefined;
 }) {
   const allActive = isAllCategories(categoryParam);
+  const activeKey = allActive ? ALL_KEY : (categoryParam ?? ALL_KEY);
+  const containerRef = useRef<HTMLDivElement | null>(null);
+  const chipRefs = useRef<Map<string, HTMLAnchorElement>>(new Map());
+
+  useEffect(() => {
+    const node = chipRefs.current.get(activeKey);
+    if (!node) return;
+    node.scrollIntoView({ inline: "center", block: "nearest", behavior: "smooth" });
+  }, [activeKey]);
+
+  function setChipRef(key: string, node: HTMLAnchorElement | null): void {
+    if (node) chipRefs.current.set(key, node);
+    else chipRefs.current.delete(key);
+  }
+
+  function onKeyDown(ev: KeyboardEvent<HTMLDivElement>): void {
+    if (ev.key !== "ArrowLeft" && ev.key !== "ArrowRight") return;
+    const container = containerRef.current?.querySelector<HTMLDivElement>("[data-scroll-region]");
+    if (!container) return;
+    ev.preventDefault();
+    const delta = ev.key === "ArrowRight" ? 240 : -240;
+    container.scrollBy({ left: delta, behavior: "smooth" });
+  }
 
   return (
-    <HorizontalScroller aria-label="Menu categories">
-      <div className="snap-start shrink-0">
-        <Link
-          href="/customer"
-          className={`inline-flex rounded-full border px-4 py-2 text-sm font-medium transition-colors ${chipClasses(allActive)}`}
-        >
-          All
-        </Link>
-      </div>
-      {categories.map((c) => {
-        const active = categoryParam === c.id;
-        return (
-          <div key={c.id} className="snap-start shrink-0">
-            <Link
-              href={`/customer?category=${c.id}`}
-              className={`inline-flex max-w-[220px] truncate rounded-full border px-4 py-2 text-sm font-medium transition-colors ${chipClasses(active)}`}
-            >
-              {c.name}
-            </Link>
-          </div>
-        );
-      })}
-    </HorizontalScroller>
+    <div
+      ref={containerRef}
+      onKeyDown={onKeyDown}
+      className="sticky top-[var(--site-header-h,56px)] z-20 -mx-4 border-b border-zinc-200 bg-white/90 px-4 pt-2 backdrop-blur dark:border-zinc-800 dark:bg-zinc-950/90"
+    >
+      <HorizontalScroller aria-label="Menu categories" data-scroll-region>
+        <div className="snap-start shrink-0">
+          <Link
+            ref={(node) => setChipRef(ALL_KEY, node)}
+            href="/customer"
+            role="tab"
+            aria-current={allActive ? "page" : undefined}
+            aria-selected={allActive}
+            className={`inline-flex min-h-[44px] items-center rounded-full border px-4 py-2 text-sm font-medium transition-colors ${chipClasses(allActive)}`}
+          >
+            All
+          </Link>
+        </div>
+        {categories.map((c) => {
+          const active = categoryParam === c.id;
+          return (
+            <div key={c.id} className="snap-start shrink-0">
+              <Link
+                ref={(node) => setChipRef(c.id, node)}
+                href={`/customer?category=${c.id}`}
+                role="tab"
+                aria-current={active ? "page" : undefined}
+                aria-selected={active}
+                className={`inline-flex min-h-[44px] max-w-[220px] items-center truncate rounded-full border px-4 py-2 text-sm font-medium transition-colors ${chipClasses(active)}`}
+              >
+                {c.name}
+              </Link>
+            </div>
+          );
+        })}
+      </HorizontalScroller>
+    </div>
   );
 }
 

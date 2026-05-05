@@ -3,13 +3,13 @@
 import { OrderStatus, Role } from "@prisma/client";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
-import { requireRole } from "@/lib/auth";
+import { requireRoleLite } from "@/lib/auth";
 import { clearCart, readCart, writeCart } from "@/lib/cart-cookie";
 import { createCheckoutSession } from "@/lib/payments";
 import { prisma } from "@/lib/prisma";
 
 export async function addToCart(menuItemId: string): Promise<void> {
-  await requireRole(Role.CUSTOMER);
+  await requireRoleLite(Role.CUSTOMER);
   const cart = await readCart();
   const idx = cart.findIndex((l) => l.menuItemId === menuItemId);
   if (idx >= 0) cart[idx] = { menuItemId, qty: cart[idx].qty + 1 };
@@ -20,7 +20,7 @@ export async function addToCart(menuItemId: string): Promise<void> {
 }
 
 export async function setLineQty(menuItemId: string, qty: number): Promise<void> {
-  await requireRole(Role.CUSTOMER);
+  await requireRoleLite(Role.CUSTOMER);
   let cart = await readCart();
   if (qty <= 0) cart = cart.filter((l) => l.menuItemId !== menuItemId);
   else cart = cart.map((l) => (l.menuItemId === menuItemId ? { menuItemId, qty } : l));
@@ -29,7 +29,7 @@ export async function setLineQty(menuItemId: string, qty: number): Promise<void>
 }
 
 export async function startCheckout(): Promise<void> {
-  const user = await requireRole(Role.CUSTOMER);
+  const user = await requireRoleLite(Role.CUSTOMER);
   const cart = await readCart();
   if (cart.length === 0) redirect("/customer/cart");
 

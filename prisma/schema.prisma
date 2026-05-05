@@ -51,6 +51,8 @@ model MenuItem {
   imageUrl    String?
   isAvailable Boolean     @default(true)
   orderItems  OrderItem[]
+
+  @@index([categoryId, isAvailable])
 }
 
 model Order {
@@ -64,6 +66,9 @@ model Order {
   items       OrderItem[]
   events      OrderStatusEvent[]
   assignment  DeliveryAssignment?
+
+  @@index([status, createdAt])
+  @@index([customerId, createdAt])
 }
 
 model OrderItem {
@@ -74,6 +79,9 @@ model OrderItem {
   menuItem          MenuItem @relation(fields: [menuItemId], references: [id])
   quantity          Int
   priceCentsAtOrder Int
+
+  @@index([orderId])
+  @@index([menuItemId])
 }
 
 model OrderStatusEvent {
@@ -98,4 +106,6 @@ model DeliveryAssignment {
   driver      User      @relation(fields: [driverId], references: [id])
   claimedAt   DateTime  @default(now())
   deliveredAt DateTime?
+
+  @@index([driverId])
 }

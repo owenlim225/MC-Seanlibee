@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { Role } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
-import { requireRole } from "@/lib/auth";
+import { requireRoleLite } from "@/lib/auth";
 import { Card } from "@/components/ui/card";
 import { EmptyState } from "@/components/ui/empty-state";
 import { MoneyText } from "@/components/ui/money-text";
@@ -10,11 +10,12 @@ import { RelativeTime } from "@/components/ui/relative-time";
 import { StatusBadge } from "@/components/ui/status-badge";
 
 export default async function OrdersHistoryPage() {
-  const user = await requireRole(Role.CUSTOMER);
+  const user = await requireRoleLite(Role.CUSTOMER);
   const orders = await prisma.order.findMany({
     where: { customerId: user.id },
     orderBy: { createdAt: "desc" },
     take: 50,
+    select: { id: true, status: true, totalCents: true, createdAt: true },
   });
 
   return (

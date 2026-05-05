@@ -1,8 +1,9 @@
 import { OrderStatus } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
-import { requireRole } from "@/lib/auth";
+import { requireRoleLite } from "@/lib/auth";
 import { Role } from "@prisma/client";
 import { ClaimButton, DeliverButton, PickupButton } from "@/app/(driver)/driver/driver-buttons";
+import { LiveRouterRefresh } from "@/components/live-router-refresh";
 import { Card } from "@/components/ui/card";
 import { EmptyState } from "@/components/ui/empty-state";
 import { MoneyText } from "@/components/ui/money-text";
@@ -26,7 +27,7 @@ const driverOrderSelect = {
 } as const;
 
 export default async function DriverHomePage() {
-  const driver = await requireRole(Role.DRIVER);
+  const driver = await requireRoleLite(Role.DRIVER);
 
   const [readyUnclaimed, mine] = await Promise.all([
     prisma.order.findMany({
@@ -46,6 +47,7 @@ export default async function DriverHomePage() {
 
   return (
     <div className="flex flex-col gap-8">
+      <LiveRouterRefresh />
       <PageHeader title="Driver routes" description="Claim READY orders first — claims are race-safe." />
 
       <section className="flex flex-col gap-3">

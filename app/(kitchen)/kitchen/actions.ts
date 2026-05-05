@@ -2,12 +2,12 @@
 
 import { OrderStatus, Role } from "@prisma/client";
 import { revalidatePath } from "next/cache";
-import { requireRole } from "@/lib/auth";
+import { requireRoleLite } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { realtime } from "@/lib/realtime";
 
 export async function advanceKitchenOrder(orderId: string): Promise<void> {
-  const actor = await requireRole(Role.KITCHEN);
+  const actor = await requireRoleLite(Role.KITCHEN);
   const order = await prisma.order.findUnique({ where: { id: orderId } });
   if (!order) return;
 

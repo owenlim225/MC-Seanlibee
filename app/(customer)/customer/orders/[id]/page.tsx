@@ -2,7 +2,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Role } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
-import { requireRole } from "@/lib/auth";
+import { requireRoleLite } from "@/lib/auth";
 import { OrderTracker } from "@/components/order-tracker";
 import { Card } from "@/components/ui/card";
 import { MoneyText } from "@/components/ui/money-text";
@@ -17,7 +17,7 @@ export default async function OrderDetailPage({
   params: Promise<{ id: string }>;
   searchParams: Promise<{ paid?: string }>;
 }) {
-  const user = await requireRole(Role.CUSTOMER);
+  const user = await requireRoleLite(Role.CUSTOMER);
   const { id } = await params;
   const sp = await searchParams;
 
@@ -33,7 +33,7 @@ export default async function OrderDetailPage({
 
   return (
     <div className="flex flex-col gap-6">
-      <OrderTracker orderId={order.id} />
+      <OrderTracker orderId={order.id} status={order.status} />
 
       <PageHeader
         title="Order tracking"

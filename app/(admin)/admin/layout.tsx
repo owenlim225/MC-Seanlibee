@@ -1,10 +1,10 @@
 import { Role } from "@prisma/client";
 import Link from "next/link";
-import { requireRole } from "@/lib/auth";
+import { requireRoleLite } from "@/lib/auth";
 import { RoleNav } from "@/components/role/role-nav";
 
 export default async function AdminLayout({ children }: { children: React.ReactNode }) {
-  await requireRole(Role.ADMIN);
+  await requireRoleLite(Role.ADMIN);
   return (
     <div className="flex flex-col gap-5">
       <RoleNav active={Role.ADMIN} />
