@@ -1,4 +1,5 @@
 import { publish as serverPublish, subscribe as serverSubscribe } from "@/lib/realtime/mock";
+export { getRealtimeProviderName } from "@/lib/realtime/provider";
 
 /** Server-side pub/sub (in-process). */
 export const realtime = {

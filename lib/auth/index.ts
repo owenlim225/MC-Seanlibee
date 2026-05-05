@@ -2,6 +2,7 @@ import { Role } from "@prisma/client";
 import { redirect } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import { readSessionPayload } from "@/lib/auth/mock";
+export { getAuthProviderName } from "@/lib/auth/provider";
 
 export type Session = {
   user: { id: string; role: Role; email: string; name: string } | null;

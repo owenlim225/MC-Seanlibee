@@ -3,6 +3,7 @@ import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { signSession, verifySession, type SessionPayload } from "@/lib/auth/cookie";
 import { checkDemoPassword } from "@/lib/auth/demo-password";
+import { getAuthAdapter, registerAuthAdapter, type DemoSignInResult } from "@/lib/auth/provider";
 import { isAppRole } from "@/lib/roles";
 import { prisma } from "@/lib/prisma";
 
@@ -29,7 +30,7 @@ async function writeSessionCookie(payload: SessionPayload): Promise<void> {
   });
 }
 
-export async function devSignInAs(role: Role, userId?: string): Promise<void> {
+async function mockDevSignInAs(role: Role, userId?: string): Promise<void> {
   // TODO(real-keys:auth-mock-001): Replace cookie signing with Supabase Auth session + JWT verification via @supabase/ssr.
   if (process.env.NODE_ENV === "production") {
     throw new Error("devSignInAs is disabled in production");
@@ -45,26 +46,27 @@ export async function devSignInAs(role: Role, userId?: string): Promise<void> {
   });
 }
 
-export type DemoSignInResult =
-  | { ok: true; user: { id: string; role: Role; email: string; name: string } }
-  | { ok: false };
-
 /**
  * Env-gated demo sign-in. Returns a generic failure for missing user, wrong
  * password, disabled demo mode, or invalid role — no information leakage.
  */
-export async function demoSignIn(email: string, password: string): Promise<DemoSignInResult> {
+async function mockDemoSignIn(email: string, password: string): Promise<DemoSignInResult> {
   // #region agent log
   fetch("http://127.0.0.1:7817/ingest/c3fc8591-bb49-4618-b7bd-5aef2b04dae3", {
     method: "POST",
-    headers: { "Content-Type": "application/json", "X-Debug-Session-Id": "c61c98" },
+    headers: { "Content-Type": "application/json", "X-Debug-Session-Id": "268a74" },
     body: JSON.stringify({
-      sessionId: "c61c98",
+      sessionId: "268a74",
       runId: "pre-fix",
-      hypothesisId: "A1",
-      location: "lib/auth/mock.ts:57",
+      hypothesisId: "H1",
+      location: "lib/auth/mock.ts:55",
       message: "demoSignIn invoked",
-      data: { emailDomain: typeof email === "string" && email.includes("@") ? email.split("@")[1] : null },
+      data: {
+        emailPresent: typeof email === "string" && email.trim().length > 0,
+        passwordPresent: typeof password === "string" && password.length > 0,
+        nodeEnv: process.env.NODE_ENV ?? null,
+        demoAuthEnabled: isDemoAuthEnabled(),
+      },
       timestamp: Date.now(),
     }),
   }).catch(() => {});
@@ -75,13 +77,13 @@ export async function demoSignIn(email: string, password: string): Promise<DemoS
   // #region agent log
   fetch("http://127.0.0.1:7817/ingest/c3fc8591-bb49-4618-b7bd-5aef2b04dae3", {
     method: "POST",
-    headers: { "Content-Type": "application/json", "X-Debug-Session-Id": "c61c98" },
+    headers: { "Content-Type": "application/json", "X-Debug-Session-Id": "268a74" },
     body: JSON.stringify({
-      sessionId: "c61c98",
+      sessionId: "268a74",
       runId: "pre-fix",
-      hypothesisId: "A2",
-      location: "lib/auth/mock.ts:63",
-      message: "demo password validation result",
+      hypothesisId: "H2",
+      location: "lib/auth/mock.ts:62",
+      message: "password check evaluated",
       data: { passwordOk },
       timestamp: Date.now(),
     }),
@@ -89,95 +91,30 @@ export async function demoSignIn(email: string, password: string): Promise<DemoS
   // #endregion
   if (!passwordOk) return { ok: false };
 
-  try {
-    const probe = await prisma.$queryRaw<
-      {
-        db: string | null;
-        schema: string | null;
-        searchPath: string | null;
-        userTable: string | null;
-        menuCategoryTable: string | null;
-      }[]
-    >`SELECT current_database() AS db, current_schema() AS schema, current_setting('search_path') AS "searchPath", to_regclass('public."User"') AS "userTable", to_regclass('public."MenuCategory"') AS "menuCategoryTable"`;
-    // #region agent log
-    fetch("http://127.0.0.1:7817/ingest/c3fc8591-bb49-4618-b7bd-5aef2b04dae3", {
-      method: "POST",
-      headers: { "Content-Type": "application/json", "X-Debug-Session-Id": "c61c98" },
-      body: JSON.stringify({
-        sessionId: "c61c98",
-        runId: "pre-fix",
-        hypothesisId: "A3",
-        location: "lib/auth/mock.ts:84",
-        message: "database table probe from demoSignIn",
-        data: probe[0] ?? null,
-        timestamp: Date.now(),
-      }),
-    }).catch(() => {});
-    // #endregion
-  } catch (error) {
-    // #region agent log
-    fetch("http://127.0.0.1:7817/ingest/c3fc8591-bb49-4618-b7bd-5aef2b04dae3", {
-      method: "POST",
-      headers: { "Content-Type": "application/json", "X-Debug-Session-Id": "c61c98" },
-      body: JSON.stringify({
-        sessionId: "c61c98",
-        runId: "pre-fix",
-        hypothesisId: "A3",
-        location: "lib/auth/mock.ts:99",
-        message: "database table probe failed",
-        data: {
-          errorName: error instanceof Error ? error.name : typeof error,
-          errorMessage: error instanceof Error ? error.message : String(error),
-        },
-        timestamp: Date.now(),
-      }),
-    }).catch(() => {});
-    // #endregion
-  }
-
   const normalizedEmail = email.trim().toLowerCase();
+  const user = await prisma.user.findUnique({
+    where: { email: normalizedEmail },
+    select: { id: true, role: true, email: true, name: true },
+  });
   // #region agent log
   fetch("http://127.0.0.1:7817/ingest/c3fc8591-bb49-4618-b7bd-5aef2b04dae3", {
     method: "POST",
-    headers: { "Content-Type": "application/json", "X-Debug-Session-Id": "c61c98" },
+    headers: { "Content-Type": "application/json", "X-Debug-Session-Id": "268a74" },
     body: JSON.stringify({
-      sessionId: "c61c98",
+      sessionId: "268a74",
       runId: "pre-fix",
-      hypothesisId: "A4",
-      location: "lib/auth/mock.ts:112",
-      message: "about to query user by normalized email",
-      data: { normalizedEmail },
+      hypothesisId: "H3",
+      location: "lib/auth/mock.ts:74",
+      message: "user lookup completed",
+      data: {
+        normalizedEmailLength: normalizedEmail.length,
+        userFound: Boolean(user),
+        userRole: user?.role ?? null,
+      },
       timestamp: Date.now(),
     }),
   }).catch(() => {});
   // #endregion
-  let user: { id: string; role: Role; email: string; name: string } | null = null;
-  try {
-    user = await prisma.user.findUnique({
-      where: { email: normalizedEmail },
-      select: { id: true, role: true, email: true, name: true },
-    });
-  } catch (error) {
-    // #region agent log
-    fetch("http://127.0.0.1:7817/ingest/c3fc8591-bb49-4618-b7bd-5aef2b04dae3", {
-      method: "POST",
-      headers: { "Content-Type": "application/json", "X-Debug-Session-Id": "c61c98" },
-      body: JSON.stringify({
-        sessionId: "c61c98",
-        runId: "pre-fix",
-        hypothesisId: "A5",
-        location: "lib/auth/mock.ts:127",
-        message: "user findUnique failed",
-        data: {
-          errorName: error instanceof Error ? error.name : typeof error,
-          errorMessage: error instanceof Error ? error.message : String(error),
-        },
-        timestamp: Date.now(),
-      }),
-    }).catch(() => {});
-    // #endregion
-    throw error;
-  }
   if (!user) return { ok: false };
   if (!isAppRole(user.role)) return { ok: false };
 
@@ -186,15 +123,61 @@ export async function demoSignIn(email: string, password: string): Promise<DemoS
     role: user.role,
     exp: Date.now() + TTL_MS,
   });
+  // #region agent log
+  fetch("http://127.0.0.1:7817/ingest/c3fc8591-bb49-4618-b7bd-5aef2b04dae3", {
+    method: "POST",
+    headers: { "Content-Type": "application/json", "X-Debug-Session-Id": "268a74" },
+    body: JSON.stringify({
+      sessionId: "268a74",
+      runId: "pre-fix",
+      hypothesisId: "H4",
+      location: "lib/auth/mock.ts:92",
+      message: "session cookie write completed",
+      data: { userIdPresent: user.id.length > 0, role: user.role },
+      timestamp: Date.now(),
+    }),
+  }).catch(() => {});
+  // #endregion
   return { ok: true, user };
 }
 
-export async function clearSession(): Promise<void> {
+async function mockClearSession(): Promise<void> {
   (await cookies()).delete(COOKIE);
 }
 
-export async function readSessionPayload(): Promise<SessionPayload | null> {
+async function mockReadSessionPayload(): Promise<SessionPayload | null> {
   const raw = (await cookies()).get(COOKIE)?.value;
   if (!raw) return null;
   return verifySession(raw, secret());
+}
+
+registerAuthAdapter("mock", {
+  devSignInAs: mockDevSignInAs,
+  demoSignIn: mockDemoSignIn,
+  clearSession: mockClearSession,
+  readSessionPayload: mockReadSessionPayload,
+});
+
+registerAuthAdapter("supabase-shadow", {
+  // N.1 shadow mode scaffold: keep current behavior while exercising provider wiring.
+  devSignInAs: mockDevSignInAs,
+  demoSignIn: mockDemoSignIn,
+  clearSession: mockClearSession,
+  readSessionPayload: mockReadSessionPayload,
+});
+
+export async function devSignInAs(role: Role, userId?: string): Promise<void> {
+  return getAuthAdapter().devSignInAs(role, userId);
+}
+
+export async function demoSignIn(email: string, password: string): Promise<DemoSignInResult> {
+  return getAuthAdapter().demoSignIn(email, password);
+}
+
+export async function clearSession(): Promise<void> {
+  return getAuthAdapter().clearSession();
+}
+
+export async function readSessionPayload(): Promise<SessionPayload | null> {
+  return getAuthAdapter().readSessionPayload();
 }

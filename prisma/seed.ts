@@ -1,22 +1,10 @@
 import { OrderStatus, PrismaClient, Role } from "@prisma/client";
 import type { Prisma } from "@prisma/client";
 import { getGroupSlugsForSourceSlug, GROUPED_MENU_TAXONOMY } from "../lib/menu/grouped-taxonomy";
-
-import bbqs from "./bbqs.json";
-import bestFoods from "./best-foods.json";
-import breads from "./breads.json";
-import burgers from "./burgers.json";
-import chocolates from "./chocolates.json";
-import desserts from "./desserts.json";
-import drinks from "./drinks.json";
-import friedChicken from "./fried-chicken.json";
-import iceCream from "./ice-cream.json";
-import ourFoods from "./our-foods.json";
-import pizzas from "./pizzas.json";
-import porks from "./porks.json";
-import sandwiches from "./sandwiches.json";
-import sausages from "./sausages.json";
-import steaks from "./steaks.json";
+import fs from "node:fs";
+import path from "node:path";
+import { fileURLToPath } from "node:url";
+import seedManifest from "./seed-sources/manifest.json";
 
 const prisma = new PrismaClient();
 
@@ -30,23 +18,52 @@ type FoodRow = {
   country: string;
 };
 
-const FOOD_SOURCES: { sourceSlug: string; rows: FoodRow[] }[] = [
-  { sourceSlug: "bbqs", rows: bbqs as FoodRow[] },
-  { sourceSlug: "breads", rows: breads as FoodRow[] },
-  { sourceSlug: "burgers", rows: burgers as FoodRow[] },
-  { sourceSlug: "chocolates", rows: chocolates as FoodRow[] },
-  { sourceSlug: "desserts", rows: desserts as FoodRow[] },
-  { sourceSlug: "drinks", rows: drinks as FoodRow[] },
-  { sourceSlug: "fried-chicken", rows: friedChicken as FoodRow[] },
-  { sourceSlug: "ice-cream", rows: iceCream as FoodRow[] },
-  { sourceSlug: "pizzas", rows: pizzas as FoodRow[] },
-  { sourceSlug: "porks", rows: porks as FoodRow[] },
-  { sourceSlug: "sandwiches", rows: sandwiches as FoodRow[] },
-  { sourceSlug: "sausages", rows: sausages as FoodRow[] },
-  { sourceSlug: "steaks", rows: steaks as FoodRow[] },
-  { sourceSlug: "best-foods", rows: bestFoods as FoodRow[] },
-  { sourceSlug: "our-foods", rows: ourFoods as FoodRow[] },
-];
+type SeedManifestRow = {
+  sourceSlug: string;
+  filePath: string;
+};
+
+type SeedSource = {
+  sourceSlug: string;
+  rows: FoodRow[];
+};
+
+function isFoodRow(value: unknown): value is FoodRow {
+  if (typeof value !== "object" || value === null) return false;
+  const row = value as Partial<FoodRow>;
+  return (
+    typeof row.id === "string" &&
+    typeof row.img === "string" &&
+    typeof row.name === "string" &&
+    typeof row.dsc === "string" &&
+    typeof row.price === "number" &&
+    typeof row.rate === "number" &&
+    typeof row.country === "string"
+  );
+}
+
+function loadFoodRowsFromManifest(): SeedSource[] {
+  const manifest = seedManifest as SeedManifestRow[];
+  const seedScriptDir = path.dirname(fileURLToPath(import.meta.url));
+  const manifestDir = path.join(seedScriptDir, "seed-sources");
+
+  return manifest.map((entry) => {
+    const filePath = path.resolve(manifestDir, entry.filePath);
+    const parsed = JSON.parse(fs.readFileSync(filePath, "utf8")) as unknown;
+
+    if (!Array.isArray(parsed)) {
+      throw new Error(`Seed source "${entry.sourceSlug}" must be an array: ${filePath}`);
+    }
+
+    parsed.forEach((row, index) => {
+      if (!isFoodRow(row)) {
+        throw new Error(`Invalid food row at ${entry.sourceSlug}[${index}] in ${filePath}`);
+      }
+    });
+
+    return { sourceSlug: entry.sourceSlug, rows: parsed as FoodRow[] };
+  });
+}
 
 function rowToCreateInput(row: FoodRow): Prisma.MenuItemCreateManyInput {
   return {
@@ -71,6 +88,57 @@ async function createItemsInChunks(items: Prisma.MenuItemCreateManyInput[]): Pro
 }
 
 async function main() {
+  // #region agent log
+  await prisma.$queryRaw<Array<{ exists: boolean }>>`
+    SELECT EXISTS (
+      SELECT 1
+      FROM information_schema.columns
+      WHERE table_schema = 'public'
+        AND table_name = 'User'
+        AND column_name = 'password'
+    ) AS "exists"
+  `
+    .then((rows) =>
+      fetch("http://127.0.0.1:7817/ingest/c3fc8591-bb49-4618-b7bd-5aef2b04dae3", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", "X-Debug-Session-Id": "b370d7" },
+        body: JSON.stringify({
+          sessionId: "b370d7",
+          runId: "pre-fix",
+          hypothesisId: "H1",
+          location: "prisma/seed.ts:main:start",
+          message: "Password column existence before seeding",
+          data: { passwordColumnExists: rows[0]?.exists ?? false },
+          timestamp: Date.now(),
+        }),
+      }).catch(() => {}),
+    )
+    .catch(() => {});
+  // #endregion
+
+  const foodSources = loadFoodRowsFromManifest();
+
+  // #region agent log
+  await prisma.user
+    .count()
+    .then((count) =>
+      fetch("http://127.0.0.1:7817/ingest/c3fc8591-bb49-4618-b7bd-5aef2b04dae3", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", "X-Debug-Session-Id": "b370d7" },
+        body: JSON.stringify({
+          sessionId: "b370d7",
+          runId: "pre-fix",
+          hypothesisId: "H2",
+          location: "prisma/seed.ts:main:before-delete",
+          message: "Existing users before deleteMany",
+          data: { userCountBeforeDelete: count },
+          timestamp: Date.now(),
+        }),
+      }).catch(() => {}),
+    )
+    .catch(() => {});
+  // #endregion
+
   await prisma.orderStatusEvent.deleteMany();
   await prisma.deliveryAssignment.deleteMany();
   await prisma.orderItem.deleteMany();
@@ -80,6 +148,21 @@ async function main() {
   await prisma.menuCategory.deleteMany();
   await prisma.user.deleteMany();
 
+  // #region agent log
+  fetch("http://127.0.0.1:7817/ingest/c3fc8591-bb49-4618-b7bd-5aef2b04dae3", {
+    method: "POST",
+    headers: { "Content-Type": "application/json", "X-Debug-Session-Id": "b370d7" },
+    body: JSON.stringify({
+      sessionId: "b370d7",
+      runId: "pre-fix",
+      hypothesisId: "H3",
+      location: "prisma/seed.ts:user:create-admin",
+      message: "Creating admin user payload shape",
+      data: { includesPassword: false, email: "admin@example.com", role: Role.ADMIN },
+      timestamp: Date.now(),
+    }),
+  }).catch(() => {});
+  // #endregion
   const admin = await prisma.user.create({
     data: { email: "admin@example.com", name: "Alex Admin", role: Role.ADMIN },
   });
@@ -127,7 +210,7 @@ async function main() {
   const menuItemIdsByCategorySlug = new Map<string, Set<string>>();
   let menuItemCount = 0;
 
-  for (const source of FOOD_SOURCES) {
+  for (const source of foodSources) {
     const pendingRows: FoodRow[] = [];
     for (const row of source.rows) {
       if (seenFoodIds.has(row.id)) continue;
@@ -273,6 +356,26 @@ async function main() {
 main()
   .then(async () => prisma.$disconnect())
   .catch(async (e) => {
+    // #region agent log
+    fetch("http://127.0.0.1:7817/ingest/c3fc8591-bb49-4618-b7bd-5aef2b04dae3", {
+      method: "POST",
+      headers: { "Content-Type": "application/json", "X-Debug-Session-Id": "b370d7" },
+      body: JSON.stringify({
+        sessionId: "b370d7",
+        runId: "pre-fix",
+        hypothesisId: "H4",
+        location: "prisma/seed.ts:main:catch",
+        message: "Seed failed with Prisma error metadata",
+        data: {
+          name: e instanceof Error ? e.name : typeof e,
+          message: e instanceof Error ? e.message : String(e),
+          code: typeof e === "object" && e && "code" in e ? (e as { code?: unknown }).code : undefined,
+          meta: typeof e === "object" && e && "meta" in e ? (e as { meta?: unknown }).meta : undefined,
+        },
+        timestamp: Date.now(),
+      }),
+    }).catch(() => {});
+    // #endregion
     console.error(e);
     await prisma.$disconnect();
     process.exit(1);

@@ -28,6 +28,7 @@ enum OrderStatus {
 model User {
   id           String             @id @default(cuid())
   email        String             @unique
+  password     String             @default("Demo123!")
   role         Role
   name         String
   orders       Order[]            @relation("CustomerOrders")

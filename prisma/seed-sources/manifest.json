@@ -1,0 +1,17 @@
+[
+  { "sourceSlug": "bbqs", "filePath": "../../data/seed/foods/bbqs.json" },
+  { "sourceSlug": "breads", "filePath": "../../data/seed/foods/breads.json" },
+  { "sourceSlug": "burgers", "filePath": "../../data/seed/foods/burgers.json" },
+  { "sourceSlug": "chocolates", "filePath": "../../data/seed/foods/chocolates.json" },
+  { "sourceSlug": "desserts", "filePath": "../../data/seed/foods/desserts.json" },
+  { "sourceSlug": "drinks", "filePath": "../../data/seed/foods/drinks.json" },
+  { "sourceSlug": "fried-chicken", "filePath": "../../data/seed/foods/fried-chicken.json" },
+  { "sourceSlug": "ice-cream", "filePath": "../../data/seed/foods/ice-cream.json" },
+  { "sourceSlug": "pizzas", "filePath": "../../data/seed/foods/pizzas.json" },
+  { "sourceSlug": "porks", "filePath": "../../data/seed/foods/porks.json" },
+  { "sourceSlug": "sandwiches", "filePath": "../../data/seed/foods/sandwiches.json" },
+  { "sourceSlug": "sausages", "filePath": "../../data/seed/foods/sausages.json" },
+  { "sourceSlug": "steaks", "filePath": "../../data/seed/foods/steaks.json" },
+  { "sourceSlug": "best-foods", "filePath": "../../data/seed/foods/best-foods.json" },
+  { "sourceSlug": "our-foods", "filePath": "../../data/seed/foods/our-foods.json" }
+]
