@@ -1,6 +1,73 @@
 import { OrderStatus, PrismaClient, Role } from "@prisma/client";
+import type { Prisma } from "@prisma/client";
+
+import bbqs from "./bbqs.json";
+import bestFoods from "./best-foods.json";
+import breads from "./breads.json";
+import burgers from "./burgers.json";
+import chocolates from "./chocolates.json";
+import desserts from "./desserts.json";
+import drinks from "./drinks.json";
+import friedChicken from "./fried-chicken.json";
+import iceCream from "./ice-cream.json";
+import ourFoods from "./our-foods.json";
+import pizzas from "./pizzas.json";
+import porks from "./porks.json";
+import sandwiches from "./sandwiches.json";
+import sausages from "./sausages.json";
+import steaks from "./steaks.json";
 
 const prisma = new PrismaClient();
+
+type FoodRow = {
+  id: string;
+  img: string;
+  name: string;
+  dsc: string;
+  price: number;
+  rate: number;
+  country: string;
+};
+
+const FOOD_SOURCES: { categoryName: string; sortOrder: number; rows: FoodRow[] }[] = [
+  { categoryName: "BBQ", sortOrder: 10, rows: bbqs as FoodRow[] },
+  { categoryName: "Breads", sortOrder: 20, rows: breads as FoodRow[] },
+  { categoryName: "Burgers", sortOrder: 30, rows: burgers as FoodRow[] },
+  { categoryName: "Chocolates", sortOrder: 40, rows: chocolates as FoodRow[] },
+  { categoryName: "Desserts", sortOrder: 50, rows: desserts as FoodRow[] },
+  { categoryName: "Drinks", sortOrder: 60, rows: drinks as FoodRow[] },
+  { categoryName: "Fried Chicken", sortOrder: 70, rows: friedChicken as FoodRow[] },
+  { categoryName: "Ice Cream", sortOrder: 80, rows: iceCream as FoodRow[] },
+  { categoryName: "Pizzas", sortOrder: 90, rows: pizzas as FoodRow[] },
+  { categoryName: "Pork", sortOrder: 100, rows: porks as FoodRow[] },
+  { categoryName: "Sandwiches", sortOrder: 110, rows: sandwiches as FoodRow[] },
+  { categoryName: "Sausages", sortOrder: 120, rows: sausages as FoodRow[] },
+  { categoryName: "Steaks", sortOrder: 130, rows: steaks as FoodRow[] },
+  { categoryName: "Best Foods", sortOrder: 140, rows: bestFoods as FoodRow[] },
+  { categoryName: "Our Foods", sortOrder: 150, rows: ourFoods as FoodRow[] },
+];
+
+function rowToCreateInput(categoryId: string, row: FoodRow): Prisma.MenuItemCreateManyInput {
+  return {
+    categoryId,
+    name: row.dsc,
+    description: `${row.name} · ${row.country}`,
+    priceCents: Math.round(row.price * 100),
+    imageUrl: row.img,
+    isAvailable: true,
+  };
+}
+
+async function createItemsInChunks(items: Prisma.MenuItemCreateManyInput[]): Promise<number> {
+  const chunkSize = 80;
+  let created = 0;
+  for (let i = 0; i < items.length; i += chunkSize) {
+    const chunk = items.slice(i, i + chunkSize);
+    const r = await prisma.menuItem.createMany({ data: chunk });
+    created += r.count;
+  }
+  return created;
+}
 
 async function main() {
   await prisma.orderStatusEvent.deleteMany();
@@ -42,73 +109,23 @@ async function main() {
     }),
   ]);
 
-  const mains = await prisma.menuCategory.create({
-    data: { name: "Mains", sortOrder: 10 },
-  });
-  const drinks = await prisma.menuCategory.create({
-    data: { name: "Drinks", sortOrder: 20 },
-  });
+  const seenFoodIds = new Set<string>();
+  let menuItemCount = 0;
 
-  const items = await prisma.menuItem.createMany({
-    data: [
-      {
-        categoryId: mains.id,
-        name: "Margherita Pizza",
-        description: "Tomato, mozzarella, basil",
-        priceCents: 1299,
-        isAvailable: true,
-      },
-      {
-        categoryId: mains.id,
-        name: "Garden Salad",
-        description: "Greens, vinaigrette",
-        priceCents: 899,
-        isAvailable: true,
-      },
-      {
-        categoryId: mains.id,
-        name: "Chicken Sandwich",
-        description: "Grilled chicken, pickles",
-        priceCents: 1099,
-        isAvailable: true,
-      },
-      {
-        categoryId: mains.id,
-        name: "Veggie Bowl",
-        description: "Rice, roasted veg, tahini",
-        priceCents: 1199,
-        isAvailable: true,
-      },
-      {
-        categoryId: drinks.id,
-        name: "Sparkling Water",
-        description: "500ml",
-        priceCents: 249,
-        isAvailable: true,
-      },
-      {
-        categoryId: drinks.id,
-        name: "Cold Brew",
-        description: "16oz",
-        priceCents: 449,
-        isAvailable: true,
-      },
-      {
-        categoryId: drinks.id,
-        name: "Orange Juice",
-        description: "12oz",
-        priceCents: 399,
-        isAvailable: true,
-      },
-      {
-        categoryId: drinks.id,
-        name: "House Lemonade",
-        description: "16oz",
-        priceCents: 349,
-        isAvailable: true,
-      },
-    ],
-  });
+  for (const source of FOOD_SOURCES) {
+    const pendingRows: FoodRow[] = [];
+    for (const row of source.rows) {
+      if (seenFoodIds.has(row.id)) continue;
+      seenFoodIds.add(row.id);
+      pendingRows.push(row);
+    }
+    if (pendingRows.length === 0) continue;
+    const category = await prisma.menuCategory.create({
+      data: { name: source.categoryName, sortOrder: source.sortOrder },
+    });
+    const data = pendingRows.map((row) => rowToCreateInput(category.id, row));
+    menuItemCount += await createItemsInChunks(data);
+  }
 
   const sampleCustomer = customers[0];
   if (sampleCustomer) {
@@ -216,10 +233,10 @@ async function main() {
   }
 
   void admin;
-  void items;
+  void driverTwo;
 
   console.log(
-    `Seeded users (+ kitchen/drivers incl. ${driverTwo.email}), ${customers.length} customers, categories, menu items`,
+    `Seeded users (+ kitchen/drivers incl. ${driverTwo.email}), ${customers.length} customers, ${menuItemCount} menu items (${seenFoodIds.size} unique source ids)`,
   );
 }
 

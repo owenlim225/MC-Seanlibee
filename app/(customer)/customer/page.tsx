@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
 import { addToCart } from "@/app/(customer)/customer/actions";
@@ -53,6 +54,17 @@ export default async function CustomerMenuPage({
             <div className="grid gap-4 md:grid-cols-2">
               {category.items.map((item) => (
                 <Card key={item.id} className="flex flex-col gap-3">
+                  {item.imageUrl ? (
+                    <div className="relative aspect-[4/3] w-full overflow-hidden rounded-md bg-zinc-100 dark:bg-zinc-800">
+                      <Image
+                        src={item.imageUrl}
+                        alt={item.name}
+                        fill
+                        className="object-cover"
+                        sizes="(max-width: 768px) 100vw, 50vw"
+                      />
+                    </div>
+                  ) : null}
                   <div className="flex items-start justify-between gap-3">
                     <div>
                       <CardTitle>{item.name}</CardTitle>

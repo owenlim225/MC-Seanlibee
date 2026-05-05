@@ -5,5 +5,5 @@ test("customer can browse the menu after signing in", async ({ page }) => {
   await signInUser(page, "customer1@example.com");
   await page.goto("/customer");
   await expect(page.getByRole("heading", { name: "Menu" })).toBeVisible();
-  await expect(page.getByText("Margherita Pizza")).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Burgers" })).toBeVisible();
 });
