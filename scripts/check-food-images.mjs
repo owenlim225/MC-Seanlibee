@@ -1,10 +1,15 @@
 import fs from "node:fs";
 import path from "node:path";
 
-const prismaDir = path.join(process.cwd(), "prisma");
+const prismaDir = path.join(process.cwd(), "prisma", "data");
 const files = fs
   .readdirSync(prismaDir)
   .filter((f) => f.endsWith(".json") && !f.startsWith("package"));
+
+if (files.length === 0) {
+  process.stderr.write(`ERROR: No JSON files found in ${prismaDir}\n`);
+  process.exit(1);
+}
 
 /** @type {Map<string, string[]>} */
 const urlRefs = new Map();

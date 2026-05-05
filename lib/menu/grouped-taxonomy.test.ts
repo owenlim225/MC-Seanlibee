@@ -21,6 +21,8 @@ describe("grouped taxonomy", () => {
   it("supports reverse lookup from source slug", () => {
     expect(getGroupSlugsForSourceSlug("burgers")).toEqual(["main-meals", "budget-meals", "best-sellers-featured"]);
     expect(getGroupSlugsForSourceSlug("bbqs")).toEqual(["best-sellers-featured", "grilled-heavy-meals"]);
+    expect(getGroupSlugsForSourceSlug("our-foods")).toEqual([]);
+    expect(getGroupSlugsForSourceSlug("best-foods")).toEqual([]);
     expect(getGroupSlugsForSourceSlug("unknown")).toEqual([]);
   });
 

@@ -1,0 +1,15 @@
+[
+  { "sourceSlug": "bbqs", "filePath": "../data/bbqs.json" },
+  { "sourceSlug": "breads", "filePath": "../data/breads.json" },
+  { "sourceSlug": "burgers", "filePath": "../data/burgers.json" },
+  { "sourceSlug": "chocolates", "filePath": "../data/chocolates.json" },
+  { "sourceSlug": "desserts", "filePath": "../data/desserts.json" },
+  { "sourceSlug": "drinks", "filePath": "../data/drinks.json" },
+  { "sourceSlug": "fried-chicken", "filePath": "../data/fried-chicken.json" },
+  { "sourceSlug": "ice-cream", "filePath": "../data/ice-cream.json" },
+  { "sourceSlug": "pizzas", "filePath": "../data/pizzas.json" },
+  { "sourceSlug": "porks", "filePath": "../data/porks.json" },
+  { "sourceSlug": "sandwiches", "filePath": "../data/sandwiches.json" },
+  { "sourceSlug": "sausages", "filePath": "../data/sausages.json" },
+  { "sourceSlug": "steaks", "filePath": "../data/steaks.json" }
+]

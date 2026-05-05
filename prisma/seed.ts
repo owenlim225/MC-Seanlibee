@@ -1,22 +1,21 @@
 import { OrderStatus, PrismaClient, Role } from "@prisma/client";
 import type { Prisma } from "@prisma/client";
 import { getGroupSlugsForSourceSlug, GROUPED_MENU_TAXONOMY } from "../lib/menu/grouped-taxonomy";
+import sourceManifest from "./seed-sources/manifest.json";
 
-import bbqs from "./bbqs.json";
-import bestFoods from "./best-foods.json";
-import breads from "./breads.json";
-import burgers from "./burgers.json";
-import chocolates from "./chocolates.json";
-import desserts from "./desserts.json";
-import drinks from "./drinks.json";
-import friedChicken from "./fried-chicken.json";
-import iceCream from "./ice-cream.json";
-import ourFoods from "./our-foods.json";
-import pizzas from "./pizzas.json";
-import porks from "./porks.json";
-import sandwiches from "./sandwiches.json";
-import sausages from "./sausages.json";
-import steaks from "./steaks.json";
+import bbqs from "./data/bbqs.json";
+import breads from "./data/breads.json";
+import burgers from "./data/burgers.json";
+import chocolates from "./data/chocolates.json";
+import desserts from "./data/desserts.json";
+import drinks from "./data/drinks.json";
+import friedChicken from "./data/fried-chicken.json";
+import iceCream from "./data/ice-cream.json";
+import pizzas from "./data/pizzas.json";
+import porks from "./data/porks.json";
+import sandwiches from "./data/sandwiches.json";
+import sausages from "./data/sausages.json";
+import steaks from "./data/steaks.json";
 
 const prisma = new PrismaClient();
 
@@ -30,23 +29,102 @@ type FoodRow = {
   country: string;
 };
 
-const FOOD_SOURCES: { sourceSlug: string; rows: FoodRow[] }[] = [
-  { sourceSlug: "bbqs", rows: bbqs as FoodRow[] },
-  { sourceSlug: "breads", rows: breads as FoodRow[] },
-  { sourceSlug: "burgers", rows: burgers as FoodRow[] },
-  { sourceSlug: "chocolates", rows: chocolates as FoodRow[] },
-  { sourceSlug: "desserts", rows: desserts as FoodRow[] },
-  { sourceSlug: "drinks", rows: drinks as FoodRow[] },
-  { sourceSlug: "fried-chicken", rows: friedChicken as FoodRow[] },
-  { sourceSlug: "ice-cream", rows: iceCream as FoodRow[] },
-  { sourceSlug: "pizzas", rows: pizzas as FoodRow[] },
-  { sourceSlug: "porks", rows: porks as FoodRow[] },
-  { sourceSlug: "sandwiches", rows: sandwiches as FoodRow[] },
-  { sourceSlug: "sausages", rows: sausages as FoodRow[] },
-  { sourceSlug: "steaks", rows: steaks as FoodRow[] },
-  { sourceSlug: "best-foods", rows: bestFoods as FoodRow[] },
-  { sourceSlug: "our-foods", rows: ourFoods as FoodRow[] },
-];
+const APPROVED_SOURCE_SLUGS = [
+  "bbqs",
+  "breads",
+  "burgers",
+  "chocolates",
+  "desserts",
+  "drinks",
+  "fried-chicken",
+  "ice-cream",
+  "pizzas",
+  "porks",
+  "sandwiches",
+  "sausages",
+  "steaks",
+] as const;
+
+type ApprovedSourceSlug = (typeof APPROVED_SOURCE_SLUGS)[number];
+
+type SeedSourceManifestEntry = {
+  sourceSlug: ApprovedSourceSlug;
+  filePath: string;
+};
+
+const SOURCE_ROWS_BY_SLUG: Record<ApprovedSourceSlug, unknown> = {
+  bbqs,
+  breads,
+  burgers,
+  chocolates,
+  desserts,
+  drinks,
+  "fried-chicken": friedChicken,
+  "ice-cream": iceCream,
+  pizzas,
+  porks,
+  sandwiches,
+  sausages,
+  steaks,
+};
+
+function isFoodRow(value: unknown): value is FoodRow {
+  if (!value || typeof value !== "object") return false;
+  const row = value as Record<string, unknown>;
+  return (
+    typeof row.id === "string" &&
+    typeof row.img === "string" &&
+    typeof row.name === "string" &&
+    typeof row.dsc === "string" &&
+    typeof row.price === "number" &&
+    Number.isFinite(row.price) &&
+    typeof row.rate === "number" &&
+    Number.isFinite(row.rate) &&
+    typeof row.country === "string"
+  );
+}
+
+function parseFoodRowsFromSource(rows: unknown, sourceSlug: string): FoodRow[] {
+  if (!Array.isArray(rows)) {
+    throw new Error(`Expected array rows for source "${sourceSlug}"`);
+  }
+  return rows.map((row, index) => {
+    if (!isFoodRow(row)) {
+      throw new Error(`Invalid FoodRow at source "${sourceSlug}" index ${index}`);
+    }
+    return row;
+  });
+}
+
+function loadFoodSourcesFromManifest(): { sourceSlug: ApprovedSourceSlug; rows: FoodRow[] }[] {
+  const manifest = sourceManifest as SeedSourceManifestEntry[];
+  const manifestSlugSet = new Set(manifest.map((entry) => entry.sourceSlug));
+  const expectedSlugSet = new Set<ApprovedSourceSlug>(APPROVED_SOURCE_SLUGS);
+
+  if (manifest.length !== APPROVED_SOURCE_SLUGS.length) {
+    throw new Error(
+      `Seed source manifest must contain exactly ${APPROVED_SOURCE_SLUGS.length} sources; got ${manifest.length}`,
+    );
+  }
+  for (const slug of APPROVED_SOURCE_SLUGS) {
+    if (!manifestSlugSet.has(slug)) {
+      throw new Error(`Seed source manifest missing required source slug "${slug}"`);
+    }
+  }
+  for (const slug of manifestSlugSet) {
+    if (!expectedSlugSet.has(slug)) {
+      throw new Error(`Seed source manifest contains unsupported source slug "${slug}"`);
+    }
+  }
+
+  return manifest.map(({ sourceSlug }) => {
+    const parsedRows = parseFoodRowsFromSource(SOURCE_ROWS_BY_SLUG[sourceSlug], sourceSlug);
+    const limitedRows = parsedRows.slice(0, 20);
+    return { sourceSlug, rows: limitedRows };
+  });
+}
+
+const FOOD_SOURCES = loadFoodSourcesFromManifest();
 
 function rowToCreateInput(row: FoodRow): Prisma.MenuItemCreateManyInput {
   return {

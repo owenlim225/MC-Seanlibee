@@ -4,6 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 
 import { HorizontalScroller } from "@/components/customer/horizontal-scroller";
+import { resolveMenuImageUrl } from "@/lib/menu/resolve-menu-image-url";
 import { MoneyText } from "@/components/ui/money-text";
 
 export type PopularCarouselItem = {
@@ -12,15 +13,6 @@ export type PopularCarouselItem = {
   priceCents: number;
   imageUrl: string | null;
 };
-
-function PlaceholderVisual({ label }: { label: string }) {
-  const initial = label.trim().charAt(0).toUpperCase() || "?";
-  return (
-    <div className="flex size-full items-center justify-center bg-zinc-100 text-2xl font-semibold text-zinc-400 dark:bg-zinc-800 dark:text-zinc-500">
-      {initial}
-    </div>
-  );
-}
 
 export function PopularCarouselRail({
   items,
@@ -40,17 +32,13 @@ export function PopularCarouselRail({
         >
           <Link href={`/customer/items/${item.id}`} className="block">
             <div className="relative aspect-square w-full overflow-hidden rounded-lg bg-zinc-50 dark:bg-zinc-900">
-              {item.imageUrl ? (
-                <Image
-                  src={item.imageUrl}
-                  alt={item.name}
-                  fill
-                  className="object-cover"
-                  sizes="168px"
-                />
-              ) : (
-                <PlaceholderVisual label={item.name} />
-              )}
+              <Image
+                src={resolveMenuImageUrl(item.id, item.imageUrl, { width: 336, height: 336 })}
+                alt={item.name}
+                fill
+                className="object-cover"
+                sizes="168px"
+              />
             </div>
           </Link>
           <div className="mt-2 flex flex-col gap-2">
