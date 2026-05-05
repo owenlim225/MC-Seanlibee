@@ -83,30 +83,23 @@ export default async function CustomerMenuPage({
       />
 
       <section className="flex flex-col gap-3">
-        <div className="flex items-center justify-between gap-3">
-          <h2 className="text-lg font-semibold tracking-tight text-zinc-900 dark:text-zinc-50">
-            Featured Menu
-          </h2>
-          <Link href="/customer" className="text-sm font-semibold text-[#D12E27] hover:underline">
-            View All
-          </Link>
-        </div>
-        <FeaturedCategoryRail categories={featuredCategories} />
+        <h2 className="text-lg font-semibold tracking-tight text-zinc-900 dark:text-zinc-50">
+          Featured Menu
+        </h2>
+        <FeaturedCategoryRail
+          categories={featuredCategories}
+          activeSelection={!sp.category || sp.category === "all" ? "all" : sp.category}
+        />
       </section>
 
       <section className="flex flex-col gap-3">
-        <div className="flex items-center justify-between gap-3">
-          <h2 className="text-lg font-semibold tracking-tight text-zinc-900 dark:text-zinc-50">
-            Most Popular
-          </h2>
-          <Link href="/customer" className="text-sm font-semibold text-[#D12E27] hover:underline">
-            View All
-          </Link>
-        </div>
-        <PopularCarouselRail items={popularItems} addToCart={addToCart} />
+        <h2 className="text-lg font-semibold tracking-tight text-zinc-900 dark:text-zinc-50">
+          Most Popular
+        </h2>
+        <PopularCarouselRail items={popularItems} addToCartAction={addToCart} />
       </section>
 
-      <CategoryMenuSections categories={filtered} addToCart={addToCart} />
+      <CategoryMenuSections categories={filtered} addToCartAction={addToCart} />
     </div>
   );
 }

@@ -34,10 +34,10 @@ function initialVisibleByCategory(categories: CategorySection[]): Record<string,
 
 export function CategoryMenuSections({
   categories,
-  addToCart,
+  addToCartAction,
 }: {
   categories: CategorySection[];
-  addToCart: (itemId: string, formData: FormData) => Promise<void>;
+  addToCartAction: (itemId: string, formData: FormData) => Promise<void>;
 }) {
   const [visibleByCategory, setVisibleByCategory] = useState<Record<string, number>>(() =>
     initialVisibleByCategory(categories),
@@ -74,7 +74,7 @@ export function CategoryMenuSections({
                 {visibleItems.map((item) => (
                   <Card
                     key={item.id}
-                    className="group relative flex h-full flex-col gap-3 p-3 transition hover:border-zinc-300 hover:shadow-md dark:hover:border-zinc-700"
+                    className="group relative flex h-full flex-col gap-3 p-3 motion-safe:transition motion-safe:duration-200 motion-safe:hover:-translate-y-1 motion-safe:hover:border-zinc-300 motion-safe:hover:shadow-lg motion-safe:hover:shadow-[#D12E27]/15 motion-safe:hover:ring-2 motion-safe:hover:ring-[#D12E27]/20 dark:motion-safe:hover:border-zinc-700 dark:motion-safe:hover:shadow-[#D12E27]/25 dark:motion-safe:hover:ring-[#D12E27]/30"
                   >
                     <Link
                       href={`/customer/items/${item.id}`}
@@ -103,8 +103,12 @@ export function CategoryMenuSections({
                       <span className="pointer-events-none text-sm text-zinc-600 dark:text-zinc-400">
                         Tap card for details
                       </span>
-                      <form className="relative z-20" action={addToCart.bind(null, item.id)}>
-                        <Button type="submit" variant="secondary">
+                      <form
+                        className="relative z-20"
+                        action={addToCartAction.bind(null, item.id)}
+                        onClick={(e) => e.stopPropagation()}
+                      >
+                        <Button type="submit" variant="secondary" onClick={(e) => e.stopPropagation()}>
                           Add to cart
                         </Button>
                       </form>

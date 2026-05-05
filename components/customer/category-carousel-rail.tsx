@@ -18,6 +18,20 @@ export type FeaturedCategoryEntry = CategoryCarouselEntry & {
 
 const ALL_KEY = "all";
 
+const FEATURED_ACTIVE_RING = "ring-2 ring-[#D12E27] ring-offset-2 ring-offset-white dark:ring-offset-zinc-950";
+
+function isFeaturedAllActive(activeSelection: "all" | string | undefined): boolean {
+  return activeSelection === undefined || activeSelection === "all";
+}
+
+function isFeaturedCategoryActive(
+  c: FeaturedCategoryEntry,
+  activeSelection: string | undefined,
+): boolean {
+  if (activeSelection === undefined || activeSelection === "all") return false;
+  return c.slug === activeSelection || c.id === activeSelection;
+}
+
 function isAllCategories(categoryParam: string | undefined): boolean {
   return categoryParam === undefined || categoryParam === ALL_KEY;
 }
@@ -103,29 +117,70 @@ export function CategoryCarouselRail({
 }
 
 /** Featured rail: leading All cell + category thumbnails (linked). */
-export function FeaturedCategoryRail({ categories }: { categories: FeaturedCategoryEntry[] }) {
+export function FeaturedCategoryRail({
+  categories,
+  activeSelection,
+}: {
+  categories: FeaturedCategoryEntry[];
+  activeSelection?: "all" | string;
+}) {
+  const allActive = isFeaturedAllActive(activeSelection);
+
   return (
     <HorizontalScroller aria-label="Featured menu categories">
       <div className="snap-start shrink-0 w-[88px]">
-        <Link href="/customer" className="flex flex-col items-center gap-2">
-          <div className="flex size-20 items-center justify-center rounded-full border-2 border-zinc-900 bg-white text-xs font-semibold uppercase tracking-wide text-zinc-900 dark:border-zinc-100 dark:bg-zinc-950 dark:text-zinc-50">
+        <Link
+          href="/customer"
+          role="tab"
+          aria-current={allActive ? "page" : undefined}
+          aria-selected={allActive}
+          className="flex flex-col items-center gap-2"
+        >
+          <div
+            className={`flex size-20 items-center justify-center rounded-full border-2 bg-white text-xs font-semibold uppercase tracking-wide transition-transform dark:bg-zinc-950 ${
+              allActive
+                ? `scale-[1.03] border-[#D12E27] text-[#D12E27] ${FEATURED_ACTIVE_RING}`
+                : "border-zinc-900 text-zinc-900 dark:border-zinc-100 dark:text-zinc-50"
+            }`}
+          >
             All
           </div>
-          <span className="w-full text-center text-xs font-medium text-zinc-700 dark:text-zinc-300">All</span>
+          <span
+            className={`w-full text-center text-xs text-zinc-700 dark:text-zinc-300 ${allActive ? "font-semibold text-[#D12E27] dark:text-[#D12E27]" : "font-medium"}`}
+          >
+            All
+          </span>
         </Link>
       </div>
-      {categories.map((c) => (
-        <div key={c.id} className="snap-start shrink-0 w-[88px]">
-          <Link href={`/customer?category=${c.slug}`} className="flex flex-col items-center gap-2">
-            <div className="relative size-20 shrink-0 overflow-hidden rounded-full bg-zinc-100 ring-2 ring-zinc-200 dark:bg-zinc-800 dark:ring-zinc-700">
-              <Image src={c.thumbnailUrl} alt={c.name} fill className="object-cover" sizes="80px" />
-            </div>
-            <span className="line-clamp-2 w-full text-center text-xs font-medium text-zinc-900 dark:text-zinc-50">
-              {c.name}
-            </span>
-          </Link>
-        </div>
-      ))}
+      {categories.map((c) => {
+        const categoryActive = isFeaturedCategoryActive(c, activeSelection);
+        return (
+          <div key={c.id} className="snap-start shrink-0 w-[88px]">
+            <Link
+              href={`/customer?category=${c.slug}`}
+              role="tab"
+              aria-current={categoryActive ? "page" : undefined}
+              aria-selected={categoryActive}
+              className="flex flex-col items-center gap-2"
+            >
+              <div
+                className={`relative size-20 shrink-0 overflow-hidden rounded-full bg-zinc-100 transition-transform dark:bg-zinc-800 ${
+                  categoryActive
+                    ? `scale-[1.03] ${FEATURED_ACTIVE_RING}`
+                    : "ring-2 ring-zinc-200 dark:ring-zinc-700"
+                }`}
+              >
+                <Image src={c.thumbnailUrl} alt={c.name} fill className="object-cover" sizes="80px" />
+              </div>
+              <span
+                className={`line-clamp-2 w-full text-center text-xs text-zinc-900 dark:text-zinc-50 ${categoryActive ? "font-semibold" : "font-medium"}`}
+              >
+                {c.name}
+              </span>
+            </Link>
+          </div>
+        );
+      })}
     </HorizontalScroller>
   );
 }

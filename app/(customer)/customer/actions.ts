@@ -98,6 +98,56 @@ export async function placeOrderMock(formData: FormData): Promise<void> {
     tipCents,
   });
 
+  // #region agent log
+  const dbCustomer = await prisma.user.findUnique({
+    where: { id: user.id },
+    select: { id: true, role: true },
+  });
+  fetch("http://127.0.0.1:7817/ingest/c3fc8591-bb49-4618-b7bd-5aef2b04dae3", {
+    method: "POST",
+    headers: { "Content-Type": "application/json", "X-Debug-Session-Id": "d15bfd" },
+    body: JSON.stringify({
+      sessionId: "d15bfd",
+      runId: "pre-fix",
+      hypothesisId: "H1",
+      location: "app/(customer)/customer/actions.ts:placeOrderMock",
+      message: "session user vs prisma User row",
+      data: {
+        sessionUserIdLen: user.id.length,
+        sessionUserIdPrefix: user.id.slice(0, 12),
+        sessionRole: user.role,
+        dbUserFound: Boolean(dbCustomer),
+        dbRole: dbCustomer?.role ?? null,
+      },
+      timestamp: Date.now(),
+    }),
+  }).catch(() => {});
+
+  // #region agent log (debug mode: evidence-first)
+  fetch("http://127.0.0.1:7817/ingest/c3fc8591-bb49-4618-b7bd-5aef2b04dae3", {
+    method: "POST",
+    headers: { "Content-Type": "application/json", "X-Debug-Session-Id": "490896" },
+    body: JSON.stringify({
+      sessionId: "490896",
+      runId: "pre-fix",
+      hypothesisId: "H1",
+      location: "app/(customer)/customer/actions.ts:placeOrderMock",
+      message: "pre-create: session user.id existence in User table",
+      data: {
+        sessionUserIdLen: user.id.length,
+        sessionUserIdPrefix: user.id.slice(0, 12),
+        sessionRole: user.role,
+        dbUserFound: Boolean(dbCustomer),
+        dbUserIdPrefix: dbCustomer?.id ? dbCustomer.id.slice(0, 12) : null,
+        willWriteCustomerIdPrefix: user.id.slice(0, 12),
+        willWriteCustomerIdEqDbUser: dbCustomer?.id ? dbCustomer.id === user.id : false,
+      },
+      timestamp: Date.now(),
+    }),
+  }).catch(() => {});
+  // #endregion
+  // #endregion
+
   const order = await prisma.order.create({
     data: {
       customerId: user.id,
