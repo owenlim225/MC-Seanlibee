@@ -1,7 +1,7 @@
 [
   {
     "id": "roast-pork-sandwich-kit-for-4",
-    "img": "https://goldbelly.imgix.net/uploads/showcase_media_asset/image/134603/roast-pork-sandwich-kit-for-4.28babe63f6db57759b8e03d7a19a78eb.jpg?ixlib=react-9.0.2&auto=format&ar=1%3A1",
+    "img": "",
     "name": "Tommy DiNic's",
     "dsc": "Roast Pork Sandwich Kit for 4",
     "price": 99,
@@ -10,7 +10,7 @@
   },
   {
     "id": "smoked-whole-bbq-pork-shoulder-serves-10-15",
-    "img": "https://goldbelly.imgix.net/uploads/showcase_media_asset/image/90419/smoked-whole-bbq-pork-shoulder-serves-10-15.cc662e8f02f2910f67d482bbdd555954.jpg?ixlib=react-9.0.2&auto=format&ar=1%3A1",
+    "img": "",
     "name": "Bludso's BBQ",
     "dsc": "Smoked Whole BBQ Pork Shoulder - Serves 10-15",
     "price": 129,
@@ -19,7 +19,7 @@
   },
   {
     "id": "double-bone-in-heritage-berkshire-pork-chops-4-pack",
-    "img": "https://goldbelly.imgix.net/uploads/showcase_media_asset/image/114535/double-bone-in-heritage-berkshire-pork-chops-4-pack.5b6a88ca2c85ece8fd5a6dd6abd4f046.jpg?ixlib=react-9.0.2&auto=format&ar=1%3A1",
+    "img": "",
     "name": "Gastros Craft Meats",
     "dsc": "Double Bone-in Heritage Berkshire Pork Chops - 4 Pack",
     "price": 129,
@@ -28,7 +28,7 @@
   },
   {
     "id": "pork-steaks",
-    "img": "https://goldbelly.imgix.net/uploads/product_image/image/41969/pork-steaks.aaa962e22c9099952fdf15cb0382bd65.jpg?ixlib=react-9.0.2&auto=format&ar=1%3A1",
+    "img": "",
     "name": "Southside Market & Barbeque",
     "dsc": "Pork Steaks",
     "price": 69,
@@ -37,7 +37,7 @@
   },
   {
     "id": "3021-slaughterhouse-five-brisket-pork-sausage-turkey",
-    "img": "https://goldbelly.imgix.net/uploads/showcase_media_asset/image/133207/slaughterhouse-five-brisket-pork-sausage-turkey.28b91d5b2fdf226445bb9e1496f4b126.jpg?ixlib=react-9.0.2&auto=format&ar=1%3A1",
+    "img": "",
     "name": "Joe's KC BBQ",
     "dsc": "Slaughterhouse Five - Brisket + Pork + Sausage + Turkey",
     "price": 128.99,
@@ -46,7 +46,7 @@
   },
   {
     "id": "16561-snake-river-farms-kurobuta-pork-belly",
-    "img": "https://goldbelly.imgix.net/uploads/showcase_media_asset/image/70375/kurobuta-pork-belly.8a4717de51d5a8d55817afcff1719634.jpg?ixlib=react-9.0.2&auto=format&ar=1%3A1",
+    "img": "",
     "name": "Snake River Farms",
     "dsc": "Kurobuta Pork Belly",
     "price": 139,
@@ -55,7 +55,7 @@
   },
   {
     "id": "porchetta-siu-yuk-plus-chimichurri-sauce-for-5-6",
-    "img": "https://goldbelly.imgix.net/uploads/showcase_media_asset/image/117510/porchetta-siu-yuk-kit-for-5-6.e643963cc5b51dbfb43b50b8e6917a76.jpg?ixlib=react-9.0.2&auto=format&ar=1%3A1",
+    "img": "",
     "name": "Rice Box",
     "dsc": "Porchetta \"Siu Yuk\" + Chimichurri Sauce - 2 lbs.",
     "price": 129,
@@ -64,7 +64,7 @@
   },
   {
     "id": "23238-pork-tenderloin-sandwich-4-pack",
-    "img": "https://goldbelly.imgix.net/uploads/showcase_media_asset/image/132633/pork-tenderloin-sandwich-4-pack.b6914a19ee345d5284ed1eaf00f5c2ac.jpg?ixlib=react-9.0.2&auto=format&ar=1%3A1",
+    "img": "",
     "name": "Nick's Kitchen",
     "dsc": "Pork Tenderloin Sandwich - 4 Pack",
     "price": 79,
@@ -73,7 +73,7 @@
   },
   {
     "id": "roast-pork-sandwich-kit-for-8",
-    "img": "https://goldbelly.imgix.net/uploads/showcase_media_asset/image/115001/roast-pork-sandwich-kit-for-8.cfeb20e4e4b89f9d72680d5e34fc9cc7.jpg?ixlib=react-9.0.2&auto=format&ar=1%3A1",
+    "img": "",
     "name": "Tommy DiNic's",
     "dsc": "Roast Pork Sandwich Kit for 8",
     "price": 159,
@@ -82,7 +82,7 @@
   },
   {
     "id": "pulled-pork-4-lbs",
-    "img": "https://goldbelly.imgix.net/uploads/showcase_media_asset/image/131348/pulled-pork-4-lbs.689b1d5fd5204a722aca175419148a3a.jpg?ixlib=react-9.0.2&auto=format&ar=1%3A1",
+    "img": "",
     "name": "Peg Leg Porker",
     "dsc": "Pulled Pork - 4 lbs.",
     "price": 129,
@@ -91,7 +91,7 @@
   },
   {
     "id": "memphis-pulled-pork-shoulder-4-lbs",
-    "img": "https://goldbelly.imgix.net/uploads/showcase_media_asset/image/86731/memphis-pulled-pork-shoulder-4-lbs.089448f3aebd24fe82f223151314d853.jpg?ixlib=react-9.0.2&auto=format&ar=1%3A1",
+    "img": "",
     "name": "Charlie Vergos' Rendezvous",
     "dsc": "Memphis Pulled Pork Shoulder - 4 lbs.",
     "price": 109,
@@ -100,7 +100,7 @@
   },
   {
     "id": "17347-pulled-pork-3-pound-pack",
-    "img": "https://goldbelly.imgix.net/uploads/showcase_media_asset/image/137383/Central-BBQ-Pulled-Pork-Packs-1.jpg?ixlib=react-9.0.2&auto=format&ar=1%3A1",
+    "img": "",
     "name": "Central BBQ",
     "dsc": "Pulled Pork Pack - Serves 6-8",
     "price": 89,
@@ -109,7 +109,7 @@
   },
   {
     "id": "18650-carolina-pulled-pork-sandwich-pack",
-    "img": "https://goldbelly.imgix.net/uploads/showcase_media_asset/image/75464/carolina-pulled-pork-sandwich-pack.8e672a876d720c8471b08ffa47fbbbc1.jpg?ixlib=react-9.0.2&auto=format&ar=1%3A1",
+    "img": "",
     "name": "Kings BBQ",
     "dsc": "Carolina Pulled Pork Sandwich Pack",
     "price": 89,
@@ -118,7 +118,7 @@
   },
   {
     "id": "stone-porter-beer-pork-chops-4-pack",
-    "img": "https://goldbelly.imgix.net/uploads/showcase_media_asset/image/85711/stone-porter-beer-pork-chops-4-pack.95392dbb0fe0b41bd6d128fa81d63814.jpg?ixlib=react-9.0.2&auto=format&ar=1%3A1",
+    "img": "",
     "name": "Seaside Market",
     "dsc": "Stone Porter Beer Pork Chops - 4 Pack",
     "price": 119,
@@ -127,7 +127,7 @@
   },
   {
     "id": "pork-ribs",
-    "img": "https://goldbelly.imgix.net/uploads/showcase_media_asset/image/133284/pork-ribs.6b9717d10630be7c5bea4b69987a33c6.jpg?ixlib=react-9.0.2&auto=format&ar=1%3A1",
+    "img": "",
     "name": "Southside Market & Barbeque",
     "dsc": "Pork Ribs",
     "price": 79,
@@ -136,7 +136,7 @@
   },
   {
     "id": "joes-kc-ribs-and-pulled-pork",
-    "img": "https://goldbelly.imgix.net/uploads/showcase_media_asset/image/81831/joes-kc-ribs-and-pulled-pork.80d62bf64dc6a772572d7f589c8f95af.jpg?ixlib=react-9.0.2&auto=format&ar=1%3A1",
+    "img": "",
     "name": "Joe's KC BBQ",
     "dsc": "Joe's KC Ribs & Pulled Pork",
     "price": 94.99,
@@ -145,7 +145,7 @@
   },
   {
     "id": "1824200000002-pulled-pork-pirogies",
-    "img": "https://goldbelly.imgix.net/uploads/showcase_media_asset/image/132154/pulled-pork-pierogis.860293a62d3ef57afd60b6f78cdb7c64.jpg?ixlib=react-9.0.2&auto=format&ar=1%3A1",
+    "img": "",
     "name": "Baba & Pops",
     "dsc": "Pulled Pork Pierogis",
     "price": 79,
@@ -154,7 +154,7 @@
   },
   {
     "id": "whole-smoked-pork-shoulder",
-    "img": "https://goldbelly.imgix.net/uploads/showcase_media_asset/image/133153/whole-smoked-pork-shoulder.4523225ac2025f330c450bdec541bb7d.jpg?ixlib=react-9.0.2&auto=format&ar=1%3A1",
+    "img": "",
     "name": "Blue Smoke",
     "dsc": "Whole Smoked Pork Shoulder",
     "price": 129,
@@ -163,7 +163,7 @@
   },
   {
     "id": "whole-pork-belly-5-lbs",
-    "img": "https://goldbelly.imgix.net/uploads/showcase_media_asset/image/131896/whole-pork-belly-5-lbs.68e0553bf92c74601ff7b6c922af2c5a.jpg?ixlib=react-9.0.2&auto=format&ar=1%3A1",
+    "img": "",
     "name": "Roegels Barbecue",
     "dsc": "Whole Pork Belly - 5 lbs.",
     "price": 149,
@@ -172,7 +172,7 @@
   },
   {
     "id": "17352-ribs-and-pulled-pork-small-combo-pack",
-    "img": "https://goldbelly.imgix.net/uploads/showcase_media_asset/image/137366/Central-BBQ-Ribs-Pulled-Pork-Dinner-1.jpg?ixlib=react-9.0.2&auto=format&ar=1%3A1",
+    "img": "",
     "name": "Central BBQ",
     "dsc": "Ribs & Pulled Pork Dinner for 4",
     "price": 79,

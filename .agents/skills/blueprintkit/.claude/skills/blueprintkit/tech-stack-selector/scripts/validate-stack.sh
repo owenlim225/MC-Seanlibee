@@ -28,9 +28,6 @@ case $LANGUAGE in
     "Rust")
         echo "✅ Rust: Maximum performance, memory safety"
         ;;
-    "Solidity")
-        echo "✅ Solidity: Standard for EVM smart contracts"
-        ;;
     *)
         echo "⚠️  $LANGUAGE: Less common, consider team expertise"
         ;;
@@ -43,9 +40,6 @@ case $FRAMEWORK in
         ;;
     "FastAPI"|"Flask")
         echo "✅ $FRAMEWORK: Python web frameworks, good for APIs"
-        ;;
-    "Hardhat"|"Foundry")
-        echo "✅ $FRAMEWORK: Standard Web3 development frameworks"
         ;;
     *)
         echo "⚠️  $FRAMEWORK: Verify ecosystem maturity"

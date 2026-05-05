@@ -324,9 +324,9 @@ Before committing to any technology, verify:
    │       │         │          │
    ▼       ▼         ▼          ▼
 ┌────────────┐ ┌──────────┐ ┌────────┐ ┌──────────────┐
-│PostgreSQL  │ │  Redis   │ │ Vector │ │Blockchain   │
-│ Database   │ │ Cache &  │ │Database│ │RPC Provider │
-│            │ │ Sessions │ │(pgvect)│ │(Alchemy)    │
+│PostgreSQL  │ │  Redis   │ │ Vector │ │ Object       │
+│ Database   │ │ Cache &  │ │Database│ │ Storage      │
+│            │ │ Sessions │ │(pgvect)│ │ (S3/R2/etc.) │
 └────────────┘ └──────────┘ └────────┘ └──────────────┘
 ```
 
@@ -1272,22 +1272,22 @@ function getActiveUsersWithUpdatedTimestamp(users: User[]): UserDTO[] {
 
 ```typescript
 /**
- * Creates a new AI agent and deploys to blockchain
+ * Registers a new background job for a user-owned automation
  *
- * @param config - Agent configuration with parameters and strategy
- * @param userId - Owner of the agent (for authorization)
- * @returns Deployed agent address on blockchain
+ * @param config - Job configuration and scheduling parameters
+ * @param userId - Owner of the job (for authorization)
+ * @returns Created job identifier
  * @throws {ValidationError} If config is invalid
- * @throws {DeploymentError} If blockchain deployment fails
+ * @throws {DeploymentError} If job cannot be persisted or queued
  *
  * @example
- * const agent = await createAndDeployAgent({
- *   name: 'Trading Bot',
- *   strategy: 'mean-reversion',
+ * const jobId = await registerAutomationJob({
+ *   name: 'Nightly report',
+ *   schedule: '0 9 * * *',
  * }, userId);
  */
-async function createAndDeployAgent(
-  config: AgentConfig,
+async function registerAutomationJob(
+  config: JobConfig,
   userId: string
 ): Promise<string> {
   // implementation

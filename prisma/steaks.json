@@ -1,7 +1,7 @@
 [
   {
     "id": "california-reserve-filet-mignon-steaks-gift-box",
-    "img": "https://goldbelly.imgix.net/uploads/showcase_media_asset/image/96226/california-reserve-filet-mignon-steaks-gift-box.bf226e317aad85f47897ae7e325f790d.jpg?ixlib=react-9.0.2&auto=format&ar=1%3A1",
+    "img": "",
     "name": "Flannery Beef",
     "dsc": "California Reserve Filet Mignon Steaks Gift Box",
     "price": 129,
@@ -10,7 +10,7 @@
   },
   {
     "id": "california-reserve-ribeye-steaks-gift-box",
-    "img": "https://goldbelly.imgix.net/uploads/showcase_media_asset/image/132850/california-reserve-ribeye-steaks-gift-box.87b8f6acf5851abe58778d3017105edc.jpg?ixlib=react-9.0.2&auto=format&ar=1%3A1",
+    "img": "",
     "name": "Flannery Beef",
     "dsc": "California Reserve Ribeye Steaks Gift Box",
     "price": 99,
@@ -19,7 +19,7 @@
   },
   {
     "id": "steaks-and-cakes-date-night-dinner-for-2",
-    "img": "https://goldbelly.imgix.net/uploads/showcase_media_asset/image/118617/valentines-steaks-and-cakes-dinner-for-2.0c63dab635eed46209455dc33cd25ea8.jpg?ixlib=react-9.0.2&auto=format&ar=1%3A1",
+    "img": "",
     "name": "Chesapeake Bay Gourmet",
     "dsc": "Steaks and Cakes Date Night Dinner for 2",
     "price": 129,
@@ -28,7 +28,7 @@
   },
   {
     "id": "Prime-holiday-steak-sampler-for-10-12",
-    "img": "https://goldbelly.imgix.net/uploads/showcase_media_asset/image/113759/holiday-sampler-9-pack.2de75ca80282ffe9d064eb757ff7a5a1.jpg?ixlib=react-9.0.2&auto=format&ar=1%3A1",
+    "img": "",
     "name": "Saltbrick Prime",
     "dsc": "Chef Matt's Steak Sampler for 10-12",
     "price": 179,
@@ -37,7 +37,7 @@
   },
   {
     "id": "bone-in-rib-steak",
-    "img": "https://goldbelly.imgix.net/uploads/showcase_media_asset/image/113844/bone-in-rib-steak.b13d9d4233035767605f0de9acdce1ab.jpg?ixlib=react-9.0.2&auto=format&ar=1%3A1",
+    "img": "",
     "name": "Old Homestead Steakhouse",
     "dsc": "Bone-in Rib Steak",
     "price": 159,
@@ -46,7 +46,7 @@
   },
   {
     "id": "american-wagyu-gold-grade-top-sirloins",
-    "img": "https://goldbelly.imgix.net/uploads/showcase_media_asset/image/132442/american-wagyu-gold-grade-sirloins.040dbeb8f8e615b91fa7e513e3dc089c.jpg?ixlib=react-9.0.2&auto=format&ar=1%3A1",
+    "img": "",
     "name": "Snake River Farms",
     "dsc": "American Wagyu Gold Grade Top Sirloins",
     "price": 119,
@@ -55,7 +55,7 @@
   },
   {
     "id": "ribeye-prime-steak-gift-box",
-    "img": "https://goldbelly.imgix.net/uploads/showcase_media_asset/image/114307/ribeye-prime-steak-gift-box.e74cb016baabbb2df73861de8150f29c.jpg?ixlib=react-9.0.2&auto=format&ar=1%3A1",
+    "img": "",
     "name": "Churchill's Steakhouse",
     "dsc": "Ribeye Prime Steak Gift Box",
     "price": 229,
@@ -64,7 +64,7 @@
   },
   {
     "id": "dry-aged-usda-prime-black-angus-porterhouse-steak-2-pack",
-    "img": "https://goldbelly.imgix.net/uploads/showcase_media_asset/image/124865/usda-prime-black-angus-filet-mignon-barrel-cut.6ee213799e7d1848763d12edca18e3b1.jpg?ixlib=react-9.0.2&auto=format&ar=1%3A1",
+    "img": "",
     "name": "Pat LaFrieda Meats",
     "dsc": "Dry-Aged USDA Prime Black Angus Porterhouse Steak - 2 Pack",
     "price": 96.7,
@@ -73,7 +73,7 @@
   },
   {
     "id": "california-reserve-ribeye-steak",
-    "img": "https://goldbelly.imgix.net/uploads/showcase_media_asset/image/133878/california-reserve-ribeye-steak-12-oz.d367c5ae72dd9f89e170662104bef4fc.jpg?ixlib=react-9.0.2&auto=format&ar=1%3A1",
+    "img": "",
     "name": "Flannery Beef",
     "dsc": "California Reserve Ribeye Steak - 12 oz",
     "price": 32,
@@ -82,7 +82,7 @@
   },
   {
     "id": "dry-aged-boneless-ribeye-steak-dinner-kit-for-4",
-    "img": "https://goldbelly.imgix.net/uploads/showcase_media_asset/image/126887/dry-aged-boneless-ribeye-steak-dinner-for-4.81c3bdc05fe6bdb2c2214709863120e0.jpg?ixlib=react-9.0.2&auto=format&ar=1%3A1",
+    "img": "",
     "name": "Chef Francis Mallmann",
     "dsc": "Dry-Aged Boneless Ribeye Steak Dinner Kit for 4",
     "price": 225,
@@ -91,7 +91,7 @@
   },
   {
     "id": "california-reserve-filet-mignon-steak",
-    "img": "https://goldbelly.imgix.net/uploads/showcase_media_asset/image/96252/california-reserve-filet-mignon-steak.ff15071964ec8141d30c2ba05fb117e0.jpg?ixlib=react-9.0.2&auto=format&ar=1%3A1",
+    "img": "",
     "name": "Flannery Beef",
     "dsc": "California Reserve Filet Mignon Steak",
     "price": 22,
@@ -100,7 +100,7 @@
   },
   {
     "id": "sausage-wagyu-steak-sampler-choose-your-own",
-    "img": "https://goldbelly.imgix.net/uploads/showcase_media_asset/image/134435/sausage-wagyu-steak-sampler-choose-your-own.8a66af51c802dd54a863c20f768ea686.jpg?ixlib=react-9.0.2&auto=format&ar=1%3A1",
+    "img": "",
     "name": "Gastros Craft Meats",
     "dsc": "Sausage + Wagyu Steak Sampler - Choose Your Own",
     "price": 165,
@@ -109,7 +109,7 @@
   },
   {
     "id": "steak-dinner-for-2",
-    "img": "https://goldbelly.imgix.net/uploads/showcase_media_asset/image/132710/steak-dinner-kit-for-2.3046e9db1f796c3305a71253ad8d86f2.jpg?ixlib=react-9.0.2&auto=format&ar=1%3A1",
+    "img": "",
     "name": "Old Homestead Steakhouse",
     "dsc": "Steak Dinner Kit for 2",
     "price": 189,
@@ -118,7 +118,7 @@
   },
   {
     "id": "cardiff-crack-tri-tips-2-pack",
-    "img": "https://goldbelly.imgix.net/uploads/showcase_media_asset/image/133748/cardiff-crack-tri-tip-2-pack.100775575438423b43aa601f273f0713.jpg?ixlib=react-9.0.2&auto=format&ar=1%3A1",
+    "img": "",
     "name": "Seaside Market",
     "dsc": "Cardiff Crack Tri Tip - 2 Pack",
     "price": 169,
@@ -127,7 +127,7 @@
   },
   {
     "id": "california-reserve-filet-mignon-steaks-6-pack",
-    "img": "https://goldbelly.imgix.net/uploads/showcase_media_asset/image/96663/california-reserve-filet-mignon-steaks-6-pack.9d19cd56391a3a62a6f075182d8e5b1e.jpg?ixlib=react-9.0.2&auto=format&ar=1%3A1",
+    "img": "",
     "name": "Flannery Beef",
     "dsc": "California Reserve Filet Mignon Steaks - 6 Pack",
     "price": 159,
@@ -136,7 +136,7 @@
   },
   {
     "id": "wagyu-ny-strip-steaks-2-pack",
-    "img": "https://goldbelly.imgix.net/uploads/showcase_media_asset/image/131433/wagyu-ny-strip-steaks-2-pack.5b760cb84d5a57582e7dd8d1e25c9972.jpg?ixlib=react-9.0.2&auto=format&ar=1%3A1",
+    "img": "",
     "name": "Westholme Wagyu",
     "dsc": "Wagyu NY Strip Steak - 2 Pack",
     "price": 169,
@@ -145,7 +145,7 @@
   },
   {
     "id": "california-reserve-new-york-steaks-gift-box",
-    "img": "https://goldbelly.imgix.net/uploads/showcase_media_asset/image/96208/california-reserve-new-york-steaks-gift-box.2ac1b5dd138c87e7914f96310bf3bcd3.jpg?ixlib=react-9.0.2&auto=format&ar=1%3A1",
+    "img": "",
     "name": "Flannery Beef",
     "dsc": "California Reserve New York Steaks Gift Box",
     "price": 119,
@@ -154,7 +154,7 @@
   },
   {
     "id": "choice-strip-steak-6-pack",
-    "img": "https://goldbelly.imgix.net/uploads/showcase_media_asset/image/105600/choice-strip-steak-6-pack.822c77cb36216c8bec513f295b94d2f0.jpg?ixlib=react-9.0.2&auto=format&ar=1%3A1",
+    "img": "",
     "name": "Meats by Linz",
     "dsc": "Choice Strip Steak - 6 Pack",
     "price": 99,
@@ -163,7 +163,7 @@
   },
   {
     "id": "ribeye-and-filet-mignon-prime-steak-gift-box",
-    "img": "https://goldbelly.imgix.net/uploads/showcase_media_asset/image/114275/ribeye-and-filet-mignon-prime-steak-gift-box.894fbe515c343b8517ad91e956150306.jpg?ixlib=react-9.0.2&auto=format&ar=1%3A1",
+    "img": "",
     "name": "Churchill's Steakhouse",
     "dsc": "Ribeye & Filet Mignon Prime Steak Gift Box",
     "price": 249,
@@ -172,7 +172,7 @@
   },
   {
     "id": "choice-bone-in-ribeyes-2-choice-new-york-strip-steaks",
-    "img": "https://goldbelly.imgix.net/uploads/showcase_media_asset/image/115509/2-choice-bone-in-ribeyes-2-choice-new-york-strip-steaks.80e8bf5ec76921c9632b7a5c5736fa7e.jpg?ixlib=react-9.0.2&auto=format&ar=1%3A1",
+    "img": "",
     "name": "Niman Ranch",
     "dsc": "2 Choice Bone-In Ribeyes + 2 Choice New York Strip Steaks",
     "price": 139,

@@ -23,6 +23,42 @@ export default async function CustomerMenuPage({
       ? categories.filter((c) => c.id === sp.category)
       : categories;
 
+  // #region agent log
+  try {
+    const hosts = new Set<string>();
+    let invalidUrlCount = 0;
+    for (const cat of filtered) {
+      for (const item of cat.items) {
+        if (!item.imageUrl) continue;
+        try {
+          hosts.add(new URL(item.imageUrl).hostname);
+        } catch {
+          invalidUrlCount += 1;
+        }
+      }
+    }
+    fetch("http://127.0.0.1:7817/ingest/c3fc8591-bb49-4618-b7bd-5aef2b04dae3", {
+      method: "POST",
+      headers: { "Content-Type": "application/json", "X-Debug-Session-Id": "bac66b" },
+      body: JSON.stringify({
+        sessionId: "bac66b",
+        location: "app/(customer)/customer/page.tsx:CustomerMenuPage",
+        message: "menu imageUrl hostnames for next/image allowlist check",
+        data: {
+          hosts: [...hosts].sort(),
+          invalidUrlCount,
+          categoryCount: filtered.length,
+        },
+        timestamp: Date.now(),
+        hypothesisId: "H1-H5",
+        runId: "pre-fix",
+      }),
+    }).catch(() => {});
+  } catch {
+    /* ignore debug log failures */
+  }
+  // #endregion
+
   return (
     <div className="flex flex-col gap-6">
       <PageHeader

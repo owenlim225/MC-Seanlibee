@@ -1,0 +1,2 @@
+{"sessionId":"bac66b","location":"app/(customer)/customer/page.tsx:CustomerMenuPage","message":"menu imageUrl hostnames for next/image allowlist check","data":{"hosts":[],"invalidUrlCount":0,"categoryCount":15},"timestamp":1777954744506,"hypothesisId":"H1-H5","runId":"pre-fix"}
+{"sessionId":"bac66b","location":"app/(customer)/customer/page.tsx:CustomerMenuPage","message":"menu imageUrl hostnames for next/image allowlist check","data":{"hosts":[],"invalidUrlCount":0,"categoryCount":15},"timestamp":1777954749087,"hypothesisId":"H1-H5","runId":"pre-fix"}

@@ -1,7 +1,7 @@
 [
   {
     "id": "15259-german-chocolate-killer-brownie-tin-pack",
-    "img": "https://goldbelly.imgix.net/uploads/showcase_media_asset/image/132029/german-chocolate-killer-brownie-tin-pack.5ebc34160f28767a9d94c4da2e04c4b9.jpg?ixlib=react-9.0.2&auto=format&ar=1%3A1",
+    "img": "",
     "name": "Killer Brownie®",
     "dsc": "German Chocolate Killer Brownie®",
     "price": 39.99,
@@ -10,7 +10,7 @@
   },
   {
     "id": "jacques-world-famous-chocolate-chip-cookies",
-    "img": "https://goldbelly.imgix.net/uploads/showcase_media_asset/image/81172/jacques-world-famous-chocolate-chip-cookies-6-pack.2217a14c443602493bba88aa9335319a.jpg?ixlib=react-9.0.2&auto=format&ar=1%3A1",
+    "img": "",
     "name": "Jacques Torres Chocolate",
     "dsc": "Jacques’ World Famous Chocolate Chip Cookies - 6 Pack",
     "price": 39.95,
@@ -19,7 +19,7 @@
   },
   {
     "id": "luigis-original-cannoli-pie",
-    "img": "https://goldbelly.imgix.net/uploads/showcase_media_asset/image/132206/original-cannoli-pie.4cb5b9ba82f57b69b90765fd9f07aa1a.jpg?ixlib=react-9.0.2&auto=format&ar=1%3A1",
+    "img": "",
     "name": "The Cannoli Pie Company",
     "dsc": "Original Cannoli Pie",
     "price": 69,
@@ -28,7 +28,7 @@
   },
   {
     "id": "sea-salted-caramel-swirl-cheesecake",
-    "img": "https://goldbelly.imgix.net/uploads/showcase_media_asset/image/134006/sea-salted-caramel-swirl-cheesecake.e2825335433fb7a272a5d77649a6849e.jpg?ixlib=react-9.0.2&auto=format&ar=1%3A1",
+    "img": "",
     "name": "Cotton Blues Cheesecake Company",
     "dsc": "Sea-Salted Caramel Swirl Cheesecake",
     "price": 65,
@@ -37,7 +37,7 @@
   },
   {
     "id": "brooklyn-blackout-cookie-brownie-combo-pack-2-tins",
-    "img": "https://goldbelly.imgix.net/uploads/showcase_media_asset/image/123456/brooklyn-blackout-cookie-brownie-combo-pack-2-tins.d8805325baf6b23b4f01d119dc4531a7.jpg?ixlib=react-9.0.2&auto=format&ar=1%3A1",
+    "img": "",
     "name": "Brooklyn Blackout Company",
     "dsc": "Brooklyn Blackout Cookie + Brownie Combo Pack - 2 Tins",
     "price": 89,
@@ -46,7 +46,7 @@
   },
   {
     "id": "best-seller-cupcake-dozen",
-    "img": "https://goldbelly.imgix.net/uploads/showcase_media_asset/image/94478/best-seller-cupcake-dozen.f93b21993f6a2da11c975d45b9b0d08f.jpg?ixlib=react-9.0.2&auto=format&ar=1%3A1",
+    "img": "",
     "name": "Crave Cupcakes",
     "dsc": "Best Seller Cupcake Dozen",
     "price": 89,
@@ -55,7 +55,7 @@
   },
   {
     "id": "choose-your-own-ice-cream-donuts-6-pack",
-    "img": "https://goldbelly.imgix.net/uploads/showcase_media_asset/image/132716/choose-your-own-ice-cream-donuts-6-pack.24d0b44765a7c54237fcd7ea9d9d8093.jpg?ixlib=react-9.0.2&auto=format&ar=1%3A1",
+    "img": "",
     "name": "Elegant Desserts",
     "dsc": "Choose Your Own Ice Cream Donuts - 6 Pack",
     "price": 69,
@@ -64,7 +64,7 @@
   },
   {
     "id": "17481-jewish-dessert-3-pack",
-    "img": "https://goldbelly.imgix.net/uploads/showcase_media_asset/image/72507/jewish-classics-dessert-pack.7d4b76630f2fe75dcb7bbcf2501b7390.png?ixlib=react-9.0.2&auto=format&ar=1%3A1",
+    "img": "",
     "name": "Ess-a-Bagel",
     "dsc": "Jewish Classics Dessert Pack",
     "price": 89.95,
@@ -73,7 +73,7 @@
   },
   {
     "id": "dessert-bar-care-package",
-    "img": "https://goldbelly.imgix.net/uploads/showcase_media_asset/image/131609/dessert-bar-care-package.324aa28fe98c9dc67b75aac43376902e.jpg?ixlib=react-9.0.2&auto=format&ar=1%3A1",
+    "img": "",
     "name": "Bread and Roses Bakery",
     "dsc": "Dessert Bar Care Package",
     "price": 65,
@@ -82,7 +82,7 @@
   },
   {
     "id": "donut-cookies-12-pack",
-    "img": "https://goldbelly.imgix.net/uploads/showcase_media_asset/image/97746/donut-cookies-12-pack.46f42c61c4a79fd2051a99b2f23e890e.jpg?ixlib=react-9.0.2&auto=format&ar=1%3A1",
+    "img": "",
     "name": "Stan's Donuts",
     "dsc": "Donut Cookies - 12 Pack",
     "price": 49,
@@ -91,7 +91,7 @@
   },
   {
     "id": "gulab-jamun-ice-cream-cakes-2-pack",
-    "img": "https://goldbelly.imgix.net/uploads/showcase_media_asset/image/105133/gulab-jamun-ice-cream-cakes-2-pack.c45b4d0750ad22d741f84dc1f26d20e7.JPG?ixlib=react-9.0.2&auto=format&ar=1%3A1",
+    "img": "",
     "name": "Malai Ice Cream",
     "dsc": "Gulab Jamun Ice Cream Cakes - 2 Pack",
     "price": 79,
@@ -100,7 +100,7 @@
   },
   {
     "id": "jacques-world-famous-chocolate-chip-cookies-12-pack",
-    "img": "https://goldbelly.imgix.net/uploads/showcase_media_asset/image/83825/jacques-world-famous-chocolate-chip-cookies-12-pack.3b373bdd67cd25084182c21499f675d1.jpg?ixlib=react-9.0.2&auto=format&ar=1%3A1",
+    "img": "",
     "name": "Jacques Torres Chocolate",
     "dsc": "Jacques’ World Famous Chocolate Chip Cookies - 12 Pack",
     "price": 69.95,
@@ -109,7 +109,7 @@
   },
   {
     "id": "assorted-rice-krispie-treats-12-pack",
-    "img": "https://goldbelly.imgix.net/uploads/showcase_media_asset/image/95324/assorted-rice-krispie-treats-12-pack.801c4bad4750f54e7a27652df3a7b6ca.jpg?ixlib=react-9.0.2&auto=format&ar=1%3A1",
+    "img": "",
     "name": "Treat House",
     "dsc": "Assorted Rice Krispie Treats - 12 Pack",
     "price": 49,
@@ -118,7 +118,7 @@
   },
   {
     "id": "choose-your-own-ice-cream-6-pints",
-    "img": "https://goldbelly.imgix.net/uploads/showcase_media_asset/image/95947/ice-cream-choose-your-own-6-pints.ae6a75a1b5d518d9cbf2982ebc504f4c.jpg?ixlib=react-9.0.2&auto=format&ar=1%3A1",
+    "img": "",
     "name": "Graeter's Ice Cream",
     "dsc": "Ice Cream - Choose Your Own 6 Pints",
     "price": 79.95,
@@ -127,7 +127,7 @@
   },
   {
     "id": "candy-cookie-cheesecake-sampler",
-    "img": "https://goldbelly.imgix.net/uploads/showcase_media_asset/image/82267/candy-cookie-cheesecake-sampler.bb8e5e3fb399edaa00a529271565d16f.jpg?ixlib=react-9.0.2&auto=format&ar=1%3A1",
+    "img": "",
     "name": "Eli's Cheesecake Company",
     "dsc": "Candy Cookie Cheesecake Sampler",
     "price": 79,
@@ -136,7 +136,7 @@
   },
   {
     "id": "chocolate-marshmallows",
-    "img": "https://goldbelly.imgix.net/uploads/showcase_media_asset/image/108670/chocolate-marshmallows.a5bb2a6f0b25f6058e82e486bc34020b.jpg?ixlib=react-9.0.2&auto=format&ar=1%3A1",
+    "img": "",
     "name": "Colts Chocolate",
     "dsc": "Chocolate Marshmallows",
     "price": 25,
@@ -145,7 +145,7 @@
   },
   {
     "id": "brooklyn-blackout-parfait",
-    "img": "https://goldbelly.imgix.net/uploads/showcase_media_asset/image/82266/brooklyn-blackout-parfait.756b6c8cf3066aaca322fb12595bb3a4.jpg?ixlib=react-9.0.2&auto=format&ar=1%3A1",
+    "img": "",
     "name": "Brooklyn Cupcake",
     "dsc": "Brooklyn Blackout Cupcake Jars",
     "price": 79,
@@ -154,7 +154,7 @@
   },
   {
     "id": "24011-chocolate-and-cinnamon-babka-3-pack",
-    "img": "https://goldbelly.imgix.net/uploads/showcase_media_asset/image/132984/breads-chocolate-and-cinnamon-babka-3-pack.b5c36a0ccbbec8dd7c23771cfa0603fb.jpg?ixlib=react-9.0.2&auto=format&ar=1%3A1",
+    "img": "",
     "name": "Breads Bakery",
     "dsc": "Breads Chocolate and Cinnamon Babka - 3 Pack",
     "price": 49.95,
@@ -163,7 +163,7 @@
   },
   {
     "id": "dessert-bars-choose-your-own-9-pack",
-    "img": "https://goldbelly.imgix.net/uploads/showcase_media_asset/image/109092/dessert-bars-choose-your-own-9-pack.38ec1ad968769f3ab76bcb0826a0b8b7.jpg?ixlib=react-9.0.2&auto=format&ar=1%3A1",
+    "img": "",
     "name": "The Gingered Peach",
     "dsc": "Dessert Bars - Choose Your Own 9 Pack",
     "price": 49,
@@ -172,7 +172,7 @@
   },
   {
     "id": "cinnamon-rolls-honey-bees-sampler-pack",
-    "img": "https://goldbelly.imgix.net/uploads/showcase_media_asset/image/103958/sweet-roll-sampler-2-dozen.8b0fd9bfd3acc7aadc1a478d5b4f27ff.jpg?ixlib=react-9.0.2&auto=format&ar=1%3A1",
+    "img": "",
     "name": "Weikel's Bakery",
     "dsc": "Cinnamon Rolls and Honey Bees Sampler Pack",
     "price": 69,

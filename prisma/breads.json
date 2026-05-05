@@ -1,7 +1,7 @@
 [
   {
     "id": "artisanal-bread-choose-your-own-3-pack",
-    "img": "https://goldbelly.imgix.net/uploads/showcase_media_asset/image/132332/artisanal-bread-choose-your-own-3-pack.c64d8dc0584457116b91a24f43cd861c.jpg?ixlib=react-9.0.2&auto=format&ar=1%3A1",
+    "img": "",
     "name": "Orwashers Bakery",
     "dsc": "Artisanal Bread - Choose Your Own 3 Pack",
     "price": 45,
@@ -10,7 +10,7 @@
   },
   {
     "id": "corn-cheese-bread-2-pack",
-    "img": "https://goldbelly.imgix.net/uploads/showcase_media_asset/image/133923/corn-cheese-bread-2-pack.703937ce3943d6caad78d3612cd9dcef.jpg?ixlib=react-9.0.2&auto=format&ar=1%3A1",
+    "img": "",
     "name": "Calic Bread",
     "dsc": "Corn Cheese Bread - 2 Pack",
     "price": 89,
@@ -19,7 +19,7 @@
   },
   {
     "id": "tartine-bread-loaves-choose-your-own-2-pack",
-    "img": "https://goldbelly.imgix.net/uploads/showcase_media_asset/image/133401/tartine-bread-loaves-choose-your-own-2-pack.aa052bf998aa1b627e1fa71a482311a7.jpg?ixlib=react-9.0.2&auto=format&ar=1%3A1",
+    "img": "",
     "name": "Tartine Bakery",
     "dsc": "Tartine Bread Loaves - Choose Your Own 2 Pack",
     "price": 39,
@@ -28,7 +28,7 @@
   },
   {
     "id": "japanese-milk-bread",
-    "img": "https://goldbelly.imgix.net/uploads/showcase_media_asset/image/95387/japanese-milk-bread.5c3e3677db6b145b659e702af3098337.jpg?ixlib=react-9.0.2&auto=format&ar=1%3A1",
+    "img": "",
     "name": "Craftsman and Wolves",
     "dsc": "Japanese Milk Bread - 2 Loaves",
     "price": 55,
@@ -37,7 +37,7 @@
   },
   {
     "id": "artisanal-bread-choose-your-own-6-pack",
-    "img": "https://goldbelly.imgix.net/uploads/showcase_media_asset/image/126688/bread-choose-your-own-6-pack.060cf408cf8b30ef3ea618ef3e5d5389.jpg?ixlib=react-9.0.2&auto=format&ar=1%3A1",
+    "img": "",
     "name": "Orwashers Bakery",
     "dsc": "Artisanal Bread - Choose Your Own 6 Pack",
     "price": 69,
@@ -46,7 +46,7 @@
   },
   {
     "id": "23572-artichoke-bread-sampler-4-pack",
-    "img": "https://goldbelly.imgix.net/uploads/showcase_media_asset/image/89514/artichoke-bread-sampler-4-pack.2243d37a2b976f88cdfe026026e82e1f.jpg?ixlib=react-9.0.2&auto=format&ar=1%3A1",
+    "img": "",
     "name": "Arcangeli Grocery",
     "dsc": "Artichoke Bread Sampler - 4 Pack",
     "price": 59,
@@ -55,7 +55,7 @@
   },
   {
     "id": "bavarian-soft-pretzel-twists-10-pack",
-    "img": "https://goldbelly.imgix.net/uploads/showcase_media_asset/image/133455/bavarian-soft-pretzel-twists-10-pack.0f8c34ca7341a525bd581924bd9f030f.jpg?ixlib=react-9.0.2&auto=format&ar=1%3A1",
+    "img": "",
     "name": "Milwaukee Pretzel Company",
     "dsc": "Bavarian Soft Pretzel Twists - 10 Pack",
     "price": 39,
@@ -64,7 +64,7 @@
   },
   {
     "id": "banana-bread-6-pack-choose-your-own",
-    "img": "https://goldbelly.imgix.net/uploads/showcase_media_asset/image/99033/mini-banana-bread-loaves-18-pack-choose-your-own.cf136bd604f91d94d067045b13ad0227.jpg?ixlib=react-9.0.2&auto=format&ar=1%3A1",
+    "img": "",
     "name": "Maui Banana Bread Co",
     "dsc": "Banana Bread- Choose Your Own 6 Pack",
     "price": 59,
@@ -73,7 +73,7 @@
   },
   {
     "id": "stuffed-bread-loaves-choose-your-own-2-pack",
-    "img": "https://goldbelly.imgix.net/uploads/showcase_media_asset/image/128801/stuffed-bread-loaves-choose-your-own-2-pack.40c693cca82e78bf496dc14bf1f52d61.jpg?ixlib=react-9.0.2&auto=format&ar=1%3A1",
+    "img": "",
     "name": "Antique Bar & Bakery",
     "dsc": "Stuffed Bread Loaves - Choose Your Own 2 Pack",
     "price": 59,
@@ -82,7 +82,7 @@
   },
   {
     "id": "15277-hot-and-spicy-cheese-bread-2-pack",
-    "img": "https://goldbelly.imgix.net/uploads/showcase_media_asset/image/129676/hot-and-spicy-cheese-bread-2-pack.014477417093300bfb5e9ed8645bd0a5.jpg?ixlib=react-9.0.2&auto=format&ar=1%3A1",
+    "img": "",
     "name": "Stella's of Madison",
     "dsc": "Hot & Spicy Cheese Bread - 2 Pack",
     "price": 39,
@@ -91,7 +91,7 @@
   },
   {
     "id": "classic-clam-chowder-and-bread-bowls-4-pack",
-    "img": "https://goldbelly.imgix.net/uploads/showcase_media_asset/image/98280/classic-clam-chowder-and-bread-bowls-4-pack.ce07ef6072a276e55bb2924f56d74ebb.jpg?ixlib=react-9.0.2&auto=format&ar=1%3A1",
+    "img": "",
     "name": "Boudin Bakery",
     "dsc": "Classic Clam Chowder and Bread Bowls Kit - 4 Pack",
     "price": 49,
@@ -100,7 +100,7 @@
   },
   {
     "id": "babka-choose-your-own-2-pack",
-    "img": "https://goldbelly.imgix.net/uploads/showcase_media_asset/image/106973/babka-choose-your-own-2-pack.7f0a32a47bf3e7d9582b94b6aaabbb10.jpg?ixlib=react-9.0.2&auto=format&ar=1%3A1",
+    "img": "",
     "name": "Kossar's Bagels & Bialys",
     "dsc": "Babka - Choose Your Own 2 Pack",
     "price": 59,
@@ -109,7 +109,7 @@
   },
   {
     "id": "original-garlic-cream-cheese-bread-2-pack",
-    "img": "https://goldbelly.imgix.net/uploads/showcase_media_asset/image/105205/original-garlic-cream-cheese-bread-2-pack.7cb55509860ca0311b97222aae4eb0b2.jpg?ixlib=react-9.0.2&auto=format&ar=1%3A1",
+    "img": "",
     "name": "Calic Bread",
     "dsc": "Original Garlic Cream Cheese Bread - 2 Pack",
     "price": 79,
@@ -118,7 +118,7 @@
   },
   {
     "id": "artisanal-bread-choose-your-own-2-pack",
-    "img": "https://goldbelly.imgix.net/uploads/product_image/image/88948/artisanal-bread-choose-your-own-2-pack.a33cb2854267dfc70780af82847e5557.jpg?ixlib=react-9.0.2&auto=format&ar=1%3A1",
+    "img": "",
     "name": "High Street Philadelphia",
     "dsc": "Artisanal Bread - Choose Your Own 2 Pack",
     "price": 44,
@@ -127,7 +127,7 @@
   },
   {
     "id": "artisanal-bread-best-sellers-3-pack",
-    "img": "https://goldbelly.imgix.net/uploads/showcase_media_asset/image/126686/artisanal-bread-best-sellers-3-pack.1dcfccc1a446fe9163fe9015fec5be11.jpg?ixlib=react-9.0.2&auto=format&ar=1%3A1",
+    "img": "",
     "name": "Orwashers Bakery",
     "dsc": "Artisanal Bread Best Sellers - 3 Pack",
     "price": 45,
@@ -136,7 +136,7 @@
   },
   {
     "id": "italian-bread-2-loaves",
-    "img": "https://goldbelly.imgix.net/uploads/showcase_media_asset/image/134811/italian-bread-2-loaves.8a42be072eac0f8abdb93d256061515a.jpg?ixlib=react-9.0.2&auto=format&ar=1%3A1",
+    "img": "",
     "name": "Tomaro's Bakery",
     "dsc": "Italian Bread - 2 Loaves",
     "price": 35,
@@ -145,7 +145,7 @@
   },
   {
     "id": "24239-essa-bagel-bakers-dozen-kosher",
-    "img": "https://goldbelly.imgix.net/uploads/showcase_media_asset/image/91160/essa-bagel-bakers-dozen-kosher.b69c2a8053463ce34cfb35f71e3ccee2.jpg?ixlib=react-9.0.2&auto=format&ar=1%3A1",
+    "img": "",
     "name": "Essa Bagel",
     "dsc": "Essa Bagel Baker's Dozen (Kosher)",
     "price": 59,
@@ -154,7 +154,7 @@
   },
   {
     "id": "pain-au-chocolat-8-pack",
-    "img": "https://goldbelly.imgix.net/uploads/showcase_media_asset/image/90466/pain-au-chocolat-8-pack.58a1a9fdc9920b4b8406fbb98a304a68.jpg?ixlib=react-9.0.2&auto=format&ar=1%3A1",
+    "img": "",
     "name": "Ceci-Cela Patisserie",
     "dsc": "Pain au Chocolat - 8 Pack",
     "price": 49,
@@ -163,7 +163,7 @@
   },
   {
     "id": "choose-your-own-gourmet-breadsticks-15-lb-pack",
-    "img": "https://goldbelly.imgix.net/uploads/showcase_media_asset/image/90725/choose-your-own-gourmet-breadsticks-5-lb-3-pack.030d6d0ed9eb8e65b1ff18f5d9212326.jpg?ixlib=react-9.0.2&auto=format&ar=1%3A1",
+    "img": "",
     "name": "Claudio's Specialty Breads",
     "dsc": "Choose Your Own Gourmet Breadsticks - 15-lb. Pack",
     "price": 170,
@@ -172,7 +172,7 @@
   },
   {
     "id": "pretzel-lovers-combo-pack",
-    "img": "https://goldbelly.imgix.net/uploads/showcase_media_asset/image/123858/pretzel-lovers-combo-pack.73ed8b17c5dec3f399e3e2a9eea4ffbe.jpg?ixlib=react-9.0.2&auto=format&ar=1%3A1",
+    "img": "",
     "name": "Milwaukee Pretzel Company",
     "dsc": "Pretzel Lover's Combo Pack",
     "price": 79,

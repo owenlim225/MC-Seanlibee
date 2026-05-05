@@ -1,7 +1,7 @@
 [
   {
     "id": "jacques-world-famous-chocolate-chip-cookies",
-    "img": "https://goldbelly.imgix.net/uploads/showcase_media_asset/image/81172/jacques-world-famous-chocolate-chip-cookies-6-pack.2217a14c443602493bba88aa9335319a.jpg?ixlib=react-9.0.2&auto=format&ar=1%3A1",
+    "img": "",
     "name": "Jacques Torres Chocolate",
     "dsc": "Jacques’ World Famous Chocolate Chip Cookies - 6 Pack",
     "price": 39.95,
@@ -10,7 +10,7 @@
   },
   {
     "id": "chocolate-stack-12-bars",
-    "img": "https://goldbelly.imgix.net/uploads/showcase_media_asset/image/82587/chocolate-stack-12-bars.1d613389b988a1b21bcf46105306a55a.jpg?ixlib=react-9.0.2&auto=format&ar=1%3A1",
+    "img": "",
     "name": "Kreuther Handcrafted Chocolate",
     "dsc": "Chocolate Stack - 12 Bars",
     "price": 99,
@@ -19,7 +19,7 @@
   },
   {
     "id": "15259-german-chocolate-killer-brownie-tin-pack",
-    "img": "https://goldbelly.imgix.net/uploads/showcase_media_asset/image/132029/german-chocolate-killer-brownie-tin-pack.5ebc34160f28767a9d94c4da2e04c4b9.jpg?ixlib=react-9.0.2&auto=format&ar=1%3A1",
+    "img": "",
     "name": "Killer Brownie®",
     "dsc": "German Chocolate Killer Brownie®",
     "price": 39.99,
@@ -28,7 +28,7 @@
   },
   {
     "id": "raspberry-chocolate-pie",
-    "img": "https://goldbelly.imgix.net/uploads/showcase_media_asset/image/131947/raspberry-chocolate-pie.c40248c44adb974a159d7f100011c987.jpg?ixlib=react-9.0.2&auto=format&ar=1%3A1",
+    "img": "",
     "name": "Pietisserie",
     "dsc": "Raspberry Chocolate Pie",
     "price": 79,
@@ -37,7 +37,7 @@
   },
   {
     "id": "chocolate-covered-cupcake-half-dozen",
-    "img": "https://goldbelly.imgix.net/uploads/showcase_media_asset/image/98898/chocolate-covered-cupcake-half-dozen.90ecdfa8028d2e46ead8f3c210e1946e.jpg?ixlib=react-9.0.2&auto=format&ar=1%3A1",
+    "img": "",
     "name": "Brooklyn Cupcake",
     "dsc": "Chocolate Covered Cupcake - 6 Pack",
     "price": 65,
@@ -46,7 +46,7 @@
   },
   {
     "id": "chocolate-ganache-fudge-brownie",
-    "img": "https://goldbelly.imgix.net/uploads/showcase_media_asset/image/108595/chocolate-ganache-fudge-brownie.fb14f000098178f7520f89e167756deb.jpg?ixlib=react-9.0.2&auto=format&ar=1%3A1",
+    "img": "",
     "name": "Colts Chocolate",
     "dsc": "Chocolate Ganache Fudge Brownie",
     "price": 45,
@@ -55,7 +55,7 @@
   },
   {
     "id": "whisky-dark-chocolate-cake",
-    "img": "https://goldbelly.imgix.net/uploads/showcase_media_asset/image/134355/whisky-dark-chocolate-cake.bef20867a13e7e802310b10b63eba282.jpg?ixlib=react-9.0.2&auto=format&ar=1%3A1",
+    "img": "",
     "name": "Lady M Confections",
     "dsc": "Whisky Dark Chocolate Cake",
     "price": 125,
@@ -64,7 +64,7 @@
   },
   {
     "id": "double-chocolate-cheesecake-with-ghirardelli-chocolate",
-    "img": "https://goldbelly.imgix.net/uploads/showcase_media_asset/image/134351/double-chocolate-cheesecake-with-ghirardelli-chocolate.8dbc9e4bd74b2ef7d962e1b3811dd43e.jpg?ixlib=react-9.0.2&auto=format&ar=1%3A1",
+    "img": "",
     "name": "Eli's Cheesecake Company",
     "dsc": "Double Chocolate Cheesecake with Ghirardelli® Chocolate",
     "price": 74,
@@ -73,7 +73,7 @@
   },
   {
     "id": "chocolate-cheesecake",
-    "img": "https://goldbelly.imgix.net/uploads/showcase_media_asset/image/77825/chocolate-cheesecake.0ec6ea97866d14cef7f66b58abd98ea9.jpg?ixlib=react-9.0.2&auto=format&ar=1%3A1",
+    "img": "",
     "name": "The Nuns of New Skete",
     "dsc": "Chocolate Cheesecake - 6\"",
     "price": 49,
@@ -82,7 +82,7 @@
   },
   {
     "id": "chocolate-mousse-supreme-cake",
-    "img": "https://goldbelly.imgix.net/uploads/showcase_media_asset/image/133142/chocolate-mousse-supreme-cake.5fe7244dd7efb592e941587d8e336ad3.jpg?ixlib=react-9.0.2&auto=format&ar=1%3A1",
+    "img": "",
     "name": "Carousel Cakes",
     "dsc": "Chocolate Mousse Supreme Cake",
     "price": 49,
@@ -91,7 +91,7 @@
   },
   {
     "id": "the-boys-chocolate-pizza-3-pack",
-    "img": "https://goldbelly.imgix.net/uploads/showcase_media_asset/image/97161/famous-chocolate-pizza-3-pack.23e77730a97a44b9b6918f8c6b844e51.jpg?ixlib=react-9.0.2&auto=format&ar=1%3A1",
+    "img": "",
     "name": "Craig's LA",
     "dsc": "Famous Chocolate Pizza - 3 Pack",
     "price": 69,
@@ -100,7 +100,7 @@
   },
   {
     "id": "chocolate-pretzel-passion-gift-assortment",
-    "img": "https://goldbelly.imgix.net/uploads/showcase_media_asset/image/123066/chocolate-pretzel-passion-gift-assortment.a74f130ab33eb159450541f6b2932389.jpg?ixlib=react-9.0.2&auto=format&ar=1%3A1",
+    "img": "",
     "name": "Sugar Plum",
     "dsc": "Chocolate Pretzel Passion Gift Assortment",
     "price": 69,
@@ -109,7 +109,7 @@
   },
   {
     "id": "chocolate-tease-gift-box",
-    "img": "https://goldbelly.imgix.net/uploads/showcase_media_asset/image/90318/chocolate-tease-gift-box.2115f3d653b78b791d9ace9354509614.jpg?ixlib=react-9.0.2&auto=format&ar=1%3A1",
+    "img": "",
     "name": "Cake Chicago",
     "dsc": "Chocolate Tease Gift Box",
     "price": 89,
@@ -118,7 +118,7 @@
   },
   {
     "id": "15678-not-a-nutter-killer-brownies",
-    "img": "https://goldbelly.imgix.net/uploads/showcase_media_asset/image/68639/not-a-nutter-killer-brownies.d152046f07bd1947176e1650891fd9f5.jpg?ixlib=react-9.0.2&auto=format&ar=1%3A1",
+    "img": "",
     "name": "Killer Brownie®",
     "dsc": "Triple Chocolate Killer Brownies®",
     "price": 39.99,
@@ -127,7 +127,7 @@
   },
   {
     "id": "chocolate-whoopie-pies",
-    "img": "https://goldbelly.imgix.net/uploads/showcase_media_asset/image/77887/chocolate-whoopie-pies.80ab8b83a3f272ff8e1eee50e7c5869d.jpeg?ixlib=react-9.0.2&auto=format&ar=1%3A1",
+    "img": "",
     "name": "McClure's Bakery",
     "dsc": "Chocolate Whoopie Pies",
     "price": 35,
@@ -136,7 +136,7 @@
   },
   {
     "id": "outrageous-dark-chocolate-chocolate-chunk-cookies-12-pack",
-    "img": "https://goldbelly.imgix.net/uploads/showcase_media_asset/image/137162/SweetHedys-Outrageous-Dark-Chocolate-Chunk-Product-1.jpg?ixlib=react-9.0.2&auto=format&ar=1%3A1",
+    "img": "",
     "name": "Sweet Hedy",
     "dsc": "Outrageous Dark Chocolate Chocolate Chunk Cookies - 12 Pack",
     "price": 64,
@@ -145,7 +145,7 @@
   },
   {
     "id": "20-layer-chocolate-peanut-butter-cake",
-    "img": "https://goldbelly.imgix.net/uploads/showcase_media_asset/image/133914/20-layer-chocolate-peanut-butter-cake-for-6-8.4dd9bebd3e21ec24b4f8344f080ee5ab.jpg?ixlib=react-9.0.2&auto=format&ar=1%3A1",
+    "img": "",
     "name": "LAVO",
     "dsc": "20 Layer Chocolate Peanut Butter Cake",
     "price": 105,
@@ -154,7 +154,7 @@
   },
   {
     "id": "chocolate-outrage-cake",
-    "img": "https://goldbelly.imgix.net/uploads/showcase_media_asset/image/93607/chocolate-outrage-cake.52608e8b20476800690445ad646ff7f5.jpg?ixlib=react-9.0.2&auto=format&ar=1%3A1",
+    "img": "",
     "name": "Carousel Cakes",
     "dsc": "Chocolate Outrage Cake",
     "price": 49,
@@ -163,7 +163,7 @@
   },
   {
     "id": "chocolate-fudge-rainbow-cake",
-    "img": "https://goldbelly.imgix.net/uploads/showcase_media_asset/image/91119/chocolate-fudge-rainbow-cake.b55af0b5cbbd3d65e0bb9486efe24c6a.jpg?ixlib=react-9.0.2&auto=format&ar=1%3A1",
+    "img": "",
     "name": "Carlo's Bakery",
     "dsc": "Chocolate Fudge Rainbow Cake",
     "price": 69.95,
@@ -172,7 +172,7 @@
   },
   {
     "id": "jacques-world-famous-chocolate-chip-cookies-12-pack",
-    "img": "https://goldbelly.imgix.net/uploads/showcase_media_asset/image/83825/jacques-world-famous-chocolate-chip-cookies-12-pack.3b373bdd67cd25084182c21499f675d1.jpg?ixlib=react-9.0.2&auto=format&ar=1%3A1",
+    "img": "",
     "name": "Jacques Torres Chocolate",
     "dsc": "Jacques’ World Famous Chocolate Chip Cookies - 12 Pack",
     "price": 69.95,
