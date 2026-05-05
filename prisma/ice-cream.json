@@ -9,24 +9,6 @@
     "country": "Cincinnati, OH"
   },
   {
-    "id": "23952-nancys-italian-gelato-gift-box",
-    "img": "https://goldbelly.imgix.net/uploads/showcase_media_asset/image/90388/nancys-italian-gelato-gift-box.d44dba927ca67daf7765e0c3a59f3587.jpg?ixlib=react-9.0.2&auto=format&ar=1%3A1",
-    "name": "Nancy Silverton's Nancy's Fancy",
-    "dsc": "Nancy Silverton's Favorite Gelato Gift Box",
-    "price": 89,
-    "rate": 4,
-    "country": "Los Angeles, CA"
-  },
-  {
-    "id": "237283342-choose-your-own-frozen-custard-6-pack",
-    "img": "https://goldbelly.imgix.net/uploads/showcase_media_asset/image/133888/choose-your-own-frozen-custard-6-pack.f13e3415fd09547371a184d04166ff77.jpg?ixlib=react-9.0.2&auto=format&ar=1%3A1",
-    "name": "Anderson's Frozen Custard",
-    "dsc": "Frozen Custard + Handmade Ice Cream - Choose Your Own - 6 Pack",
-    "price": 109,
-    "rate": 4,
-    "country": "Buffalo, NY"
-  },
-  {
     "id": "ice-cream-choose-your-own-5-pints",
     "img": "https://goldbelly.imgix.net/uploads/showcase_media_asset/image/103364/ice-cream-choose-your-own-5-pints.05ed6c9fab612b8e5f0367e87428ebf7.jpg?ixlib=react-9.0.2&auto=format&ar=1%3A1",
     "name": "The Baked Bear",
@@ -34,15 +16,6 @@
     "price": 99,
     "rate": 4,
     "country": "San Diego, CA"
-  },
-  {
-    "id": "17228-4-pint-pack",
-    "img": "https://goldbelly.imgix.net/uploads/showcase_media_asset/image/71773/choose-your-own-boozy-ice-cream-4-pints.cecb4c1a4d29b16b44c2b88fa59b3e86.png?ixlib=react-9.0.2&auto=format&ar=1%3A1",
-    "name": "Tipsy Scoop Boozy Ice Cream",
-    "dsc": "Choose Your Own Boozy Ice Cream - 4 Pints",
-    "price": 99,
-    "rate": 5,
-    "country": "New York, NY"
   },
   {
     "id": "ice-cream-choose-your-own-6-pints",
@@ -61,15 +34,6 @@
     "price": 79,
     "rate": 4,
     "country": "Wilmington, NC"
-  },
-  {
-    "id": "ice-cream-choose-your-own-4-pints",
-    "img": "https://goldbelly.imgix.net/uploads/showcase_media_asset/image/107316/ice-cream-choose-your-own-4-pints.22c48c4004a36083da64a69635076e6e.jpg?ixlib=react-9.0.2&auto=format&ar=1%3A1",
-    "name": "Sugar Hill Creamery",
-    "dsc": "Ice Cream - Choose Your Own 4 Pints",
-    "price": 79,
-    "rate": 5,
-    "country": "Harlem, NY"
   },
   {
     "id": "choose-your-own-6-pints",
@@ -153,15 +117,6 @@
     "country": "San Diego, CA"
   },
   {
-    "id": "mini-ice-cream-sandwiches-choose-your-own-16-pack",
-    "img": "https://goldbelly.imgix.net/uploads/showcase_media_asset/image/134845/mini-ice-cream-sandwiches-choose-your-own-16-pack.4f75836908c8ce41789c4af346bfa9d2.jpg?ixlib=react-9.0.2&auto=format&ar=1%3A1",
-    "name": "Cream + Sugar",
-    "dsc": "Mini Ice Cream Sandwiches - Choose Your Own 16 Pack",
-    "price": 89,
-    "rate": 4,
-    "country": "Jackson, WY"
-  },
-  {
     "id": "layered-ice-cream-sundae-jar-choose-your-own-6-pack",
     "img": "https://goldbelly.imgix.net/uploads/showcase_media_asset/image/129301/layered-ice-cream-sundae-jar-choose-your-own-6-pack.a018cc2bb407befc6d7b618441849c28.jpg?ixlib=react-9.0.2&auto=format&ar=1%3A1",
     "name": "The Yard Milkshake Bar",
@@ -207,15 +162,6 @@
     "country": "San Diego, CA"
   },
   {
-    "id": "artisan-ice-cream-choose-your-own-6-pints",
-    "img": "https://goldbelly.imgix.net/uploads/showcase_media_asset/image/131929/artisan-ice-cream-choose-your-own-6-pints.fc029dfaf6c0b6143ed09f3dc6f72745.jpg?ixlib=react-9.0.2&auto=format&ar=1%3A1",
-    "name": "Cream + Sugar",
-    "dsc": "Artisan Ice Cream - Choose Your Own 6 Pints",
-    "price": 99,
-    "rate": 4,
-    "country": "Jackson, WY"
-  },
-  {
     "id": "bonastyle-ice-cream-choose-your-own-6-pints",
     "img": "https://goldbelly.imgix.net/uploads/showcase_media_asset/image/134416/bonastyle-ice-cream-choose-your-own-6-pints.a10293b457234788157c88905a57612a.jpg?ixlib=react-9.0.2&auto=format&ar=1%3A1",
     "name": "Bona Bona Ice Cream",
@@ -232,14 +178,5 @@
     "price": 99,
     "rate": 4,
     "country": "Lexington, KY"
-  },
-  {
-    "id": "signature-chip-ice-cream-6-pints",
-    "img": "https://goldbelly.imgix.net/uploads/showcase_media_asset/image/133218/signature-chip-ice-cream-6-pints.32228ca3b762a1f5970a14fea82139ec.jpg?ixlib=react-9.0.2&auto=format&ar=1%3A1",
-    "name": "Graeter's Ice Cream",
-    "dsc": "Signature Chip Ice Cream - 6 Pints",
-    "price": 79.95,
-    "rate": 5,
-    "country": "Cincinnati, OH"
   }
 ]
