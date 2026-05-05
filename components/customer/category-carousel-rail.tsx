@@ -13,7 +13,7 @@ export type CategoryCarouselEntry = {
 };
 
 export type FeaturedCategoryEntry = CategoryCarouselEntry & {
-  thumbnailUrl: string | null;
+  thumbnailUrl: string;
 };
 
 const ALL_KEY = "all";
@@ -102,18 +102,6 @@ export function CategoryCarouselRail({
   );
 }
 
-function PlaceholderThumb({ label }: { label: string }) {
-  const initial = label.trim().charAt(0).toUpperCase() || "?";
-  return (
-    <div
-      className="flex size-20 shrink-0 items-center justify-center rounded-full bg-zinc-100 text-lg font-semibold text-zinc-500 dark:bg-zinc-800 dark:text-zinc-400"
-      aria-hidden
-    >
-      {initial}
-    </div>
-  );
-}
-
 /** Featured rail: leading All cell + category thumbnails (linked). */
 export function FeaturedCategoryRail({ categories }: { categories: FeaturedCategoryEntry[] }) {
   return (
@@ -129,13 +117,9 @@ export function FeaturedCategoryRail({ categories }: { categories: FeaturedCateg
       {categories.map((c) => (
         <div key={c.id} className="snap-start shrink-0 w-[88px]">
           <Link href={`/customer?category=${c.slug}`} className="flex flex-col items-center gap-2">
-            {c.thumbnailUrl ? (
-              <div className="relative size-20 shrink-0 overflow-hidden rounded-full bg-zinc-100 ring-2 ring-zinc-200 dark:bg-zinc-800 dark:ring-zinc-700">
-                <Image src={c.thumbnailUrl} alt={c.name} fill className="object-cover" sizes="80px" />
-              </div>
-            ) : (
-              <PlaceholderThumb label={c.name} />
-            )}
+            <div className="relative size-20 shrink-0 overflow-hidden rounded-full bg-zinc-100 ring-2 ring-zinc-200 dark:bg-zinc-800 dark:ring-zinc-700">
+              <Image src={c.thumbnailUrl} alt={c.name} fill className="object-cover" sizes="80px" />
+            </div>
             <span className="line-clamp-2 w-full text-center text-xs font-medium text-zinc-900 dark:text-zinc-50">
               {c.name}
             </span>

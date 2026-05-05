@@ -4,16 +4,9 @@ import { FeaturedCategoryRail } from "@/components/customer/category-carousel-ra
 import { CategoryMenuSections } from "@/components/customer/category-menu-sections";
 import { PopularCarouselRail } from "@/components/customer/popular-carousel-rail";
 import { PageHeader } from "@/components/ui/page-header";
-import { resolveMenuImageUrl } from "@/lib/menu/resolve-menu-image-url";
+import { buildFeaturedCategoryRail } from "@/lib/menu/featured-menu-image-quality";
 import { selectPopularItems } from "@/lib/menu/select-popular-items";
 import { prisma } from "@/lib/prisma";
-
-function firstCategoryThumbnail(items: { id: string; name: string; imageUrl: string | null }[]): string | null {
-  const sorted = [...items].sort((a, b) => a.name.localeCompare(b.name));
-  const first = sorted[0];
-  if (!first) return null;
-  return resolveMenuImageUrl(first.id, first.imageUrl, { width: 160, height: 160 });
-}
 
 export default async function CustomerMenuPage({
   searchParams,
@@ -70,12 +63,7 @@ export default async function CustomerMenuPage({
 
   const popularItems = selectPopularItems(normalizedCategories);
 
-  const featuredCategories = normalizedCategories.map((c) => ({
-    id: c.id,
-    slug: c.slug,
-    name: c.name,
-    thumbnailUrl: firstCategoryThumbnail(c.items),
-  }));
+  const featuredCategories = buildFeaturedCategoryRail(normalizedCategories);
 
   return (
     <div className="flex flex-col gap-6">

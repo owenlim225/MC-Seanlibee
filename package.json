@@ -21,6 +21,8 @@
     "db:push": "prisma db push",
     "db:seed": "prisma db seed",
     "db:studio": "prisma studio",
+    "db:cleanup:broken-images": "tsx prisma/scripts/cleanup-broken-seeded-menu-images.ts",
+    "db:verify:broken-images": "tsx prisma/scripts/verify-broken-image-cleanup.ts",
     "test": "vitest run",
     "test:e2e": "playwright test",
     "test:e2e:install": "playwright install --with-deps"
