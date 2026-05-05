@@ -25,9 +25,9 @@ export default async function CustomerMenuPage({
   // #region agent log
   fetch("http://127.0.0.1:7817/ingest/c3fc8591-bb49-4618-b7bd-5aef2b04dae3", {
     method: "POST",
-    headers: { "Content-Type": "application/json", "X-Debug-Session-Id": "823e17" },
+    headers: { "Content-Type": "application/json", "X-Debug-Session-Id": "c61c98" },
     body: JSON.stringify({
-      sessionId: "823e17",
+      sessionId: "c61c98",
       runId: "pre-fix",
       hypothesisId: "H1",
       location: "app/(customer)/customer/page.tsx:25",
@@ -40,9 +40,9 @@ export default async function CustomerMenuPage({
   // #region agent log
   fetch("http://127.0.0.1:7817/ingest/c3fc8591-bb49-4618-b7bd-5aef2b04dae3", {
     method: "POST",
-    headers: { "Content-Type": "application/json", "X-Debug-Session-Id": "823e17" },
+    headers: { "Content-Type": "application/json", "X-Debug-Session-Id": "c61c98" },
     body: JSON.stringify({
-      sessionId: "823e17",
+      sessionId: "c61c98",
       runId: "pre-fix",
       hypothesisId: "H2",
       location: "app/(customer)/customer/page.tsx:40",
@@ -64,9 +64,9 @@ export default async function CustomerMenuPage({
   // #region agent log
   fetch("http://127.0.0.1:7817/ingest/c3fc8591-bb49-4618-b7bd-5aef2b04dae3", {
     method: "POST",
-    headers: { "Content-Type": "application/json", "X-Debug-Session-Id": "823e17" },
+    headers: { "Content-Type": "application/json", "X-Debug-Session-Id": "c61c98" },
     body: JSON.stringify({
-      sessionId: "823e17",
+      sessionId: "c61c98",
       runId: "pre-fix",
       hypothesisId: "H3",
       location: "app/(customer)/customer/page.tsx:60",
@@ -76,6 +76,53 @@ export default async function CustomerMenuPage({
     }),
   }).catch(() => {});
   // #endregion
+  let tableProbe:
+    | {
+        db: string | null;
+        schema: string | null;
+        menuCategoryPascal: string | null;
+        menuCategorySnake: string | null;
+      }[]
+    | null = null;
+  try {
+    tableProbe = await prisma.$queryRaw<
+      { db: string | null; schema: string | null; menuCategoryPascal: string | null; menuCategorySnake: string | null }[]
+    >`SELECT current_database() AS db, current_schema() AS schema, to_regclass('public."MenuCategory"') AS "menuCategoryPascal", to_regclass('public.menu_category') AS "menuCategorySnake"`;
+    // #region agent log
+    fetch("http://127.0.0.1:7817/ingest/c3fc8591-bb49-4618-b7bd-5aef2b04dae3", {
+      method: "POST",
+      headers: { "Content-Type": "application/json", "X-Debug-Session-Id": "c61c98" },
+      body: JSON.stringify({
+        sessionId: "c61c98",
+        runId: "pre-fix",
+        hypothesisId: "H4",
+        location: "app/(customer)/customer/page.tsx:83",
+        message: "database table probe results",
+        data: tableProbe[0] ?? null,
+        timestamp: Date.now(),
+      }),
+    }).catch(() => {});
+    // #endregion
+  } catch (error) {
+    // #region agent log
+    fetch("http://127.0.0.1:7817/ingest/c3fc8591-bb49-4618-b7bd-5aef2b04dae3", {
+      method: "POST",
+      headers: { "Content-Type": "application/json", "X-Debug-Session-Id": "c61c98" },
+      body: JSON.stringify({
+        sessionId: "c61c98",
+        runId: "pre-fix",
+        hypothesisId: "H4",
+        location: "app/(customer)/customer/page.tsx:99",
+        message: "database table probe failed",
+        data: {
+          errorName: error instanceof Error ? error.name : typeof error,
+          errorMessage: error instanceof Error ? error.message : String(error),
+        },
+        timestamp: Date.now(),
+      }),
+    }).catch(() => {});
+    // #endregion
+  }
   let categories: Awaited<ReturnType<typeof prisma.menuCategory.findMany>>;
   try {
     categories = await prisma.menuCategory.findMany({
@@ -106,11 +153,11 @@ export default async function CustomerMenuPage({
     // #region agent log
     fetch("http://127.0.0.1:7817/ingest/c3fc8591-bb49-4618-b7bd-5aef2b04dae3", {
       method: "POST",
-      headers: { "Content-Type": "application/json", "X-Debug-Session-Id": "823e17" },
+      headers: { "Content-Type": "application/json", "X-Debug-Session-Id": "c61c98" },
       body: JSON.stringify({
-        sessionId: "823e17",
+        sessionId: "c61c98",
         runId: "pre-fix",
-        hypothesisId: "H4",
+        hypothesisId: "H5",
         location: "app/(customer)/customer/page.tsx:82",
         message: "findMany failed",
         data: {
@@ -126,11 +173,11 @@ export default async function CustomerMenuPage({
   // #region agent log
   fetch("http://127.0.0.1:7817/ingest/c3fc8591-bb49-4618-b7bd-5aef2b04dae3", {
     method: "POST",
-    headers: { "Content-Type": "application/json", "X-Debug-Session-Id": "823e17" },
+    headers: { "Content-Type": "application/json", "X-Debug-Session-Id": "c61c98" },
     body: JSON.stringify({
-      sessionId: "823e17",
+      sessionId: "c61c98",
       runId: "pre-fix",
-      hypothesisId: "H5",
+      hypothesisId: "H6",
       location: "app/(customer)/customer/page.tsx:66",
       message: "query completed",
       data: { categoryCount: categories.length },
