@@ -1,2 +1,0 @@
-{"sessionId":"c666a0","timestamp":1777954751303,"runId":"verify-repro","location":"dev-wallet-probe.tsx:mount","message":"probe mounted","hypothesisId":"H1","data":{"hasInjectedProvider":false,"pathname":"/"}}
-{"sessionId":"c666a0","timestamp":1777954754711,"runId":"verify-repro","location":"dev-wallet-probe.tsx:mount","message":"probe mounted","hypothesisId":"H1","data":{"hasInjectedProvider":true,"pathname":"/dev/role-switcher"}}

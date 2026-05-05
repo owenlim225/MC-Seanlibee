@@ -10,23 +10,39 @@ import { PageHeader } from "@/components/ui/page-header";
 import { RelativeTime } from "@/components/ui/relative-time";
 import { StatusBadge } from "@/components/ui/status-badge";
 
+const driverOrderSelect = {
+  id: true,
+  status: true,
+  totalCents: true,
+  createdAt: true,
+  customer: { select: { email: true } },
+  items: {
+    select: {
+      id: true,
+      quantity: true,
+      menuItem: { select: { name: true } },
+    },
+  },
+} as const;
+
 export default async function DriverHomePage() {
   const driver = await requireRole(Role.DRIVER);
 
-  const readyUnclaimed = await prisma.order.findMany({
-    where: { status: OrderStatus.READY, assignment: null },
-    orderBy: { createdAt: "asc" },
-    include: { customer: true, items: { include: { menuItem: true } } },
-  });
-
-  const mine = await prisma.order.findMany({
-    where: {
-      assignment: { driverId: driver.id },
-      status: { in: [OrderStatus.READY, OrderStatus.PICKED_UP] },
-    },
-    orderBy: { createdAt: "asc" },
-    include: { customer: true, items: { include: { menuItem: true } }, assignment: true },
-  });
+  const [readyUnclaimed, mine] = await Promise.all([
+    prisma.order.findMany({
+      where: { status: OrderStatus.READY, assignment: null },
+      orderBy: { createdAt: "asc" },
+      select: driverOrderSelect,
+    }),
+    prisma.order.findMany({
+      where: {
+        assignment: { driverId: driver.id },
+        status: { in: [OrderStatus.READY, OrderStatus.PICKED_UP] },
+      },
+      orderBy: { createdAt: "asc" },
+      select: driverOrderSelect,
+    }),
+  ]);
 
   return (
     <div className="flex flex-col gap-8">

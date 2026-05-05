@@ -10,17 +10,38 @@ import { StatusBadge } from "@/components/ui/status-badge";
 
 const buckets = [OrderStatus.RECEIVED, OrderStatus.PREPARING, OrderStatus.READY] as const;
 
-export default async function KitchenQueuePage() {
-  const orders = await prisma.order.findMany({
-    where: { status: { in: [...buckets] } },
-    orderBy: { createdAt: "asc" },
-    include: { customer: true, items: { include: { menuItem: true } }, assignment: true },
-  });
+const kitchenOrderSelect = {
+  id: true,
+  status: true,
+  totalCents: true,
+  createdAt: true,
+  customer: { select: { email: true } },
+  items: {
+    select: {
+      id: true,
+      quantity: true,
+      menuItem: { select: { name: true } },
+    },
+  },
+  assignment: { select: { driverId: true } },
+} as const;
 
-  const grouped = buckets.map((status) => ({
-    status,
-    rows: orders.filter((o) => o.status === status),
-  }));
+export default async function KitchenQueuePage() {
+  const [received, preparing, ready] = await Promise.all(
+    buckets.map((status) =>
+      prisma.order.findMany({
+        where: { status },
+        orderBy: { createdAt: "asc" },
+        select: kitchenOrderSelect,
+      }),
+    ),
+  );
+
+  const grouped = [
+    { status: OrderStatus.RECEIVED, rows: received },
+    { status: OrderStatus.PREPARING, rows: preparing },
+    { status: OrderStatus.READY, rows: ready },
+  ];
 
   return (
     <div className="flex flex-col gap-6">

@@ -14,25 +14,36 @@ function startOfToday(): Date {
 export default async function AdminDashboardPage() {
   const today = startOfToday();
 
-  const todaysOrders = await prisma.order.findMany({
-    where: { createdAt: { gte: today } },
-    select: { status: true, totalCents: true, paidAt: true },
-  });
+  const [statusGroups, paidRevenue, todaysCount, recent, customerCount] = await Promise.all([
+    prisma.order.groupBy({
+      by: ["status"],
+      where: { createdAt: { gte: today } },
+      _count: { _all: true },
+    }),
+    prisma.order.aggregate({
+      where: { createdAt: { gte: today }, paidAt: { not: null } },
+      _sum: { totalCents: true },
+    }),
+    prisma.order.count({ where: { createdAt: { gte: today } } }),
+    prisma.order.findMany({
+      orderBy: { createdAt: "desc" },
+      take: 10,
+      select: {
+        id: true,
+        status: true,
+        totalCents: true,
+        customer: { select: { email: true } },
+      },
+    }),
+    prisma.user.count({ where: { role: Role.CUSTOMER } }),
+  ]);
 
-  const revenue = todaysOrders
-    .filter((o) => o.paidAt)
-    .reduce((sum, o) => sum + o.totalCents, 0);
-
+  const revenue = paidRevenue._sum.totalCents ?? 0;
+  const countByStatus = new Map(statusGroups.map((g) => [g.status, g._count._all]));
   const statusCounts = Object.values(OrderStatus).map((status) => ({
     status,
-    count: todaysOrders.filter((o) => o.status === status).length,
+    count: countByStatus.get(status) ?? 0,
   }));
-
-  const recent = await prisma.order.findMany({
-    orderBy: { createdAt: "desc" },
-    take: 10,
-    include: { customer: true },
-  });
 
   return (
     <div className="flex flex-col gap-6">
@@ -41,7 +52,7 @@ export default async function AdminDashboardPage() {
       <div className="grid gap-4 md:grid-cols-3">
         <Card className="flex flex-col gap-1">
           <div className="text-xs uppercase text-zinc-500">Orders today</div>
-          <div className="text-3xl font-semibold">{todaysOrders.length}</div>
+          <div className="text-3xl font-semibold">{todaysCount}</div>
         </Card>
         <Card className="flex flex-col gap-1">
           <div className="text-xs uppercase text-zinc-500">Paid revenue today</div>
@@ -51,7 +62,7 @@ export default async function AdminDashboardPage() {
         </Card>
         <Card className="flex flex-col gap-1">
           <div className="text-xs uppercase text-zinc-500">Customers</div>
-          <div className="text-3xl font-semibold">{await prisma.user.count({ where: { role: Role.CUSTOMER } })}</div>
+          <div className="text-3xl font-semibold">{customerCount}</div>
         </Card>
       </div>
 

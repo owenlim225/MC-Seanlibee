@@ -23,7 +23,22 @@ export default async function CustomerMenuPage({
   const sp = await searchParams;
   const categories = await prisma.menuCategory.findMany({
     orderBy: { sortOrder: "asc" },
-    include: { items: { where: { isAvailable: true }, orderBy: { name: "asc" } } },
+    select: {
+      id: true,
+      name: true,
+      sortOrder: true,
+      items: {
+        where: { isAvailable: true },
+        orderBy: { name: "asc" },
+        select: {
+          id: true,
+          name: true,
+          description: true,
+          priceCents: true,
+          imageUrl: true,
+        },
+      },
+    },
   });
 
   const filtered =
@@ -31,19 +46,7 @@ export default async function CustomerMenuPage({
       ? categories.filter((c) => c.id === sp.category)
       : categories;
 
-  const popularItems = selectPopularItems(
-    categories.map((c) => ({
-      id: c.id,
-      name: c.name,
-      sortOrder: c.sortOrder,
-      items: c.items.map((item) => ({
-        id: item.id,
-        name: item.name,
-        priceCents: item.priceCents,
-        imageUrl: item.imageUrl,
-      })),
-    })),
-  );
+  const popularItems = selectPopularItems(categories);
 
   const featuredCategories = categories.map((c) => ({
     id: c.id,
