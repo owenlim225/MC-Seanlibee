@@ -12,15 +12,21 @@ export default async function ItemDetailPage({ params }: { params: Promise<{ id:
   const { id } = await params;
   const item = await prisma.menuItem.findUnique({
     where: { id },
-    include: { category: true },
+    include: {
+      categoryLinks: {
+        include: { category: true },
+        orderBy: { category: { sortOrder: "asc" } },
+      },
+    },
   });
   if (!item || !item.isAvailable) notFound();
+  const categoryLabel = item.categoryLinks.map((link) => link.category.name).join(" • ") || "Menu item";
 
   return (
     <div className="flex flex-col gap-6">
       <PageHeader
         title={item.name}
-        description={item.category.name}
+        description={categoryLabel}
         actions={
           <Link className="text-sm underline" href="/customer">
             ← Menu

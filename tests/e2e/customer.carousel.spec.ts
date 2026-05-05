@@ -18,11 +18,11 @@ test("category carousel marks the URL-selected chip as current", async ({ page }
   const allChip = carousel.getByRole("tab", { name: "All" });
   await expect(allChip).toHaveAttribute("aria-current", "page");
 
-  const burgers = carousel.getByRole("tab", { name: "Burgers" });
-  await burgers.click();
+  const mainMeals = carousel.getByRole("tab", { name: "Main Meals" });
+  await mainMeals.click();
 
-  await expect(page).toHaveURL(/\/customer\?category=/);
-  await expect(burgers).toHaveAttribute("aria-current", "page");
+  await expect(page).toHaveURL(/\/customer\?category=main-meals/);
+  await expect(mainMeals).toHaveAttribute("aria-current", "page");
   await expect(allChip).not.toHaveAttribute("aria-current", "page");
 });
 

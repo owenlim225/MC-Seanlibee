@@ -9,6 +9,7 @@ import { MoneyText } from "@/components/ui/money-text";
 import { PageHeader } from "@/components/ui/page-header";
 import { selectPopularItems } from "@/lib/menu/select-popular-items";
 import { prisma } from "@/lib/prisma";
+import { Prisma } from "@prisma/client";
 
 function firstCategoryThumbnail(items: { name: string; imageUrl: string | null }[]): string | null {
   const sorted = [...items].sort((a, b) => a.name.localeCompare(b.name));
@@ -21,35 +22,108 @@ export default async function CustomerMenuPage({
   searchParams: Promise<{ category?: string }>;
 }) {
   const sp = await searchParams;
+  // #region agent log
+  fetch("http://127.0.0.1:7817/ingest/c3fc8591-bb49-4618-b7bd-5aef2b04dae3", {
+    method: "POST",
+    headers: { "Content-Type": "application/json", "X-Debug-Session-Id": "d4c10e" },
+    body: JSON.stringify({
+      sessionId: "d4c10e",
+      runId: "pre-fix",
+      hypothesisId: "H1",
+      location: "app/(customer)/customer/page.tsx:25",
+      message: "customer menu page query started",
+      data: { categoryParam: sp.category ?? null },
+      timestamp: Date.now(),
+    }),
+  }).catch(() => {});
+  // #endregion
+  // #region agent log
+  fetch("http://127.0.0.1:7817/ingest/c3fc8591-bb49-4618-b7bd-5aef2b04dae3", {
+    method: "POST",
+    headers: { "Content-Type": "application/json", "X-Debug-Session-Id": "d4c10e" },
+    body: JSON.stringify({
+      sessionId: "d4c10e",
+      runId: "pre-fix",
+      hypothesisId: "H2",
+      location: "app/(customer)/customer/page.tsx:40",
+      message: "runtime prisma metadata snapshot",
+      data: {
+        prismaClientVersion: Prisma.prismaVersion.client,
+        menuCategoryFields:
+          (prisma as unknown as { _runtimeDataModel?: { models?: Record<string, { fields?: { name: string }[] }> } })
+            ._runtimeDataModel?.models?.MenuCategory?.fields?.map((f) => f.name) ?? null,
+      },
+      timestamp: Date.now(),
+    }),
+  }).catch(() => {});
+  // #endregion
   const categories = await prisma.menuCategory.findMany({
     orderBy: { sortOrder: "asc" },
     select: {
       id: true,
+      slug: true,
       name: true,
       sortOrder: true,
-      items: {
-        where: { isAvailable: true },
-        orderBy: { name: "asc" },
+      itemLinks: {
+        orderBy: { menuItem: { name: "asc" } },
         select: {
-          id: true,
-          name: true,
-          description: true,
-          priceCents: true,
-          imageUrl: true,
+          menuItem: {
+            select: {
+              id: true,
+              name: true,
+              description: true,
+              priceCents: true,
+              imageUrl: true,
+              isAvailable: true,
+            },
+          },
         },
       },
     },
   });
+  // #region agent log
+  fetch("http://127.0.0.1:7817/ingest/c3fc8591-bb49-4618-b7bd-5aef2b04dae3", {
+    method: "POST",
+    headers: { "Content-Type": "application/json", "X-Debug-Session-Id": "d4c10e" },
+    body: JSON.stringify({
+      sessionId: "d4c10e",
+      runId: "pre-fix",
+      hypothesisId: "H3",
+      location: "app/(customer)/customer/page.tsx:66",
+      message: "query completed",
+      data: { categoryCount: categories.length },
+      timestamp: Date.now(),
+    }),
+  }).catch(() => {});
+  // #endregion
+
+  const normalizedCategories = categories.map((category) => ({
+    id: category.id,
+    slug: category.slug,
+    name: category.name,
+    sortOrder: category.sortOrder,
+    items: category.itemLinks
+      .map((link) => link.menuItem)
+      .filter((menuItem) => menuItem.isAvailable)
+      .map((menuItem) => ({
+        id: menuItem.id,
+        name: menuItem.name,
+        description: menuItem.description,
+        priceCents: menuItem.priceCents,
+        imageUrl: menuItem.imageUrl,
+      })),
+  }));
 
   const filtered =
     sp.category && sp.category !== "all"
-      ? categories.filter((c) => c.id === sp.category)
-      : categories;
+      ? normalizedCategories.filter((category) => category.id === sp.category || category.slug === sp.category)
+      : normalizedCategories;
 
-  const popularItems = selectPopularItems(categories);
+  const popularItems = selectPopularItems(normalizedCategories);
 
-  const featuredCategories = categories.map((c) => ({
+  const featuredCategories = normalizedCategories.map((c) => ({
     id: c.id,
+    slug: c.slug,
     name: c.name,
     thumbnailUrl: firstCategoryThumbnail(c.items),
   }));
@@ -72,7 +146,7 @@ export default async function CustomerMenuPage({
       />
 
       <CategoryCarouselRail
-        categories={categories.map((c) => ({ id: c.id, name: c.name }))}
+        categories={normalizedCategories.map((c) => ({ id: c.id, slug: c.slug, name: c.name }))}
         categoryParam={sp.category}
       />
 

@@ -36,23 +36,34 @@ model User {
 
 model MenuCategory {
   id        String     @id @default(cuid())
+  slug      String     @unique
   name      String
   sortOrder Int        @default(0)
-  items     MenuItem[]
+  itemLinks MenuItemCategory[]
 }
 
 model MenuItem {
-  id          String      @id @default(cuid())
-  categoryId  String
-  category    MenuCategory @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  id          String             @id @default(cuid())
   name        String
   description String      @default("")
   priceCents  Int
   imageUrl    String?
   isAvailable Boolean     @default(true)
   orderItems  OrderItem[]
+  categoryLinks MenuItemCategory[]
 
-  @@index([categoryId, isAvailable])
+  @@index([isAvailable, name])
+}
+
+model MenuItemCategory {
+  menuItemId   String
+  categoryId   String
+  menuItem     MenuItem     @relation(fields: [menuItemId], references: [id], onDelete: Cascade)
+  category     MenuCategory @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+
+  @@id([menuItemId, categoryId])
+  @@index([categoryId, menuItemId])
+  @@index([menuItemId])
 }
 
 model Order {

@@ -12,7 +12,12 @@ import { PageHeader } from "@/components/ui/page-header";
 export default async function AdminMenuPage() {
   const categories = await prisma.menuCategory.findMany({
     orderBy: { sortOrder: "asc" },
-    include: { items: { orderBy: { name: "asc" } } },
+    include: {
+      itemLinks: {
+        orderBy: { menuItem: { name: "asc" } },
+        include: { menuItem: true },
+      },
+    },
   });
 
   return (
@@ -60,10 +65,12 @@ export default async function AdminMenuPage() {
             />
           </label>
           <label className="flex flex-col gap-1 text-sm">
-            Category
+            Categories
             <select
-              name="categoryId"
+              name="categoryIds"
+              multiple
               required
+              size={Math.min(categories.length, 7)}
               className="rounded-md border border-zinc-300 bg-transparent px-3 py-2 dark:border-zinc-700"
             >
               {categories.map((c) => (
@@ -99,10 +106,12 @@ export default async function AdminMenuPage() {
           <section key={category.id} className="flex flex-col gap-3">
             <div className="flex items-center justify-between gap-3">
               <h2 className="text-lg font-semibold">{category.name}</h2>
-              <span className="text-xs text-zinc-500">{category.items.length} items</span>
+              <span className="text-xs text-zinc-500">{category.itemLinks.length} items</span>
             </div>
             <div className="grid gap-3 md:grid-cols-2">
-              {category.items.map((item) => (
+              {category.itemLinks.map((link) => {
+                const item = link.menuItem;
+                return (
                 <Card key={item.id} className="flex flex-col gap-3">
                   <div className="flex items-start justify-between gap-3">
                     <div>
@@ -124,7 +133,8 @@ export default async function AdminMenuPage() {
                     </form>
                   </div>
                 </Card>
-              ))}
+                );
+              })}
             </div>
           </section>
         ))}

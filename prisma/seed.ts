@@ -1,5 +1,6 @@
 import { OrderStatus, PrismaClient, Role } from "@prisma/client";
 import type { Prisma } from "@prisma/client";
+import { getGroupSlugsForSourceSlug, GROUPED_MENU_TAXONOMY } from "../lib/menu/grouped-taxonomy";
 
 import bbqs from "./bbqs.json";
 import bestFoods from "./best-foods.json";
@@ -29,27 +30,27 @@ type FoodRow = {
   country: string;
 };
 
-const FOOD_SOURCES: { categoryName: string; sortOrder: number; rows: FoodRow[] }[] = [
-  { categoryName: "BBQ", sortOrder: 10, rows: bbqs as FoodRow[] },
-  { categoryName: "Breads", sortOrder: 20, rows: breads as FoodRow[] },
-  { categoryName: "Burgers", sortOrder: 30, rows: burgers as FoodRow[] },
-  { categoryName: "Chocolates", sortOrder: 40, rows: chocolates as FoodRow[] },
-  { categoryName: "Desserts", sortOrder: 50, rows: desserts as FoodRow[] },
-  { categoryName: "Drinks", sortOrder: 60, rows: drinks as FoodRow[] },
-  { categoryName: "Fried Chicken", sortOrder: 70, rows: friedChicken as FoodRow[] },
-  { categoryName: "Ice Cream", sortOrder: 80, rows: iceCream as FoodRow[] },
-  { categoryName: "Pizzas", sortOrder: 90, rows: pizzas as FoodRow[] },
-  { categoryName: "Pork", sortOrder: 100, rows: porks as FoodRow[] },
-  { categoryName: "Sandwiches", sortOrder: 110, rows: sandwiches as FoodRow[] },
-  { categoryName: "Sausages", sortOrder: 120, rows: sausages as FoodRow[] },
-  { categoryName: "Steaks", sortOrder: 130, rows: steaks as FoodRow[] },
-  { categoryName: "Best Foods", sortOrder: 140, rows: bestFoods as FoodRow[] },
-  { categoryName: "Our Foods", sortOrder: 150, rows: ourFoods as FoodRow[] },
+const FOOD_SOURCES: { sourceSlug: string; rows: FoodRow[] }[] = [
+  { sourceSlug: "bbqs", rows: bbqs as FoodRow[] },
+  { sourceSlug: "breads", rows: breads as FoodRow[] },
+  { sourceSlug: "burgers", rows: burgers as FoodRow[] },
+  { sourceSlug: "chocolates", rows: chocolates as FoodRow[] },
+  { sourceSlug: "desserts", rows: desserts as FoodRow[] },
+  { sourceSlug: "drinks", rows: drinks as FoodRow[] },
+  { sourceSlug: "fried-chicken", rows: friedChicken as FoodRow[] },
+  { sourceSlug: "ice-cream", rows: iceCream as FoodRow[] },
+  { sourceSlug: "pizzas", rows: pizzas as FoodRow[] },
+  { sourceSlug: "porks", rows: porks as FoodRow[] },
+  { sourceSlug: "sandwiches", rows: sandwiches as FoodRow[] },
+  { sourceSlug: "sausages", rows: sausages as FoodRow[] },
+  { sourceSlug: "steaks", rows: steaks as FoodRow[] },
+  { sourceSlug: "best-foods", rows: bestFoods as FoodRow[] },
+  { sourceSlug: "our-foods", rows: ourFoods as FoodRow[] },
 ];
 
-function rowToCreateInput(categoryId: string, row: FoodRow): Prisma.MenuItemCreateManyInput {
+function rowToCreateInput(row: FoodRow): Prisma.MenuItemCreateManyInput {
   return {
-    categoryId,
+    id: row.id,
     name: row.dsc,
     description: `${row.name} · ${row.country}`,
     priceCents: Math.round(row.price * 100),
@@ -74,6 +75,7 @@ async function main() {
   await prisma.deliveryAssignment.deleteMany();
   await prisma.orderItem.deleteMany();
   await prisma.order.deleteMany();
+  await prisma.menuItemCategory.deleteMany();
   await prisma.menuItem.deleteMany();
   await prisma.menuCategory.deleteMany();
   await prisma.user.deleteMany();
@@ -109,7 +111,20 @@ async function main() {
     }),
   ]);
 
+  const groupedCategories = await Promise.all(
+    GROUPED_MENU_TAXONOMY.map((group) =>
+      prisma.menuCategory.create({
+        data: { slug: group.slug, name: group.name, sortOrder: group.sortOrder },
+      }),
+    ),
+  );
+  const categoryIdBySlug = groupedCategories.reduce<Record<string, string>>((acc, category) => {
+    acc[category.slug] = category.id;
+    return acc;
+  }, {});
+
   const seenFoodIds = new Set<string>();
+  const menuItemIdsByCategorySlug = new Map<string, Set<string>>();
   let menuItemCount = 0;
 
   for (const source of FOOD_SOURCES) {
@@ -120,11 +135,26 @@ async function main() {
       pendingRows.push(row);
     }
     if (pendingRows.length === 0) continue;
-    const category = await prisma.menuCategory.create({
-      data: { name: source.categoryName, sortOrder: source.sortOrder },
-    });
-    const data = pendingRows.map((row) => rowToCreateInput(category.id, row));
+    const data = pendingRows.map((row) => rowToCreateInput(row));
     menuItemCount += await createItemsInChunks(data);
+
+    const groupSlugs = getGroupSlugsForSourceSlug(source.sourceSlug);
+    for (const groupSlug of groupSlugs) {
+      const itemIds = menuItemIdsByCategorySlug.get(groupSlug) ?? new Set<string>();
+      for (const row of pendingRows) {
+        itemIds.add(row.id);
+      }
+      menuItemIdsByCategorySlug.set(groupSlug, itemIds);
+    }
+  }
+
+  for (const [groupSlug, itemIds] of menuItemIdsByCategorySlug) {
+    const categoryId = categoryIdBySlug[groupSlug];
+    if (!categoryId || itemIds.size === 0) continue;
+    await prisma.menuItemCategory.createMany({
+      data: [...itemIds].map((menuItemId) => ({ menuItemId, categoryId })),
+      skipDuplicates: true,
+    });
   }
 
   const sampleCustomer = customers[0];

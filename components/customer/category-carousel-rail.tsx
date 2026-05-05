@@ -8,6 +8,7 @@ import { HorizontalScroller } from "@/components/customer/horizontal-scroller";
 
 export type CategoryCarouselEntry = {
   id: string;
+  slug: string;
   name: string;
 };
 
@@ -80,12 +81,12 @@ export function CategoryCarouselRail({
           </Link>
         </div>
         {categories.map((c) => {
-          const active = categoryParam === c.id;
+          const active = categoryParam === c.slug || categoryParam === c.id;
           return (
             <div key={c.id} className="snap-start shrink-0">
               <Link
-                ref={(node) => setChipRef(c.id, node)}
-                href={`/customer?category=${c.id}`}
+                ref={(node) => setChipRef(c.slug, node)}
+                href={`/customer?category=${c.slug}`}
                 role="tab"
                 aria-current={active ? "page" : undefined}
                 aria-selected={active}
@@ -127,7 +128,7 @@ export function FeaturedCategoryRail({ categories }: { categories: FeaturedCateg
       </div>
       {categories.map((c) => (
         <div key={c.id} className="snap-start shrink-0 w-[88px]">
-          <Link href={`/customer?category=${c.id}`} className="flex flex-col items-center gap-2">
+          <Link href={`/customer?category=${c.slug}`} className="flex flex-col items-center gap-2">
             {c.thumbnailUrl ? (
               <div className="relative size-20 shrink-0 overflow-hidden rounded-full bg-zinc-100 ring-2 ring-zinc-200 dark:bg-zinc-800 dark:ring-zinc-700">
                 <Image src={c.thumbnailUrl} alt={c.name} fill className="object-cover" sizes="80px" />

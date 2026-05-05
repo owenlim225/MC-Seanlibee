@@ -26,9 +26,12 @@ export function selectPopularItems(
   const sortedCategories = [...categories].sort((a, b) => a.sortOrder - b.sortOrder);
 
   const flattened: PopularMenuItem[] = [];
+  const seenItemIds = new Set<string>();
   for (const category of sortedCategories) {
     const sortedItems = [...category.items].sort((a, b) => a.name.localeCompare(b.name));
     for (const item of sortedItems) {
+      if (seenItemIds.has(item.id)) continue;
+      seenItemIds.add(item.id);
       flattened.push(item);
       if (flattened.length >= limit) {
         return flattened;

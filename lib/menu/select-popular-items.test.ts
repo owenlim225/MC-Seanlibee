@@ -51,4 +51,24 @@ describe("selectPopularItems", () => {
   it("returns empty when no items", () => {
     expect(selectPopularItems([{ id: "c", name: "Empty", sortOrder: 0, items: [] }])).toEqual([]);
   });
+
+  it("deduplicates items appearing in multiple categories", () => {
+    const shared = { id: "shared", name: "Shared Item", priceCents: 123, imageUrl: null };
+    const categories = [
+      {
+        id: "first",
+        name: "First",
+        sortOrder: 1,
+        items: [shared, { id: "f1", name: "First Z", priceCents: 100, imageUrl: null }],
+      },
+      {
+        id: "second",
+        name: "Second",
+        sortOrder: 2,
+        items: [shared, { id: "s1", name: "Second A", priceCents: 100, imageUrl: null }],
+      },
+    ];
+
+    expect(selectPopularItems(categories).map((item) => item.id)).toEqual(["f1", "shared", "s1"]);
+  });
 });
