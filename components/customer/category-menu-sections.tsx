@@ -120,7 +120,7 @@ export function CategoryMenuSections({
                 <div className="flex justify-center pt-2">
                   <Button
                     type="button"
-                    variant="outline"
+                    variant="secondary"
                     onClick={() => handleViewMore(category.id, category.items.length)}
                   >
                     View more
