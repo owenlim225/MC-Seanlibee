@@ -68,7 +68,7 @@ async function mockDevSignInAs(role: Role, userId?: string): Promise<void> {
   }
   const resolvedId =
     userId ??
-    (await prisma.user.findFirst({ where: { role }, orderBy: { email: "asc" } }))?.id;
+    (await prisma.user.findFirst({ where: { role, isActive: true }, orderBy: { email: "asc" } }))?.id;
   if (!resolvedId) redirect("/dev/role-switcher?error=no-user");
   await writeSessionCookie({
     uid: resolvedId,
@@ -126,7 +126,7 @@ async function mockDemoSignIn(email: string, password: string): Promise<DemoSign
 
   const user = await prisma.user.findUnique({
     where: { email: normalizedEmail },
-    select: { id: true, role: true, email: true, name: true },
+    select: { id: true, role: true, email: true, name: true, isActive: true },
   });
   if (!user) {
     authDebug({
@@ -134,6 +134,21 @@ async function mockDemoSignIn(email: string, password: string): Promise<DemoSign
       outcome: "fail",
       reason: "user-not-found",
       email: normalizedEmail,
+      provider: process.env.AUTH_PROVIDER ?? "mock",
+      nodeEnv: process.env.NODE_ENV ?? "unknown",
+      demoAuthEnabled: isDemoAuthEnabled(),
+      hasDemoAuthPassword: Boolean(process.env.DEMO_AUTH_PASSWORD),
+    });
+    return { ok: false };
+  }
+  if (!user.isActive) {
+    authDebug({
+      flow: "sign-in",
+      outcome: "fail",
+      reason: "inactive-user",
+      email: normalizedEmail,
+      role: user.role,
+      userId: user.id,
       provider: process.env.AUTH_PROVIDER ?? "mock",
       nodeEnv: process.env.NODE_ENV ?? "unknown",
       demoAuthEnabled: isDemoAuthEnabled(),
@@ -174,7 +189,7 @@ async function mockDemoSignIn(email: string, password: string): Promise<DemoSign
     demoAuthEnabled: isDemoAuthEnabled(),
     hasDemoAuthPassword: Boolean(process.env.DEMO_AUTH_PASSWORD),
   });
-  return { ok: true, user };
+  return { ok: true, user: { id: user.id, role: user.role, email: user.email, name: user.name } };
 }
 
 async function mockDemoSignUp(name: string, email: string, password: string): Promise<DemoSignUpResult> {

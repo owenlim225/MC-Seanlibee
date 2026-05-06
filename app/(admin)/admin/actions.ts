@@ -1,8 +1,11 @@
 "use server";
 
+import { randomUUID } from "node:crypto";
 import { Role } from "@prisma/client";
+import { PrismaClientKnownRequestError } from "@prisma/client/runtime/library";
 import { revalidatePath } from "next/cache";
 import { requireRoleLite } from "@/lib/auth";
+import { hashPassword } from "@/lib/auth/password";
 import { isGroupedCategorySlug } from "@/lib/menu/grouped-taxonomy";
 import { prisma } from "@/lib/prisma";
 import { uploadImage } from "@/lib/storage";
@@ -18,6 +21,34 @@ function slugify(value: string): string {
     .trim()
     .replace(/[^a-z0-9]+/g, "-")
     .replace(/^-+|-+$/g, "");
+}
+
+const SIMPLE_EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+function parseRole(value: FormDataEntryValue | null): Role | null {
+  const role = String(value ?? "").trim();
+  if (!(Object.values(Role) as string[]).includes(role)) return null;
+  return role as Role;
+}
+
+function parseEmail(value: FormDataEntryValue | null): string | null {
+  const email = String(value ?? "").trim().toLowerCase();
+  if (!email || !SIMPLE_EMAIL_RE.test(email)) return null;
+  return email;
+}
+
+function parseName(value: FormDataEntryValue | null): string | null {
+  const name = String(value ?? "").trim();
+  if (!name) return null;
+  return name;
+}
+
+function parseBoolean(value: FormDataEntryValue | null, fallback: boolean): boolean {
+  if (value === null) return fallback;
+  const normalized = String(value).trim().toLowerCase();
+  if (normalized === "true" || normalized === "1" || normalized === "on") return true;
+  if (normalized === "false" || normalized === "0" || normalized === "off") return false;
+  return fallback;
 }
 
 export async function createCategory(formData: FormData): Promise<void> {
@@ -100,5 +131,81 @@ export async function updateUserRoleForm(formData: FormData): Promise<void> {
   const roleRaw = String(formData.get("role") ?? "").trim();
   if (!userId || !(Object.values(Role) as string[]).includes(roleRaw)) return;
   await prisma.user.update({ where: { id: userId }, data: { role: roleRaw as Role } });
+  revalidatePath("/admin/users");
+}
+
+export async function createUserForm(formData: FormData): Promise<void> {
+  await requireRoleLite(Role.ADMIN);
+  const email = parseEmail(formData.get("email"));
+  const name = parseName(formData.get("name"));
+  const role = parseRole(formData.get("role"));
+  const isActive = parseBoolean(formData.get("isActive"), true);
+  if (!email || !name || !role) return;
+
+  try {
+    await prisma.user.create({
+      data: {
+        email,
+        name,
+        role,
+        // Password out of admin CRUD scope: generate non-guessable hash.
+        password: hashPassword(randomUUID()),
+        isActive,
+      },
+    });
+  } catch (error) {
+    if (error instanceof PrismaClientKnownRequestError && error.code === "P2002") return;
+    throw error;
+  }
+  revalidatePath("/admin/users");
+}
+
+export async function updateUserProfileForm(formData: FormData): Promise<void> {
+  const session = await requireRoleLite(Role.ADMIN);
+  const userId = String(formData.get("userId") ?? "").trim();
+  const email = parseEmail(formData.get("email"));
+  const name = parseName(formData.get("name"));
+  const role = parseRole(formData.get("role"));
+  const isActive = parseBoolean(formData.get("isActive"), true);
+  if (!userId || !email || !name || !role) return;
+  if (userId === session.id && role !== Role.ADMIN) return;
+
+  try {
+    await prisma.user.update({
+      where: { id: userId },
+      data: {
+        email,
+        name,
+        role,
+        isActive,
+        ...(isActive ? { deletedAt: null } : {}),
+      },
+    });
+  } catch (error) {
+    if (error instanceof PrismaClientKnownRequestError && error.code === "P2002") return;
+    throw error;
+  }
+  revalidatePath("/admin/users");
+}
+
+export async function softDeleteUserForm(formData: FormData): Promise<void> {
+  const session = await requireRoleLite(Role.ADMIN);
+  const userId = String(formData.get("userId") ?? "").trim();
+  if (!userId || userId === session.id) return;
+  await prisma.user.update({
+    where: { id: userId },
+    data: { isActive: false, deletedAt: new Date() },
+  });
+  revalidatePath("/admin/users");
+}
+
+export async function restoreUserForm(formData: FormData): Promise<void> {
+  await requireRoleLite(Role.ADMIN);
+  const userId = String(formData.get("userId") ?? "").trim();
+  if (!userId) return;
+  await prisma.user.update({
+    where: { id: userId },
+    data: { isActive: true, deletedAt: null },
+  });
   revalidatePath("/admin/users");
 }

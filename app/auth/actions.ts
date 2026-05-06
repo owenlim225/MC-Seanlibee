@@ -1,5 +1,6 @@
 "use server";
 
+import { timingSafeEqual } from "node:crypto";
 import { redirect } from "next/navigation";
 import { isRedirectError } from "next/dist/client/components/redirect-error";
 import { cookies } from "next/headers";
@@ -22,6 +23,13 @@ const MIN_PASSWORD_LENGTH = 8;
 
 function agentDebugLog(...args: unknown[]): void {
   void args;
+}
+
+function timingSafeStringEqual(a: string, b: string): boolean {
+  const left = Buffer.from(a, "utf8");
+  const right = Buffer.from(b, "utf8");
+  if (left.length !== right.length) return false;
+  return timingSafeEqual(left, right);
 }
 
 async function writeSessionCookie(userId: string, role: AppRole): Promise<void> {
@@ -63,25 +71,26 @@ export async function signInAction(formData: FormData): Promise<void> {
 
     const user = await prisma.user.findUnique({
       where: { email: normalizedEmail },
-      select: { id: true, role: true, password: true, authUserId: true },
+      select: { id: true, role: true, password: true, authUserId: true, isActive: true },
     });
     const passwordOk = user
       ? isPasswordHash(user.password)
         ? verifyPassword(password, user.password)
-        : password === user.password
+        : timingSafeStringEqual(password, user.password)
       : false;
     agentDebugLog("H5", "app/auth/actions.ts:59", "password verification result", {
       hasUser: Boolean(user),
       passwordMatched: passwordOk,
     });
 
-    if (!user || !passwordOk) {
+    if (!user || !passwordOk || !user.isActive) {
       if (AUTH_DEBUG_ENABLED)
         console.warn("[auth-debug]", {
           flow: "sign-in",
           outcome: "fail",
-          reason: "credentials-invalid",
+          reason: !user || !passwordOk ? "credentials-invalid" : "inactive-user",
           email: normalizedEmail,
+          userId: user?.id,
           at: new Date().toISOString(),
         });
       const params = new URLSearchParams({ error: GENERIC_ERROR });
@@ -133,12 +142,13 @@ export async function signInAction(formData: FormData): Promise<void> {
       errorName: error instanceof Error ? error.name : "non-error",
       errorMessage: error instanceof Error ? error.message : String(error),
     });
-    console.error("[auth-debug] signInAction exception", {
-      reason: "signin-throw",
-      email: email.trim().toLowerCase(),
-      nodeEnv: process.env.NODE_ENV ?? "unknown",
-      error: error instanceof Error ? error.message : String(error),
-    });
+    if (AUTH_DEBUG_ENABLED)
+      console.error("[auth-debug] signInAction exception", {
+        reason: "signin-throw",
+        email: email.trim().toLowerCase(),
+        nodeEnv: process.env.NODE_ENV ?? "unknown",
+        error: error instanceof Error ? error.message : String(error),
+      });
     const params = new URLSearchParams({ error: GENERIC_ERROR });
     if (typeof next === "string" && next.length > 0) params.set("next", next);
     redirect(`/auth/login?${params.toString()}`);
@@ -232,13 +242,14 @@ export async function signUpAction(formData: FormData): Promise<void> {
       errorName: error instanceof Error ? error.name : "non-error",
       errorMessage: error instanceof Error ? error.message : String(error),
     });
-    console.error("[auth-debug] signUpAction exception", {
-      reason: "signup-throw",
-      email: email.trim().toLowerCase(),
-      nameLength: name.trim().length,
-      nodeEnv: process.env.NODE_ENV ?? "unknown",
-      error: error instanceof Error ? error.message : String(error),
-    });
+    if (AUTH_DEBUG_ENABLED)
+      console.error("[auth-debug] signUpAction exception", {
+        reason: "signup-throw",
+        email: email.trim().toLowerCase(),
+        nameLength: name.trim().length,
+        nodeEnv: process.env.NODE_ENV ?? "unknown",
+        error: error instanceof Error ? error.message : String(error),
+      });
     const params = new URLSearchParams({ error: SIGN_UP_ERROR });
     if (typeof next === "string" && next.length > 0) params.set("next", next);
     redirect(`/auth/signup?${params.toString()}`);

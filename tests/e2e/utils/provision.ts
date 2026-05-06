@@ -27,6 +27,8 @@ export async function provisionAppUser(input: ProvisionUserInput): Promise<void>
           password: hashedPassword,
           role: input.role,
           name: input.name,
+          isActive: true,
+          deletedAt: null,
         },
       });
       return;
@@ -38,6 +40,7 @@ export async function provisionAppUser(input: ProvisionUserInput): Promise<void>
         password: hashedPassword,
         name: input.name,
         role: input.role,
+        isActive: true,
       },
       select: { id: true },
     });

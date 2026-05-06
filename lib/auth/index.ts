@@ -1,4 +1,5 @@
 import { Role } from "@prisma/client";
+import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import { readSessionPayload } from "@/lib/auth/mock";
@@ -12,6 +13,8 @@ export type SessionLite = {
   user: { id: string; role: Role } | null;
 };
 
+const SESSION_COOKIE = "mc_session";
+
 /**
  * Full session: hits the DB to read fresh email/name and verify role hasn't
  * changed. Use for layouts/pages that render user-identifying fields.
@@ -21,9 +24,13 @@ export async function getSession(): Promise<Session> {
   if (!payload) return { user: null };
   const user = await prisma.user.findUnique({
     where: { id: payload.uid },
-    select: { id: true, role: true, email: true, name: true },
+    select: { id: true, role: true, email: true, name: true, isActive: true },
   });
   if (!user) return { user: null };
+  if (!user.isActive) {
+    (await cookies()).delete(SESSION_COOKIE);
+    return { user: null };
+  }
   return { user };
 }
 
@@ -37,9 +44,13 @@ export async function getSessionLite(): Promise<SessionLite> {
   if (!payload) return { user: null };
   const user = await prisma.user.findUnique({
     where: { id: payload.uid },
-    select: { id: true, role: true },
+    select: { id: true, role: true, isActive: true },
   });
   if (!user) return { user: null };
+  if (!user.isActive) {
+    (await cookies()).delete(SESSION_COOKIE);
+    return { user: null };
+  }
   return { user: { id: user.id, role: user.role } };
 }
 

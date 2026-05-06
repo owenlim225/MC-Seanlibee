@@ -32,9 +32,13 @@ model User {
   password     String
   role         Role
   name         String
+  isActive     Boolean            @default(true)
+  deletedAt    DateTime?
   orders       Order[]            @relation("CustomerOrders")
   actedEvents  OrderStatusEvent[]
   deliveries   DeliveryAssignment[]
+
+  @@index([isActive, email])
 }
 
 model MenuCategory {
