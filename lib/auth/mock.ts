@@ -17,6 +17,32 @@ const COOKIE = "mc_session";
 const TTL_MS = 60 * 60 * 24 * 7 * 1000;
 const SIMPLE_EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
+type AuthDebugEvent = {
+  flow: "sign-in" | "sign-up";
+  outcome: "success" | "fail";
+  reason: string;
+  email?: string;
+  nameLength?: number;
+  role?: Role;
+  userId?: string;
+  provider: string;
+  nodeEnv: string;
+  demoAuthEnabled: boolean;
+  hasDemoAuthPassword: boolean;
+};
+
+function authDebug(event: AuthDebugEvent): void {
+  const payload = {
+    ...event,
+    at: new Date().toISOString(),
+  };
+  if (event.outcome === "success") {
+    console.info("[auth-debug]", payload);
+    return;
+  }
+  console.warn("[auth-debug]", payload);
+}
+
 function secret(): string {
   return process.env.SESSION_SECRET ?? "dev-only-change-me-dev-only-change-me";
 }
@@ -58,44 +84,197 @@ async function mockDevSignInAs(role: Role, userId?: string): Promise<void> {
  * password, disabled demo mode, or invalid role — no information leakage.
  */
 async function mockDemoSignIn(email: string, password: string): Promise<DemoSignInResult> {
-  if (!isDemoAuthEnabled()) return { ok: false };
-  if (typeof email !== "string" || typeof password !== "string") return { ok: false };
+  const normalizedEmail = typeof email === "string" ? email.trim().toLowerCase() : "";
+  if (!isDemoAuthEnabled()) {
+    authDebug({
+      flow: "sign-in",
+      outcome: "fail",
+      reason: "demo-auth-disabled",
+      email: normalizedEmail,
+      provider: process.env.AUTH_PROVIDER ?? "mock",
+      nodeEnv: process.env.NODE_ENV ?? "unknown",
+      demoAuthEnabled: isDemoAuthEnabled(),
+      hasDemoAuthPassword: Boolean(process.env.DEMO_AUTH_PASSWORD),
+    });
+    return { ok: false };
+  }
+  if (typeof email !== "string" || typeof password !== "string") {
+    authDebug({
+      flow: "sign-in",
+      outcome: "fail",
+      reason: "invalid-input-types",
+      email: normalizedEmail,
+      provider: process.env.AUTH_PROVIDER ?? "mock",
+      nodeEnv: process.env.NODE_ENV ?? "unknown",
+      demoAuthEnabled: isDemoAuthEnabled(),
+      hasDemoAuthPassword: Boolean(process.env.DEMO_AUTH_PASSWORD),
+    });
+    return { ok: false };
+  }
   const passwordOk = await checkDemoPassword(password);
-  if (!passwordOk) return { ok: false };
+  if (!passwordOk) {
+    authDebug({
+      flow: "sign-in",
+      outcome: "fail",
+      reason: "password-mismatch-or-missing-config",
+      email: normalizedEmail,
+      provider: process.env.AUTH_PROVIDER ?? "mock",
+      nodeEnv: process.env.NODE_ENV ?? "unknown",
+      demoAuthEnabled: isDemoAuthEnabled(),
+      hasDemoAuthPassword: Boolean(process.env.DEMO_AUTH_PASSWORD),
+    });
+    return { ok: false };
+  }
 
-  const normalizedEmail = email.trim().toLowerCase();
   const user = await prisma.user.findUnique({
     where: { email: normalizedEmail },
     select: { id: true, role: true, email: true, name: true },
   });
-  if (!user) return { ok: false };
-  if (!isAppRole(user.role)) return { ok: false };
+  if (!user) {
+    authDebug({
+      flow: "sign-in",
+      outcome: "fail",
+      reason: "user-not-found",
+      email: normalizedEmail,
+      provider: process.env.AUTH_PROVIDER ?? "mock",
+      nodeEnv: process.env.NODE_ENV ?? "unknown",
+      demoAuthEnabled: isDemoAuthEnabled(),
+      hasDemoAuthPassword: Boolean(process.env.DEMO_AUTH_PASSWORD),
+    });
+    return { ok: false };
+  }
+  if (!isAppRole(user.role)) {
+    authDebug({
+      flow: "sign-in",
+      outcome: "fail",
+      reason: "invalid-app-role",
+      email: normalizedEmail,
+      role: user.role,
+      userId: user.id,
+      provider: process.env.AUTH_PROVIDER ?? "mock",
+      nodeEnv: process.env.NODE_ENV ?? "unknown",
+      demoAuthEnabled: isDemoAuthEnabled(),
+      hasDemoAuthPassword: Boolean(process.env.DEMO_AUTH_PASSWORD),
+    });
+    return { ok: false };
+  }
 
   await writeSessionCookie({
     uid: user.id,
     role: user.role,
     exp: Date.now() + TTL_MS,
   });
+  authDebug({
+    flow: "sign-in",
+    outcome: "success",
+    reason: "ok",
+    email: normalizedEmail,
+    role: user.role,
+    userId: user.id,
+    provider: process.env.AUTH_PROVIDER ?? "mock",
+    nodeEnv: process.env.NODE_ENV ?? "unknown",
+    demoAuthEnabled: isDemoAuthEnabled(),
+    hasDemoAuthPassword: Boolean(process.env.DEMO_AUTH_PASSWORD),
+  });
   return { ok: true, user };
 }
 
 async function mockDemoSignUp(name: string, email: string, password: string): Promise<DemoSignUpResult> {
-  if (!isDemoAuthEnabled()) return { ok: false };
-  if (typeof name !== "string" || typeof email !== "string" || typeof password !== "string") return { ok: false };
+  const normalizedEmail = typeof email === "string" ? email.trim().toLowerCase() : "";
+  if (!isDemoAuthEnabled()) {
+    authDebug({
+      flow: "sign-up",
+      outcome: "fail",
+      reason: "demo-auth-disabled",
+      email: normalizedEmail,
+      nameLength: typeof name === "string" ? name.trim().length : 0,
+      provider: process.env.AUTH_PROVIDER ?? "mock",
+      nodeEnv: process.env.NODE_ENV ?? "unknown",
+      demoAuthEnabled: isDemoAuthEnabled(),
+      hasDemoAuthPassword: Boolean(process.env.DEMO_AUTH_PASSWORD),
+    });
+    return { ok: false };
+  }
+  if (typeof name !== "string" || typeof email !== "string" || typeof password !== "string") {
+    authDebug({
+      flow: "sign-up",
+      outcome: "fail",
+      reason: "invalid-input-types",
+      email: normalizedEmail,
+      nameLength: typeof name === "string" ? name.trim().length : 0,
+      provider: process.env.AUTH_PROVIDER ?? "mock",
+      nodeEnv: process.env.NODE_ENV ?? "unknown",
+      demoAuthEnabled: isDemoAuthEnabled(),
+      hasDemoAuthPassword: Boolean(process.env.DEMO_AUTH_PASSWORD),
+    });
+    return { ok: false };
+  }
 
   const passwordOk = await checkDemoPassword(password);
-  if (!passwordOk) return { ok: false };
+  if (!passwordOk) {
+    authDebug({
+      flow: "sign-up",
+      outcome: "fail",
+      reason: "password-mismatch-or-missing-config",
+      email: normalizedEmail,
+      nameLength: name.trim().length,
+      provider: process.env.AUTH_PROVIDER ?? "mock",
+      nodeEnv: process.env.NODE_ENV ?? "unknown",
+      demoAuthEnabled: isDemoAuthEnabled(),
+      hasDemoAuthPassword: Boolean(process.env.DEMO_AUTH_PASSWORD),
+    });
+    return { ok: false };
+  }
 
   const normalizedName = name.trim();
-  const normalizedEmail = email.trim().toLowerCase();
-  if (!normalizedName || !normalizedEmail) return { ok: false };
-  if (!SIMPLE_EMAIL_RE.test(normalizedEmail)) return { ok: false };
+  if (!normalizedName || !normalizedEmail) {
+    authDebug({
+      flow: "sign-up",
+      outcome: "fail",
+      reason: "blank-name-or-email",
+      email: normalizedEmail,
+      nameLength: normalizedName.length,
+      provider: process.env.AUTH_PROVIDER ?? "mock",
+      nodeEnv: process.env.NODE_ENV ?? "unknown",
+      demoAuthEnabled: isDemoAuthEnabled(),
+      hasDemoAuthPassword: Boolean(process.env.DEMO_AUTH_PASSWORD),
+    });
+    return { ok: false };
+  }
+  if (!SIMPLE_EMAIL_RE.test(normalizedEmail)) {
+    authDebug({
+      flow: "sign-up",
+      outcome: "fail",
+      reason: "invalid-email-format",
+      email: normalizedEmail,
+      nameLength: normalizedName.length,
+      provider: process.env.AUTH_PROVIDER ?? "mock",
+      nodeEnv: process.env.NODE_ENV ?? "unknown",
+      demoAuthEnabled: isDemoAuthEnabled(),
+      hasDemoAuthPassword: Boolean(process.env.DEMO_AUTH_PASSWORD),
+    });
+    return { ok: false };
+  }
 
   const existing = await prisma.user.findUnique({
     where: { email: normalizedEmail },
     select: { id: true },
   });
-  if (existing) return { ok: false };
+  if (existing) {
+    authDebug({
+      flow: "sign-up",
+      outcome: "fail",
+      reason: "email-already-exists",
+      email: normalizedEmail,
+      nameLength: normalizedName.length,
+      userId: existing.id,
+      provider: process.env.AUTH_PROVIDER ?? "mock",
+      nodeEnv: process.env.NODE_ENV ?? "unknown",
+      demoAuthEnabled: isDemoAuthEnabled(),
+      hasDemoAuthPassword: Boolean(process.env.DEMO_AUTH_PASSWORD),
+    });
+    return { ok: false };
+  }
 
   let user: { id: string; role: Role; email: string; name: string };
   try {
@@ -109,6 +288,17 @@ async function mockDemoSignUp(name: string, email: string, password: string): Pr
     });
   } catch (error) {
     if (error instanceof PrismaClientKnownRequestError && error.code === "P2002") {
+      authDebug({
+        flow: "sign-up",
+        outcome: "fail",
+        reason: "p2002-duplicate-email",
+        email: normalizedEmail,
+        nameLength: normalizedName.length,
+        provider: process.env.AUTH_PROVIDER ?? "mock",
+        nodeEnv: process.env.NODE_ENV ?? "unknown",
+        demoAuthEnabled: isDemoAuthEnabled(),
+        hasDemoAuthPassword: Boolean(process.env.DEMO_AUTH_PASSWORD),
+      });
       return { ok: false };
     }
     throw error;
@@ -118,6 +308,19 @@ async function mockDemoSignUp(name: string, email: string, password: string): Pr
     uid: user.id,
     role: user.role,
     exp: Date.now() + TTL_MS,
+  });
+  authDebug({
+    flow: "sign-up",
+    outcome: "success",
+    reason: "ok",
+    email: normalizedEmail,
+    nameLength: normalizedName.length,
+    role: user.role,
+    userId: user.id,
+    provider: process.env.AUTH_PROVIDER ?? "mock",
+    nodeEnv: process.env.NODE_ENV ?? "unknown",
+    demoAuthEnabled: isDemoAuthEnabled(),
+    hasDemoAuthPassword: Boolean(process.env.DEMO_AUTH_PASSWORD),
   });
 
   return { ok: true, user };
