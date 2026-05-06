@@ -16,7 +16,7 @@ pnpm dev
 Useful URLs:
 
 - `/` — landing hub  
-- `/dev/role-switcher` — legacy mock personas (kept for dev only; Supabase Auth is source of truth)  
+- `/dev/role-switcher` — legacy mock personas (kept for dev only)  
 - `/dev/mock-stripe` — completes mock payments (`payments.simulateWebhook`)  
 - `/dev/multi-role` — four-pane iframe lab (`credentialless`, Chromium)  
 - `/customer`, `/kitchen`, `/driver`, `/admin` — gated route groups  
@@ -39,7 +39,7 @@ See `docs/follow-up.md` for every real-key wiring task and `docs/adr/0001-stack.
 
 The `/customer`, `/kitchen`, `/driver`, and `/admin` routes use `select`-shaped Prisma queries and run independent reads in `Promise.all`. Hot-path indexes live in `prisma/schema.prisma` (`Order(status, createdAt)`, `Order(customerId, createdAt)`, `OrderItem(orderId)`, `OrderItem(menuItemId)`, `MenuItem(isAvailable, name)`, `DeliveryAssignment(driverId)`).
 
-Auth uses Supabase Auth session cookies (`@supabase/ssr`) and looks up app roles via Prisma `User.authUserId` (with an email-based linking fallback for seeded users).
+Auth uses an app-signed `mc_session` cookie and verifies credentials against Prisma `User` (scrypt-hashed passwords). `User.authUserId` is app-managed and can be backfilled locally.
 
 See `docs/perf/baseline.md` for the measurement protocol.
 
@@ -51,14 +51,13 @@ See `docs/perf/baseline.md` for the measurement protocol.
 | -------- | ------- |
 | `DATABASE_URL` | Pooled Supabase URL (e.g. `?pgbouncer=true&connection_limit=1`) for serverless runtime |
 | `DIRECT_URL` | Direct Postgres URL for migrations / introspection (`datasource.directUrl`) |
-| `NEXT_PUBLIC_SUPABASE_URL` | Supabase project URL (used by SSR and client auth) |
-| `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Supabase anon key (safe for client; used by SSR and client auth) |
+| `SESSION_SECRET` | Secret used to sign and verify app auth cookie (`mc_session`) |
 
 Optional (local/e2e only):
 
 | Variable | Purpose |
 | -------- | ------- |
-| `SUPABASE_SERVICE_ROLE_KEY` | E2E provisioning of Supabase Auth users (server-side Playwright helper only; never expose to browser) |
+| `SEED_AUTH_PASSWORD` | Password used when creating seeded users (`Demo123!` fallback if unset) |
 | `E2E_AUTH_PASSWORD` | Password used by e2e provisioned users (defaults to a hardcoded dev-only value if unset) |
 
 ### Build and database
@@ -69,10 +68,15 @@ Optional (local/e2e only):
 
 ### Seeded role accounts (admin/kitchen/driver)
 
-Seeding creates app users in Postgres (Prisma `User`) with role + email.\n
-To let a seeded user sign in:\n
-1. Create a Supabase Auth user with the **same email** (Dashboard → Authentication → Users, or sign up through `/login`).\n
-2. First successful sign-in will link `User.authUserId` automatically if it is still null for that email.
+Seeding creates app users in Postgres (`User`) with role + email + hashed password.
+
+If you have existing users with null `authUserId`, run:
+
+```bash
+pnpm db:backfill:auth-user-id
+```
+
+The backfill is idempotent: it only links rows with null `authUserId` and safely skips conflicts.
 
 ---
 

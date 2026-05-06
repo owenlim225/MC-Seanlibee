@@ -25,6 +25,7 @@
     "db:migrate": "prisma migrate dev",
     "db:push": "prisma db push --skip-generate",
     "db:seed": "prisma db seed",
+    "db:backfill:auth-user-id": "tsx prisma/scripts/backfill-auth-user-id.ts",
     "db:studio": "prisma studio",
     "db:cleanup:broken-images": "tsx prisma/scripts/cleanup-broken-seeded-menu-images.ts",
     "db:verify:broken-images": "tsx prisma/scripts/verify-broken-image-cleanup.ts",

@@ -16,6 +16,7 @@ import porks from "./data/porks.json";
 import sandwiches from "./data/sandwiches.json";
 import sausages from "./data/sausages.json";
 import steaks from "./data/steaks.json";
+import { hashPassword } from "../lib/auth/password";
 
 const prisma = new PrismaClient();
 
@@ -125,6 +126,11 @@ function loadFoodSourcesFromManifest(): { sourceSlug: ApprovedSourceSlug; rows: 
 }
 
 const FOOD_SOURCES = loadFoodSourcesFromManifest();
+const SEED_PASSWORD = process.env.SEED_AUTH_PASSWORD ?? "Demo123!";
+
+if (process.env.NODE_ENV === "production" && !process.env.SEED_AUTH_PASSWORD) {
+  throw new Error("SEED_AUTH_PASSWORD is required in production.");
+}
 
 function rowToCreateInput(row: FoodRow): Prisma.MenuItemCreateManyInput {
   const normalizedImageUrl = row.img.trim();
@@ -149,6 +155,20 @@ async function createItemsInChunks(items: Prisma.MenuItemCreateManyInput[]): Pro
   return created;
 }
 
+async function createSeedUser(data: { email: string; name: string; role: Role }) {
+  const created = await prisma.user.create({
+    data: {
+      ...data,
+      password: hashPassword(SEED_PASSWORD),
+    },
+  });
+  await prisma.user.update({
+    where: { id: created.id },
+    data: { authUserId: created.id },
+  });
+  return created;
+}
+
 async function main() {
   await prisma.orderStatusEvent.deleteMany();
   await prisma.deliveryAssignment.deleteMany();
@@ -159,36 +179,78 @@ async function main() {
   await prisma.menuCategory.deleteMany();
   await prisma.user.deleteMany();
 
-  const admin = await prisma.user.create({
-    data: { email: "admin@example.com", name: "Alex Admin", role: Role.ADMIN },
+  const admin = await createSeedUser({
+    email: "admin@example.com",
+    name: "Alex Admin",
+    role: Role.ADMIN,
   });
-  const kitchen = await prisma.user.create({
-    data: { email: "kitchen@example.com", name: "Kim Kitchen", role: Role.KITCHEN },
+  const kitchen = await createSeedUser({
+    email: "kitchen@example.com",
+    name: "Kim Kitchen",
+    role: Role.KITCHEN,
   });
-  const driver = await prisma.user.create({
-    data: { email: "driver@example.com", name: "Dana Driver", role: Role.DRIVER },
+  const driver = await createSeedUser({
+    email: "driver@example.com",
+    name: "Dana Driver",
+    role: Role.DRIVER,
   });
-  const driverTwo = await prisma.user.create({
-    data: { email: "driver2@example.com", name: "Drew Driver", role: Role.DRIVER },
+  const driverTwo = await createSeedUser({
+    email: "driver2@example.com",
+    name: "Drew Driver",
+    role: Role.DRIVER,
   });
 
   const customers = await prisma.$transaction([
     prisma.user.create({
-      data: { email: "customer1@example.com", name: "Chris Customer", role: Role.CUSTOMER },
+      data: {
+        email: "customer1@example.com",
+        name: "Chris Customer",
+        role: Role.CUSTOMER,
+        password: hashPassword(SEED_PASSWORD),
+      },
     }),
     prisma.user.create({
-      data: { email: "customer2@example.com", name: "Casey Customer", role: Role.CUSTOMER },
+      data: {
+        email: "customer2@example.com",
+        name: "Casey Customer",
+        role: Role.CUSTOMER,
+        password: hashPassword(SEED_PASSWORD),
+      },
     }),
     prisma.user.create({
-      data: { email: "customer3@example.com", name: "Cameron Customer", role: Role.CUSTOMER },
+      data: {
+        email: "customer3@example.com",
+        name: "Cameron Customer",
+        role: Role.CUSTOMER,
+        password: hashPassword(SEED_PASSWORD),
+      },
     }),
     prisma.user.create({
-      data: { email: "customer4@example.com", name: "Cody Customer", role: Role.CUSTOMER },
+      data: {
+        email: "customer4@example.com",
+        name: "Cody Customer",
+        role: Role.CUSTOMER,
+        password: hashPassword(SEED_PASSWORD),
+      },
     }),
     prisma.user.create({
-      data: { email: "customer5@example.com", name: "Charlie Customer", role: Role.CUSTOMER },
+      data: {
+        email: "customer5@example.com",
+        name: "Charlie Customer",
+        role: Role.CUSTOMER,
+        password: hashPassword(SEED_PASSWORD),
+      },
     }),
   ]);
+
+  await prisma.$transaction(
+    customers.map((customer) =>
+      prisma.user.update({
+        where: { id: customer.id },
+        data: { authUserId: customer.id },
+      }),
+    ),
+  );
 
   const groupedCategories = await Promise.all(
     GROUPED_MENU_TAXONOMY.map((group) =>

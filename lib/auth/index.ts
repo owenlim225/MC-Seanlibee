@@ -1,7 +1,7 @@
 import { Role } from "@prisma/client";
 import { redirect } from "next/navigation";
 import { prisma } from "@/lib/prisma";
-import { createSupabaseServerClient } from "@/lib/supabase/server";
+import { readSessionPayload } from "@/lib/auth/mock";
 export { getAuthProviderName } from "@/lib/auth/provider";
 
 export type Session = {
@@ -17,13 +17,10 @@ export type SessionLite = {
  * changed. Use for layouts/pages that render user-identifying fields.
  */
 export async function getSession(): Promise<Session> {
-  const supabase = await createSupabaseServerClient();
-  const {
-    data: { user: authUser },
-  } = await supabase.auth.getUser();
-  if (!authUser) return { user: null };
+  const payload = await readSessionPayload();
+  if (!payload) return { user: null };
   const user = await prisma.user.findUnique({
-    where: { authUserId: authUser.id },
+    where: { id: payload.uid },
     select: { id: true, role: true, email: true, name: true },
   });
   if (!user) return { user: null };
@@ -36,13 +33,10 @@ export async function getSession(): Promise<Session> {
  * `id` and `role`. Middleware re-validates on every request.
  */
 export async function getSessionLite(): Promise<SessionLite> {
-  const supabase = await createSupabaseServerClient();
-  const {
-    data: { user: authUser },
-  } = await supabase.auth.getUser();
-  if (!authUser) return { user: null };
+  const payload = await readSessionPayload();
+  if (!payload) return { user: null };
   const user = await prisma.user.findUnique({
-    where: { authUserId: authUser.id },
+    where: { id: payload.uid },
     select: { id: true, role: true },
   });
   if (!user) return { user: null };
@@ -53,10 +47,14 @@ function loginRedirect(): never {
   redirect("/auth/login");
 }
 
+function deniedRedirect(): never {
+  redirect("/auth/login?denied=1");
+}
+
 export async function requireRole(role: Role): Promise<NonNullable<Session["user"]>> {
   const session = await getSession();
   if (!session.user) loginRedirect();
-  if (session.user.role !== role) loginRedirect();
+  if (session.user.role !== role) deniedRedirect();
   return session.user;
 }
 
@@ -67,7 +65,7 @@ export async function requireRole(role: Role): Promise<NonNullable<Session["user
 export async function requireRoleLite(role: Role): Promise<NonNullable<SessionLite["user"]>> {
   const session = await getSessionLite();
   if (!session.user) loginRedirect();
-  if (session.user.role !== role) loginRedirect();
+  if (session.user.role !== role) deniedRedirect();
   return session.user;
 }
 

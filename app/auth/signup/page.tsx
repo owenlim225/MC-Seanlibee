@@ -62,6 +62,7 @@ export default async function SignupPage({
               type="password"
               name="password"
               required
+              minLength={8}
               autoComplete="new-password"
               className="min-h-[44px] rounded-md border border-zinc-300 bg-background px-3 py-2 text-sm dark:border-zinc-700"
             />

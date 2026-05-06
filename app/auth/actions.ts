@@ -2,9 +2,13 @@
 
 import { redirect } from "next/navigation";
 import { isRedirectError } from "next/dist/client/components/redirect-error";
+import { cookies } from "next/headers";
 import { isAppRole, ROLE_HOME } from "@/lib/roles";
+import type { AppRole } from "@/lib/roles";
 import { safeNextPath } from "@/lib/auth/safe-next-path";
-import { createSupabaseServerClient } from "@/lib/supabase/server";
+import { signSession } from "@/lib/auth/cookie";
+import { hashPassword, isPasswordHash, verifyPassword } from "@/lib/auth/password";
+import { getSessionSecret } from "@/lib/auth/session-secret";
 import { prisma } from "@/lib/prisma";
 import { PrismaClientKnownRequestError } from "@prisma/client/runtime/library";
 import { Role } from "@prisma/client";
@@ -12,9 +16,30 @@ import { Role } from "@prisma/client";
 const GENERIC_ERROR = "Sign-in failed. Check your email and password and try again.";
 const SIGN_UP_ERROR = "Sign-up failed. Check your details and try again.";
 const AUTH_DEBUG_ENABLED = process.env.NODE_ENV !== "production";
+const SESSION_COOKIE = "mc_session";
+const SESSION_TTL_MS = 60 * 60 * 24 * 7 * 1000;
+const MIN_PASSWORD_LENGTH = 8;
 
 function agentDebugLog(...args: unknown[]): void {
   void args;
+}
+
+async function writeSessionCookie(userId: string, role: AppRole): Promise<void> {
+  const token = await signSession(
+    {
+      uid: userId,
+      role,
+      exp: Date.now() + SESSION_TTL_MS,
+    },
+    getSessionSecret(),
+  );
+  (await cookies()).set(SESSION_COOKIE, token, {
+    httpOnly: true,
+    sameSite: "lax",
+    path: "/",
+    maxAge: SESSION_TTL_MS / 1000,
+    secure: process.env.NODE_ENV === "production",
+  });
 }
 
 export async function signInAction(formData: FormData): Promise<void> {
@@ -29,28 +54,34 @@ export async function signInAction(formData: FormData): Promise<void> {
   });
 
   try {
-    const supabase = await createSupabaseServerClient();
     const normalizedEmail = email.trim().toLowerCase();
+    if (!normalizedEmail || !password) {
+      const params = new URLSearchParams({ error: GENERIC_ERROR });
+      if (typeof next === "string" && next.length > 0) params.set("next", next);
+      redirect(`/auth/login?${params.toString()}`);
+    }
 
-    const { data, error } = await supabase.auth.signInWithPassword({
-      email: normalizedEmail,
-      password,
+    const user = await prisma.user.findUnique({
+      where: { email: normalizedEmail },
+      select: { id: true, role: true, password: true, authUserId: true },
     });
-    agentDebugLog("H5", "app/auth/actions.ts:59", "signInWithPassword result", {
-      hasUser: Boolean(data.user),
-      errorName: error?.name ?? null,
-      errorStatus: error?.status ?? null,
-      errorMessage: error?.message ?? null,
+    const passwordOk = user
+      ? isPasswordHash(user.password)
+        ? verifyPassword(password, user.password)
+        : password === user.password
+      : false;
+    agentDebugLog("H5", "app/auth/actions.ts:59", "password verification result", {
+      hasUser: Boolean(user),
+      passwordMatched: passwordOk,
     });
 
-    if (error || !data.user) {
+    if (!user || !passwordOk) {
       if (AUTH_DEBUG_ENABLED)
         console.warn("[auth-debug]", {
           flow: "sign-in",
           outcome: "fail",
-          reason: "supabase-signin-failed",
+          reason: "credentials-invalid",
           email: normalizedEmail,
-          error: error ? { message: error.message, status: error.status, name: error.name } : null,
           at: new Date().toISOString(),
         });
       const params = new URLSearchParams({ error: GENERIC_ERROR });
@@ -58,69 +89,39 @@ export async function signInAction(formData: FormData): Promise<void> {
       redirect(`/auth/login?${params.toString()}`);
     }
 
-    const authUserId = data.user.id;
-    let appUser = await prisma.user.findUnique({
-      where: { authUserId },
-      select: { id: true, role: true },
-    });
-
-    if (!appUser) {
-      const byEmail = await prisma.user.findUnique({
-        where: { email: normalizedEmail },
-        select: { id: true, role: true, authUserId: true },
+    if (!user.authUserId) {
+      await prisma.user.update({
+        where: { id: user.id },
+        data: { authUserId: user.id },
       });
-
-      if (byEmail && !byEmail.authUserId) {
-        appUser = await prisma.user.update({
-          where: { id: byEmail.id },
-          data: { authUserId },
-          select: { id: true, role: true },
-        });
-        if (AUTH_DEBUG_ENABLED)
-          console.info("[auth-debug]", {
-            flow: "sign-in",
-            outcome: "success",
-            reason: "linked-auth-user-id",
-            email: normalizedEmail,
-            userId: appUser.id,
-            role: appUser.role,
-            at: new Date().toISOString(),
-          });
-      } else {
-        if (AUTH_DEBUG_ENABLED)
-          console.warn("[auth-debug]", {
-            flow: "sign-in",
-            outcome: "fail",
-            reason: "no-app-user-for-auth-user",
-            email: normalizedEmail,
-            authUserId,
-            at: new Date().toISOString(),
-          });
-        await supabase.auth.signOut();
-        const params = new URLSearchParams({ error: GENERIC_ERROR });
-        if (typeof next === "string" && next.length > 0) params.set("next", next);
-        redirect(`/auth/login?${params.toString()}`);
-      }
     }
 
-    if (!isAppRole(appUser.role)) {
+    if (!isAppRole(user.role)) {
       if (AUTH_DEBUG_ENABLED)
         console.warn("[auth-debug]", {
           flow: "sign-in",
           outcome: "fail",
           reason: "invalid-app-role",
           email: normalizedEmail,
-          userId: appUser.id,
-          role: appUser.role,
+          userId: user.id,
+          role: user.role,
           at: new Date().toISOString(),
         });
-      await supabase.auth.signOut();
       const params = new URLSearchParams({ error: GENERIC_ERROR });
       if (typeof next === "string" && next.length > 0) params.set("next", next);
       redirect(`/auth/login?${params.toString()}`);
     }
 
-    const fallback = ROLE_HOME[appUser.role];
+    if (!isPasswordHash(user.password)) {
+      await prisma.user.update({
+        where: { id: user.id },
+        data: { password: hashPassword(password) },
+      });
+    }
+
+    await writeSessionCookie(user.id, user.role);
+
+    const fallback = ROLE_HOME[user.role];
     agentDebugLog("H7", "app/auth/actions.ts:138", "signInAction redirect success", {
       fallback,
       safeNextTarget: safeNextPath(next, fallback),
@@ -158,7 +159,6 @@ export async function signUpAction(formData: FormData): Promise<void> {
   });
 
   try {
-    const supabase = await createSupabaseServerClient();
     const normalizedName = name.trim();
     const normalizedEmail = email.trim().toLowerCase();
 
@@ -178,38 +178,18 @@ export async function signUpAction(formData: FormData): Promise<void> {
       redirect(`/auth/signup?${params.toString()}`);
     }
 
-    const { data, error } = await supabase.auth.signUp({
-      email: normalizedEmail,
-      password,
-    });
-    agentDebugLog("H5", "app/auth/actions.ts:195", "signUp result", {
-      hasUser: Boolean(data.user),
-      errorName: error?.name ?? null,
-      errorStatus: error?.status ?? null,
-      errorMessage: error?.message ?? null,
-    });
-
-    if (error || !data.user) {
-      if (AUTH_DEBUG_ENABLED)
-        console.warn("[auth-debug]", {
-          flow: "sign-up",
-          outcome: "fail",
-          reason: "supabase-signup-failed",
-          email: normalizedEmail,
-          error: error ? { message: error.message, status: error.status, name: error.name } : null,
-          at: new Date().toISOString(),
-        });
+    if (!password || password.length < MIN_PASSWORD_LENGTH) {
       const params = new URLSearchParams({ error: SIGN_UP_ERROR });
       if (typeof next === "string" && next.length > 0) params.set("next", next);
       redirect(`/auth/signup?${params.toString()}`);
     }
 
-    const authUserId = data.user.id;
+    const hashedPassword = hashPassword(password);
     let created;
     try {
       created = await prisma.user.create({
         data: {
-          authUserId,
+          password: hashedPassword,
           email: normalizedEmail,
           name: normalizedName,
           role: Role.CUSTOMER,
@@ -224,16 +204,21 @@ export async function signUpAction(formData: FormData): Promise<void> {
             outcome: "fail",
             reason: "prisma-unique-constraint",
             email: normalizedEmail,
-            authUserId,
             at: new Date().toISOString(),
           });
         const params = new URLSearchParams({ error: SIGN_UP_ERROR });
         if (typeof next === "string" && next.length > 0) params.set("next", next);
-        await supabase.auth.signOut();
         redirect(`/auth/signup?${params.toString()}`);
       }
       throw dbError;
     }
+
+    await prisma.user.update({
+      where: { id: created.id },
+      data: { authUserId: created.id },
+    });
+
+    await writeSessionCookie(created.id, created.role);
 
     const fallback = ROLE_HOME[created.role];
     agentDebugLog("H7", "app/auth/actions.ts:244", "signUpAction redirect success", {

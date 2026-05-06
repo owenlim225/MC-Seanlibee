@@ -1,5 +1,5 @@
-import { createClient } from "@supabase/supabase-js";
 import { PrismaClient, Role } from "@prisma/client";
+import { hashPassword } from "@/lib/auth/password";
 
 type ProvisionUserInput = {
   email: string;
@@ -8,64 +8,14 @@ type ProvisionUserInput = {
   password: string;
 };
 
-function requiredEnv(name: string): string {
-  const value = process.env[name];
-  if (typeof value === "string" && value.length > 0) return value;
-  throw new Error(`Missing required env for e2e: ${name}`);
-}
-
-function createAdminSupabaseClient() {
-  const url = requiredEnv("NEXT_PUBLIC_SUPABASE_URL");
-  const serviceRoleKey = requiredEnv("SUPABASE_SERVICE_ROLE_KEY");
-  return createClient(url, serviceRoleKey, {
-    auth: {
-      autoRefreshToken: false,
-      persistSession: false,
-      detectSessionInUrl: false,
-    },
-  });
-}
-
-async function findAuthUserIdByEmail(email: string): Promise<string | null> {
-  const supabase = createAdminSupabaseClient();
-  for (let page = 1; page <= 5; page += 1) {
-    const { data, error } = await supabase.auth.admin.listUsers({ page, perPage: 200 });
-    if (error) throw new Error(`listUsers failed: ${error.message}`);
-    const match = data.users.find((u) => (u.email ?? "").toLowerCase() === email.toLowerCase());
-    if (match) return match.id;
-    if (data.users.length < 200) return null;
-  }
-  return null;
-}
-
-async function getOrCreateAuthUserId(input: ProvisionUserInput): Promise<string> {
-  const supabase = createAdminSupabaseClient();
-
-  const existing = await findAuthUserIdByEmail(input.email);
-  if (existing) {
-    await supabase.auth.admin.updateUserById(existing, {
-      password: input.password,
-      email_confirm: true,
-    });
-    return existing;
-  }
-
-  const { data, error } = await supabase.auth.admin.createUser({
-    email: input.email,
-    password: input.password,
-    email_confirm: true,
-  });
-  if (error || !data.user) throw new Error(`createUser failed: ${error?.message ?? "missing user"}`);
-  return data.user.id;
-}
-
 export async function provisionAppUser(input: ProvisionUserInput): Promise<void> {
-  const authUserId = await getOrCreateAuthUserId(input);
+  const normalizedEmail = input.email.toLowerCase();
+  const hashedPassword = hashPassword(input.password);
 
   const prisma = new PrismaClient();
   try {
     const existing = await prisma.user.findUnique({
-      where: { email: input.email.toLowerCase() },
+      where: { email: normalizedEmail },
       select: { id: true, authUserId: true },
     });
 
@@ -73,7 +23,8 @@ export async function provisionAppUser(input: ProvisionUserInput): Promise<void>
       await prisma.user.update({
         where: { id: existing.id },
         data: {
-          authUserId: existing.authUserId ?? authUserId,
+          authUserId: existing.authUserId ?? existing.id,
+          password: hashedPassword,
           role: input.role,
           name: input.name,
         },
@@ -81,13 +32,19 @@ export async function provisionAppUser(input: ProvisionUserInput): Promise<void>
       return;
     }
 
-    await prisma.user.create({
+    const created = await prisma.user.create({
       data: {
-        authUserId,
-        email: input.email.toLowerCase(),
+        email: normalizedEmail,
+        password: hashedPassword,
         name: input.name,
         role: input.role,
       },
+      select: { id: true },
+    });
+
+    await prisma.user.update({
+      where: { id: created.id },
+      data: { authUserId: created.id },
     });
   } finally {
     await prisma.$disconnect();

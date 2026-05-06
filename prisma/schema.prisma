@@ -29,7 +29,7 @@ model User {
   id           String             @id @default(cuid())
   authUserId   String?            @unique
   email        String             @unique
-  password     String             @default("Demo123!")
+  password     String
   role         Role
   name         String
   orders       Order[]            @relation("CustomerOrders")

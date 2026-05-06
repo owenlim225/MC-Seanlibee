@@ -1,6 +1,9 @@
 import type { NextRequest } from "next/server";
 import { NextResponse } from "next/server";
-import { createSupabaseMiddlewareClient } from "@/lib/supabase/middleware";
+import { verifySession } from "@/lib/auth/cookie";
+import { getSessionSecret } from "@/lib/auth/session-secret";
+
+const SESSION_COOKIE = "mc_session";
 
 function isProtectedPath(pathname: string): boolean {
   return (
@@ -14,33 +17,18 @@ function isProtectedPath(pathname: string): boolean {
 export async function middleware(req: NextRequest) {
   if (!isProtectedPath(req.nextUrl.pathname)) return NextResponse.next();
 
-  let supabaseResult:
-    | { ok: true; userId: string | null; getResponse: () => NextResponse; setResponse: (r: NextResponse) => void }
-    | { ok: false; error: string };
-  try {
-    const { supabase, getResponse, setResponse } = createSupabaseMiddlewareClient(req);
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
-    supabaseResult = { ok: true, userId: user?.id ?? null, getResponse, setResponse };
-  } catch (e) {
-    supabaseResult = { ok: false, error: e instanceof Error ? `${e.name}: ${e.message}` : String(e) };
-  }
+  const raw = req.cookies.get(SESSION_COOKIE)?.value;
+  const payload = raw ? await verifySession(raw, getSessionSecret()) : null;
 
-  if (!supabaseResult.ok || !supabaseResult.userId) {
+  if (!payload) {
     const url = req.nextUrl.clone();
     url.pathname = "/auth/login";
     url.search = "";
     url.searchParams.set("next", `${req.nextUrl.pathname}${req.nextUrl.search}`);
-    const res = NextResponse.redirect(url);
-    if (supabaseResult.ok) {
-      supabaseResult.setResponse(res);
-      return supabaseResult.getResponse();
-    }
-    return res;
+    return NextResponse.redirect(url);
   }
 
-  return supabaseResult.getResponse();
+  return NextResponse.next();
 }
 
 export const config = {

@@ -4,6 +4,8 @@ import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { signSession, verifySession, type SessionPayload } from "@/lib/auth/cookie";
 import { checkDemoPassword } from "@/lib/auth/demo-password";
+import { hashPassword } from "@/lib/auth/password";
+import { getSessionSecret } from "@/lib/auth/session-secret";
 import {
   getAuthAdapter,
   registerAuthAdapter,
@@ -43,17 +45,13 @@ function authDebug(event: AuthDebugEvent): void {
   console.warn("[auth-debug]", payload);
 }
 
-function secret(): string {
-  return process.env.SESSION_SECRET ?? "dev-only-change-me-dev-only-change-me";
-}
-
 function isDemoAuthEnabled(): boolean {
   if (process.env.NODE_ENV !== "production") return true;
   return process.env.DEMO_AUTH_ENABLED === "true";
 }
 
 async function writeSessionCookie(payload: SessionPayload): Promise<void> {
-  const token = await signSession(payload, secret());
+  const token = await signSession(payload, getSessionSecret());
   (await cookies()).set(COOKIE, token, {
     httpOnly: true,
     sameSite: "lax",
@@ -283,6 +281,7 @@ async function mockDemoSignUp(name: string, email: string, password: string): Pr
         name: normalizedName,
         email: normalizedEmail,
         role: Role.CUSTOMER,
+        password: hashPassword(password),
       },
       select: { id: true, role: true, email: true, name: true },
     });
@@ -303,6 +302,11 @@ async function mockDemoSignUp(name: string, email: string, password: string): Pr
     }
     throw error;
   }
+
+  await prisma.user.update({
+    where: { id: user.id },
+    data: { authUserId: user.id },
+  });
 
   await writeSessionCookie({
     uid: user.id,
@@ -333,7 +337,7 @@ async function mockClearSession(): Promise<void> {
 async function mockReadSessionPayload(): Promise<SessionPayload | null> {
   const raw = (await cookies()).get(COOKIE)?.value;
   if (!raw) return null;
-  return verifySession(raw, secret());
+  return verifySession(raw, getSessionSecret());
 }
 
 registerAuthAdapter("mock", {
