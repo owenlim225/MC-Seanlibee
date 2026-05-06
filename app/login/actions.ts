@@ -1,9 +1,12 @@
 "use server";
 
 import { redirect } from "next/navigation";
-import { demoSignIn, demoSignUp } from "@/lib/auth/mock";
 import { isAppRole, ROLE_HOME } from "@/lib/roles";
 import { safeNextPath } from "@/lib/auth/safe-next-path";
+import { createSupabaseServerClient } from "@/lib/supabase/server";
+import { prisma } from "@/lib/prisma";
+import { PrismaClientKnownRequestError } from "@prisma/client/runtime/library";
+import { Role } from "@prisma/client";
 
 const GENERIC_ERROR = "Sign-in failed. Check your email and password and try again.";
 const SIGN_UP_ERROR = "Sign-up failed. Check your details and try again.";
@@ -13,31 +16,101 @@ export async function signInAction(formData: FormData): Promise<void> {
   const password = String(formData.get("password") ?? "");
   const next = formData.get("next");
 
-  let result: Awaited<ReturnType<typeof demoSignIn>>;
   try {
-    result = await demoSignIn(email, password);
+    const supabase = await createSupabaseServerClient();
+    const normalizedEmail = email.trim().toLowerCase();
+
+    const { data, error } = await supabase.auth.signInWithPassword({
+      email: normalizedEmail,
+      password,
+    });
+
+    if (error || !data.user) {
+      console.warn("[auth-debug]", {
+        flow: "sign-in",
+        outcome: "fail",
+        reason: "supabase-signin-failed",
+        email: normalizedEmail,
+        error: error ? { message: error.message, status: error.status, name: error.name } : null,
+        at: new Date().toISOString(),
+      });
+      const params = new URLSearchParams({ error: GENERIC_ERROR });
+      if (typeof next === "string" && next.length > 0) params.set("next", next);
+      redirect(`/login?${params.toString()}`);
+    }
+
+    const authUserId = data.user.id;
+    let appUser = await prisma.user.findUnique({
+      where: { authUserId },
+      select: { id: true, role: true },
+    });
+
+    if (!appUser) {
+      const byEmail = await prisma.user.findUnique({
+        where: { email: normalizedEmail },
+        select: { id: true, role: true, authUserId: true },
+      });
+
+      if (byEmail && !byEmail.authUserId) {
+        appUser = await prisma.user.update({
+          where: { id: byEmail.id },
+          data: { authUserId },
+          select: { id: true, role: true },
+        });
+        console.info("[auth-debug]", {
+          flow: "sign-in",
+          outcome: "success",
+          reason: "linked-auth-user-id",
+          email: normalizedEmail,
+          userId: appUser.id,
+          role: appUser.role,
+          at: new Date().toISOString(),
+        });
+      } else {
+        console.warn("[auth-debug]", {
+          flow: "sign-in",
+          outcome: "fail",
+          reason: "no-app-user-for-auth-user",
+          email: normalizedEmail,
+          authUserId,
+          at: new Date().toISOString(),
+        });
+        await supabase.auth.signOut();
+        const params = new URLSearchParams({ error: GENERIC_ERROR });
+        if (typeof next === "string" && next.length > 0) params.set("next", next);
+        redirect(`/login?${params.toString()}`);
+      }
+    }
+
+    if (!isAppRole(appUser.role)) {
+      console.warn("[auth-debug]", {
+        flow: "sign-in",
+        outcome: "fail",
+        reason: "invalid-app-role",
+        email: normalizedEmail,
+        userId: appUser.id,
+        role: appUser.role,
+        at: new Date().toISOString(),
+      });
+      await supabase.auth.signOut();
+      const params = new URLSearchParams({ error: GENERIC_ERROR });
+      if (typeof next === "string" && next.length > 0) params.set("next", next);
+      redirect(`/login?${params.toString()}`);
+    }
+
+    const fallback = ROLE_HOME[appUser.role];
+    redirect(safeNextPath(next, fallback));
   } catch (error) {
     console.error("[auth-debug] signInAction exception", {
-      reason: "demo-signin-throw",
+      reason: "signin-throw",
       email: email.trim().toLowerCase(),
-      provider: process.env.AUTH_PROVIDER ?? "mock",
       nodeEnv: process.env.NODE_ENV ?? "unknown",
-      hasDemoAuthPassword: Boolean(process.env.DEMO_AUTH_PASSWORD),
       error: error instanceof Error ? error.message : String(error),
     });
     const params = new URLSearchParams({ error: GENERIC_ERROR });
     if (typeof next === "string" && next.length > 0) params.set("next", next);
     redirect(`/login?${params.toString()}`);
   }
-
-  if (!result.ok) {
-    const params = new URLSearchParams({ error: GENERIC_ERROR });
-    if (typeof next === "string" && next.length > 0) params.set("next", next);
-    redirect(`/login?${params.toString()}`);
-  }
-
-  const fallback = ROLE_HOME[result.user.role];
-  redirect(safeNextPath(next, fallback));
 }
 
 export async function signUpAction(formData: FormData): Promise<void> {
@@ -46,33 +119,87 @@ export async function signUpAction(formData: FormData): Promise<void> {
   const password = String(formData.get("password") ?? "");
   const next = formData.get("next");
 
-  let result: Awaited<ReturnType<typeof demoSignUp>>;
   try {
-    result = await demoSignUp(name, email, password);
+    const supabase = await createSupabaseServerClient();
+    const normalizedName = name.trim();
+    const normalizedEmail = email.trim().toLowerCase();
+
+    if (!normalizedName || !normalizedEmail) {
+      const params = new URLSearchParams({ error: SIGN_UP_ERROR });
+      if (typeof next === "string" && next.length > 0) params.set("next", next);
+      redirect(`/login?${params.toString()}`);
+    }
+
+    const existing = await prisma.user.findUnique({
+      where: { email: normalizedEmail },
+      select: { id: true },
+    });
+    if (existing) {
+      const params = new URLSearchParams({ error: SIGN_UP_ERROR });
+      if (typeof next === "string" && next.length > 0) params.set("next", next);
+      redirect(`/login?${params.toString()}`);
+    }
+
+    const { data, error } = await supabase.auth.signUp({
+      email: normalizedEmail,
+      password,
+    });
+
+    if (error || !data.user) {
+      console.warn("[auth-debug]", {
+        flow: "sign-up",
+        outcome: "fail",
+        reason: "supabase-signup-failed",
+        email: normalizedEmail,
+        error: error ? { message: error.message, status: error.status, name: error.name } : null,
+        at: new Date().toISOString(),
+      });
+      const params = new URLSearchParams({ error: SIGN_UP_ERROR });
+      if (typeof next === "string" && next.length > 0) params.set("next", next);
+      redirect(`/login?${params.toString()}`);
+    }
+
+    const authUserId = data.user.id;
+    let created;
+    try {
+      created = await prisma.user.create({
+        data: {
+          authUserId,
+          email: normalizedEmail,
+          name: normalizedName,
+          role: Role.CUSTOMER,
+        },
+        select: { id: true, role: true },
+      });
+    } catch (dbError) {
+      if (dbError instanceof PrismaClientKnownRequestError && dbError.code === "P2002") {
+        console.warn("[auth-debug]", {
+          flow: "sign-up",
+          outcome: "fail",
+          reason: "prisma-unique-constraint",
+          email: normalizedEmail,
+          authUserId,
+          at: new Date().toISOString(),
+        });
+        const params = new URLSearchParams({ error: SIGN_UP_ERROR });
+        if (typeof next === "string" && next.length > 0) params.set("next", next);
+        redirect(`/login?${params.toString()}`);
+      }
+      throw dbError;
+    }
+
+    const fallback = ROLE_HOME[created.role];
+    redirect(safeNextPath(next, fallback));
   } catch (error) {
     console.error("[auth-debug] signUpAction exception", {
-      reason: "demo-signup-throw",
+      reason: "signup-throw",
       email: email.trim().toLowerCase(),
       nameLength: name.trim().length,
-      provider: process.env.AUTH_PROVIDER ?? "mock",
       nodeEnv: process.env.NODE_ENV ?? "unknown",
-      hasDemoAuthPassword: Boolean(process.env.DEMO_AUTH_PASSWORD),
       error: error instanceof Error ? error.message : String(error),
     });
     const params = new URLSearchParams({ error: SIGN_UP_ERROR });
     if (typeof next === "string" && next.length > 0) params.set("next", next);
     redirect(`/login?${params.toString()}`);
   }
-
-  if (!result.ok) {
-    const params = new URLSearchParams({ error: SIGN_UP_ERROR });
-    if (typeof next === "string" && next.length > 0) params.set("next", next);
-    redirect(`/login?${params.toString()}`);
-  }
-
-  if (!isAppRole(result.user.role)) {
-    redirect(`/login?${new URLSearchParams({ error: SIGN_UP_ERROR }).toString()}`);
-  }
-  const fallback = ROLE_HOME[result.user.role];
-  redirect(safeNextPath(next, fallback));
 }

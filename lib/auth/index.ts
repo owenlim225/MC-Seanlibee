@@ -1,7 +1,7 @@
 import { Role } from "@prisma/client";
 import { redirect } from "next/navigation";
 import { prisma } from "@/lib/prisma";
-import { readSessionPayload } from "@/lib/auth/mock";
+import { createSupabaseServerClient } from "@/lib/supabase/server";
 export { getAuthProviderName } from "@/lib/auth/provider";
 
 export type Session = {
@@ -17,13 +17,16 @@ export type SessionLite = {
  * changed. Use for layouts/pages that render user-identifying fields.
  */
 export async function getSession(): Promise<Session> {
-  const payload = await readSessionPayload();
-  if (!payload) return { user: null };
+  const supabase = await createSupabaseServerClient();
+  const {
+    data: { user: authUser },
+  } = await supabase.auth.getUser();
+  if (!authUser) return { user: null };
   const user = await prisma.user.findUnique({
-    where: { id: payload.uid },
+    where: { authUserId: authUser.id },
     select: { id: true, role: true, email: true, name: true },
   });
-  if (!user || user.role !== payload.role) return { user: null };
+  if (!user) return { user: null };
   return { user };
 }
 
@@ -33,9 +36,17 @@ export async function getSession(): Promise<Session> {
  * `id` and `role`. Middleware re-validates on every request.
  */
 export async function getSessionLite(): Promise<SessionLite> {
-  const payload = await readSessionPayload();
-  if (!payload) return { user: null };
-  return { user: { id: payload.uid, role: payload.role } };
+  const supabase = await createSupabaseServerClient();
+  const {
+    data: { user: authUser },
+  } = await supabase.auth.getUser();
+  if (!authUser) return { user: null };
+  const user = await prisma.user.findUnique({
+    where: { authUserId: authUser.id },
+    select: { id: true, role: true },
+  });
+  if (!user) return { user: null };
+  return { user: { id: user.id, role: user.role } };
 }
 
 function loginRedirect(): never {
@@ -60,4 +71,4 @@ export async function requireRoleLite(role: Role): Promise<NonNullable<SessionLi
   return session.user;
 }
 
-export { devSignInAs, demoSignIn, clearSession } from "@/lib/auth/mock";
+export { devSignInAs, clearSession } from "@/lib/auth/mock";

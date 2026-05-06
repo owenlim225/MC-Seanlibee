@@ -1,11 +1,8 @@
 import type { NextRequest } from "next/server";
 import { NextResponse } from "next/server";
-import { verifySession } from "@/lib/auth/cookie";
+import { prisma } from "@/lib/prisma";
+import { createSupabaseMiddlewareClient } from "@/lib/supabase/middleware";
 import type { AppRole } from "@/lib/roles";
-
-function sessionSecret(): string {
-  return process.env.SESSION_SECRET ?? "dev-only-change-me-dev-only-change-me";
-}
 
 function requiredRoleForPath(pathname: string): AppRole | null {
   if (pathname.startsWith("/customer")) return "CUSTOMER";
@@ -19,26 +16,38 @@ export async function middleware(req: NextRequest) {
   const roleNeeded = requiredRoleForPath(req.nextUrl.pathname);
   if (!roleNeeded) return NextResponse.next();
 
-  const token = req.cookies.get("mc_session")?.value;
-  if (!token) {
+  const { supabase, getResponse, setResponse } = createSupabaseMiddlewareClient(req);
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) {
     const url = req.nextUrl.clone();
     url.pathname = "/login";
     url.search = "";
     url.searchParams.set("next", `${req.nextUrl.pathname}${req.nextUrl.search}`);
-    return NextResponse.redirect(url);
+    const res = NextResponse.redirect(url);
+    setResponse(res);
+    return getResponse();
   }
 
-  const payload = await verifySession(token, sessionSecret());
-  if (!payload || payload.role !== roleNeeded) {
+  const appUser = await prisma.user.findUnique({
+    where: { authUserId: user.id },
+    select: { role: true },
+  });
+
+  if (!appUser || appUser.role !== roleNeeded) {
     const url = req.nextUrl.clone();
     url.pathname = "/login";
     url.search = "";
     url.searchParams.set("denied", "1");
     url.searchParams.set("next", `${req.nextUrl.pathname}${req.nextUrl.search}`);
-    return NextResponse.redirect(url);
+    const res = NextResponse.redirect(url);
+    setResponse(res);
+    return getResponse();
   }
 
-  return NextResponse.next();
+  return getResponse();
 }
 
 export const config = {

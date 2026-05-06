@@ -2,7 +2,7 @@ import { expect, test } from "@playwright/test";
 import { signInUser } from "./utils/auth";
 
 test("customer can browse the menu after signing in", async ({ page }) => {
-  await signInUser(page, "customer1@example.com");
+  await signInUser(page, "customer1@example.com", "CUSTOMER", "Chris Customer");
   await page.goto("/customer");
   const headingCounts = await page.evaluate(() =>
     Array.from(document.querySelectorAll("h1, h2, h3")).map((node) => node.textContent?.trim() ?? ""),

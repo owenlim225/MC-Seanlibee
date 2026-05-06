@@ -7,8 +7,8 @@ test("two drivers cannot claim the same READY order", async ({ browser }) => {
   const pageA = await ctxA.newPage();
   const pageB = await ctxB.newPage();
 
-  await signInUser(pageA, "driver@example.com");
-  await signInUser(pageB, "driver2@example.com");
+  await signInUser(pageA, "driver@example.com", "DRIVER", "Dana Driver");
+  await signInUser(pageB, "driver2@example.com", "DRIVER", "Drew Driver");
 
   await Promise.all([pageA.goto("/driver"), pageB.goto("/driver")]);
 

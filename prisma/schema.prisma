@@ -27,6 +27,7 @@ enum OrderStatus {
 
 model User {
   id           String             @id @default(cuid())
+  authUserId   String?            @unique
   email        String             @unique
   password     String             @default("Demo123!")
   role         Role
