@@ -12,42 +12,35 @@ function isProtectedPath(pathname: string): boolean {
 }
 
 export async function middleware(req: NextRequest) {
-  // #region agent log
-  fetch("http://127.0.0.1:7817/ingest/c3fc8591-bb49-4618-b7bd-5aef2b04dae3", {
-    method: "POST",
-    headers: { "Content-Type": "application/json", "X-Debug-Session-Id": "921114" },
-    body: JSON.stringify({
-      sessionId: "921114",
-      runId: "pre-fix",
-      hypothesisId: "H2",
-      location: "middleware.ts:15",
-      message: "Middleware entry",
-      data: {
-        pathname: req.nextUrl.pathname,
-        protectedPath: isProtectedPath(req.nextUrl.pathname),
-      },
-      timestamp: Date.now(),
-    }),
-  }).catch(() => {});
-  // #endregion
   if (!isProtectedPath(req.nextUrl.pathname)) return NextResponse.next();
 
-  const { supabase, getResponse, setResponse } = createSupabaseMiddlewareClient(req);
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  let supabaseResult:
+    | { ok: true; userId: string | null; getResponse: () => NextResponse; setResponse: (r: NextResponse) => void }
+    | { ok: false; error: string };
+  try {
+    const { supabase, getResponse, setResponse } = createSupabaseMiddlewareClient(req);
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+    supabaseResult = { ok: true, userId: user?.id ?? null, getResponse, setResponse };
+  } catch (e) {
+    supabaseResult = { ok: false, error: e instanceof Error ? `${e.name}: ${e.message}` : String(e) };
+  }
 
-  if (!user) {
+  if (!supabaseResult.ok || !supabaseResult.userId) {
     const url = req.nextUrl.clone();
-    url.pathname = "/login";
+    url.pathname = "/auth/login";
     url.search = "";
     url.searchParams.set("next", `${req.nextUrl.pathname}${req.nextUrl.search}`);
     const res = NextResponse.redirect(url);
-    setResponse(res);
-    return getResponse();
+    if (supabaseResult.ok) {
+      supabaseResult.setResponse(res);
+      return supabaseResult.getResponse();
+    }
+    return res;
   }
 
-  return getResponse();
+  return supabaseResult.getResponse();
 }
 
 export const config = {

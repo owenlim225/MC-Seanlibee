@@ -7,32 +7,32 @@ test.describe("role boundaries (requires provisioned users)", () => {
   test("customer cannot access kitchen routes", async ({ page }) => {
     await signInUser(page, "customer1@example.com", "CUSTOMER", "Chris Customer");
     await page.goto("/kitchen");
-    await expect(page).toHaveURL(/\/login\?.*denied=1/);
+    await expect(page).toHaveURL(/\/auth\/login\?.*denied=1/);
   });
 
   test("kitchen cannot access driver routes", async ({ page }) => {
     await signInUser(page, "kitchen@example.com", "KITCHEN", "Kim Kitchen");
     await page.goto("/driver");
-    await expect(page).toHaveURL(/\/login\?.*denied=1/);
+    await expect(page).toHaveURL(/\/auth\/login\?.*denied=1/);
   });
 
   test("driver cannot access admin routes", async ({ page }) => {
     await signInUser(page, "driver@example.com", "DRIVER", "Dana Driver");
     await page.goto("/admin");
-    await expect(page).toHaveURL(/\/login\?.*denied=1/);
+    await expect(page).toHaveURL(/\/auth\/login\?.*denied=1/);
   });
 
   test("admin cannot access customer routes", async ({ page }) => {
     await signInUser(page, "admin@example.com", "ADMIN", "Alex Admin");
     await page.goto("/customer");
-    await expect(page).toHaveURL(/\/login\?.*denied=1/);
+    await expect(page).toHaveURL(/\/auth\/login\?.*denied=1/);
   });
 });
 
-test("unauthenticated /customer redirects to /login with next param", async ({ browser }) => {
+test("unauthenticated /customer redirects to /auth/login with next param", async ({ browser }) => {
   const context = await browser.newContext();
   const page = await context.newPage();
   await page.goto("/customer");
-  await expect(page).toHaveURL(/\/login\?next=%2Fcustomer/);
+  await expect(page).toHaveURL(/\/auth\/login\?next=%2Fcustomer/);
   await context.close();
 });

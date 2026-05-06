@@ -50,7 +50,7 @@ export async function getSessionLite(): Promise<SessionLite> {
 }
 
 function loginRedirect(): never {
-  redirect("/login");
+  redirect("/auth/login");
 }
 
 export async function requireRole(role: Role): Promise<NonNullable<Session["user"]>> {

@@ -13,10 +13,10 @@ export async function signInUser(
 ) {
   await provisionAppUser({ email, role, name, password });
 
-  await page.goto("/login");
+  await page.goto("/auth/login");
   await page.getByLabel("Email").fill(email);
   await page.getByLabel("Password").fill(password);
   await page.getByRole("button", { name: "Sign in" }).click();
 
-  await page.waitForURL((url) => url.pathname !== "/login", { timeout: 30_000 });
+  await page.waitForURL((url) => url.pathname !== "/auth/login", { timeout: 30_000 });
 }
