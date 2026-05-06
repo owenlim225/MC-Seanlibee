@@ -13,7 +13,6 @@ export function createSupabaseMiddlewareClient(req: NextRequest) {
       },
       setAll(cookiesToSet) {
         for (const { name, value, options } of cookiesToSet) {
-          req.cookies.set(name, value);
           res.cookies.set(name, value, options);
         }
       },

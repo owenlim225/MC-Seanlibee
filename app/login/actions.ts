@@ -1,6 +1,7 @@
 "use server";
 
 import { redirect } from "next/navigation";
+import { isRedirectError } from "next/dist/client/components/redirect-error";
 import { isAppRole, ROLE_HOME } from "@/lib/roles";
 import { safeNextPath } from "@/lib/auth/safe-next-path";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
@@ -10,6 +11,7 @@ import { Role } from "@prisma/client";
 
 const GENERIC_ERROR = "Sign-in failed. Check your email and password and try again.";
 const SIGN_UP_ERROR = "Sign-up failed. Check your details and try again.";
+const AUTH_DEBUG_ENABLED = process.env.NODE_ENV !== "production";
 
 export async function signInAction(formData: FormData): Promise<void> {
   const email = String(formData.get("email") ?? "");
@@ -26,7 +28,7 @@ export async function signInAction(formData: FormData): Promise<void> {
     });
 
     if (error || !data.user) {
-      console.warn("[auth-debug]", {
+      if (AUTH_DEBUG_ENABLED) console.warn("[auth-debug]", {
         flow: "sign-in",
         outcome: "fail",
         reason: "supabase-signin-failed",
@@ -57,7 +59,7 @@ export async function signInAction(formData: FormData): Promise<void> {
           data: { authUserId },
           select: { id: true, role: true },
         });
-        console.info("[auth-debug]", {
+        if (AUTH_DEBUG_ENABLED) console.info("[auth-debug]", {
           flow: "sign-in",
           outcome: "success",
           reason: "linked-auth-user-id",
@@ -67,7 +69,7 @@ export async function signInAction(formData: FormData): Promise<void> {
           at: new Date().toISOString(),
         });
       } else {
-        console.warn("[auth-debug]", {
+        if (AUTH_DEBUG_ENABLED) console.warn("[auth-debug]", {
           flow: "sign-in",
           outcome: "fail",
           reason: "no-app-user-for-auth-user",
@@ -83,7 +85,7 @@ export async function signInAction(formData: FormData): Promise<void> {
     }
 
     if (!isAppRole(appUser.role)) {
-      console.warn("[auth-debug]", {
+      if (AUTH_DEBUG_ENABLED) console.warn("[auth-debug]", {
         flow: "sign-in",
         outcome: "fail",
         reason: "invalid-app-role",
@@ -101,6 +103,7 @@ export async function signInAction(formData: FormData): Promise<void> {
     const fallback = ROLE_HOME[appUser.role];
     redirect(safeNextPath(next, fallback));
   } catch (error) {
+    if (isRedirectError(error)) throw error;
     console.error("[auth-debug] signInAction exception", {
       reason: "signin-throw",
       email: email.trim().toLowerCase(),
@@ -146,7 +149,7 @@ export async function signUpAction(formData: FormData): Promise<void> {
     });
 
     if (error || !data.user) {
-      console.warn("[auth-debug]", {
+      if (AUTH_DEBUG_ENABLED) console.warn("[auth-debug]", {
         flow: "sign-up",
         outcome: "fail",
         reason: "supabase-signup-failed",
@@ -173,7 +176,7 @@ export async function signUpAction(formData: FormData): Promise<void> {
       });
     } catch (dbError) {
       if (dbError instanceof PrismaClientKnownRequestError && dbError.code === "P2002") {
-        console.warn("[auth-debug]", {
+        if (AUTH_DEBUG_ENABLED) console.warn("[auth-debug]", {
           flow: "sign-up",
           outcome: "fail",
           reason: "prisma-unique-constraint",
@@ -191,6 +194,7 @@ export async function signUpAction(formData: FormData): Promise<void> {
     const fallback = ROLE_HOME[created.role];
     redirect(safeNextPath(next, fallback));
   } catch (error) {
+    if (isRedirectError(error)) throw error;
     console.error("[auth-debug] signUpAction exception", {
       reason: "signup-throw",
       email: email.trim().toLowerCase(),

@@ -1,6 +1,8 @@
 import { expect, test } from "@playwright/test";
 import { signInUser } from "./utils/auth";
 
+test.skip(!process.env.SUPABASE_SERVICE_ROLE_KEY, "requires SUPABASE_SERVICE_ROLE_KEY for provisioning auth users");
+
 test("customer can browse the menu after signing in", async ({ page }) => {
   await signInUser(page, "customer1@example.com", "CUSTOMER", "Chris Customer");
   await page.goto("/customer");

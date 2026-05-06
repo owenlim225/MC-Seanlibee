@@ -1,6 +1,8 @@
 import { expect, test } from "@playwright/test";
 import { signInUser } from "./utils/auth";
 
+test.skip(!process.env.SUPABASE_SERVICE_ROLE_KEY, "requires SUPABASE_SERVICE_ROLE_KEY for provisioning auth users");
+
 test("two drivers cannot claim the same READY order", async ({ browser }) => {
   const ctxA = await browser.newContext();
   const ctxB = await browser.newContext();
