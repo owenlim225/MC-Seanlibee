@@ -2,12 +2,18 @@ import { readFileSync, existsSync } from "node:fs";
 import { OrderStatus, PrismaClient } from "@prisma/client";
 
 function loadDatabaseUrl(): string {
-  if (process.env.DATABASE_URL) return process.env.DATABASE_URL;
+  if (process.env.DATABASE_URL?.trim()) return process.env.DATABASE_URL;
   const envPath = ".env";
-  if (!existsSync(envPath)) return "file:./dev.db";
+  if (!existsSync(envPath)) {
+    throw new Error(
+      'Playwright globalSetup requires DATABASE_URL (environment or ".env"). PostgreSQL is required.',
+    );
+  }
   const raw = readFileSync(envPath, "utf8");
   const match = raw.match(/^\s*DATABASE_URL\s*=\s*(.+)\s*$/m);
-  if (!match?.[1]) return "file:./dev.db";
+  if (!match?.[1]) {
+    throw new Error('Playwright globalSetup: DATABASE_URL missing from ".env".');
+  }
   return match[1].replace(/^["']|["']$/g, "");
 }
 

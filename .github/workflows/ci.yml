@@ -9,8 +9,23 @@ jobs:
   verify:
     runs-on: ubuntu-latest
     env:
-      DATABASE_URL: "file:./dev.db"
+      DATABASE_URL: postgresql://postgres:postgres@localhost:5432/mc_seanlibee_ci
+      DIRECT_URL: postgresql://postgres:postgres@localhost:5432/mc_seanlibee_ci
       SESSION_SECRET: "ci-session-secret-ci-session-secret"
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: mc_seanlibee_ci
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U postgres -d mc_seanlibee_ci"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
     steps:
       - uses: actions/checkout@v4
 
@@ -29,7 +44,7 @@ jobs:
       - name: Generate Prisma Client
         run: pnpm db:generate
 
-      - name: Migrate SQLite
+      - name: Migrate database
         run: pnpm prisma migrate deploy
 
       - name: Seed
