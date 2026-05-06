@@ -23,6 +23,14 @@ Useful URLs:
 
 See `docs/follow-up.md` for every real-key wiring task and `docs/adr/0001-stack.md` for stack rationale. Migration baseline rationale: `docs/adr/0002-postgresql-migration-baseline.md`.
 
+**Architecture Documentation:** Start with `docs/CODEMAPS/INDEX.md` for a complete system overview, then dive into:
+- **[Frontend](./docs/CODEMAPS/FRONTEND.md)** — Next.js pages, components, routing
+- **[Backend & API](./docs/CODEMAPS/BACKEND.md)** — Server actions, session management, middleware
+- **[Database](./docs/CODEMAPS/DATABASE.md)** — Prisma schema, migrations, indexing strategy
+- **[Auth & RBAC](./docs/CODEMAPS/AUTH.md)** — Authentication flows, role-based access control
+- **[Integrations](./docs/CODEMAPS/INTEGRATIONS.md)** — Mocked Stripe, Supabase, Realtime, Storage
+- **[Utils & Helpers](./docs/CODEMAPS/UTILS.md)** — Shared utilities, validators, business logic
+
 ## Scripts
 
 | Script | Purpose |
