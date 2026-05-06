@@ -5,9 +5,14 @@ export type DemoSignInResult =
   | { ok: true; user: { id: string; role: Role; email: string; name: string } }
   | { ok: false };
 
+export type DemoSignUpResult =
+  | { ok: true; user: { id: string; role: Role; email: string; name: string } }
+  | { ok: false };
+
 export type AuthAdapter = {
   devSignInAs(role: Role, userId?: string): Promise<void>;
   demoSignIn(email: string, password: string): Promise<DemoSignInResult>;
+  demoSignUp(name: string, email: string, password: string): Promise<DemoSignUpResult>;
   clearSession(): Promise<void>;
   readSessionPayload(): Promise<SessionPayload | null>;
 };

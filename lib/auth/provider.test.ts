@@ -9,6 +9,10 @@ function createAuthAdapter(label: string): AuthAdapter {
       ok: true,
       user: { id: `${label}-id`, role: Role.ADMIN, email: `${label}@example.com`, name: label },
     })),
+    demoSignUp: vi.fn(async () => ({
+      ok: true,
+      user: { id: `${label}-id`, role: Role.CUSTOMER, email: `${label}@example.com`, name: label },
+    })),
     clearSession: vi.fn(async () => {}),
     readSessionPayload: vi.fn(async () => null),
   };

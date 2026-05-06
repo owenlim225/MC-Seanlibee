@@ -1,4 +1,4 @@
-import { afterEach, beforeEach, describe, expect, it } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { checkDemoPassword, constantTimeEqual, DEFAULT_DEMO_AUTH_PASSWORD } from "./demo-password";
 
 describe("constantTimeEqual", () => {
@@ -40,14 +40,10 @@ describe("checkDemoPassword", () => {
   });
 
   it("returns false when DEMO_AUTH_PASSWORD is unset in production", async () => {
-    const originalNodeEnv = process.env.NODE_ENV;
-    try {
-      process.env.NODE_ENV = "production";
-      delete process.env.DEMO_AUTH_PASSWORD;
-      await expect(checkDemoPassword(DEFAULT_DEMO_AUTH_PASSWORD)).resolves.toBe(false);
-    } finally {
-      process.env.NODE_ENV = originalNodeEnv;
-    }
+    vi.stubEnv("NODE_ENV", "production");
+    delete process.env.DEMO_AUTH_PASSWORD;
+    await expect(checkDemoPassword(DEFAULT_DEMO_AUTH_PASSWORD)).resolves.toBe(false);
+    vi.unstubAllEnvs();
   });
 
   it("returns true on exact match", async () => {

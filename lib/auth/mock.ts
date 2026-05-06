@@ -1,14 +1,21 @@
 import { Role } from "@prisma/client";
+import { PrismaClientKnownRequestError } from "@prisma/client/runtime/library";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { signSession, verifySession, type SessionPayload } from "@/lib/auth/cookie";
 import { checkDemoPassword } from "@/lib/auth/demo-password";
-import { getAuthAdapter, registerAuthAdapter, type DemoSignInResult } from "@/lib/auth/provider";
+import {
+  getAuthAdapter,
+  registerAuthAdapter,
+  type DemoSignInResult,
+  type DemoSignUpResult,
+} from "@/lib/auth/provider";
 import { isAppRole } from "@/lib/roles";
 import { prisma } from "@/lib/prisma";
 
 const COOKIE = "mc_session";
 const TTL_MS = 60 * 60 * 24 * 7 * 1000;
+const SIMPLE_EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 function secret(): string {
   return process.env.SESSION_SECRET ?? "dev-only-change-me-dev-only-change-me";
@@ -51,44 +58,9 @@ async function mockDevSignInAs(role: Role, userId?: string): Promise<void> {
  * password, disabled demo mode, or invalid role — no information leakage.
  */
 async function mockDemoSignIn(email: string, password: string): Promise<DemoSignInResult> {
-  // #region agent log
-  fetch("http://127.0.0.1:7817/ingest/c3fc8591-bb49-4618-b7bd-5aef2b04dae3", {
-    method: "POST",
-    headers: { "Content-Type": "application/json", "X-Debug-Session-Id": "268a74" },
-    body: JSON.stringify({
-      sessionId: "268a74",
-      runId: "pre-fix",
-      hypothesisId: "H1",
-      location: "lib/auth/mock.ts:55",
-      message: "demoSignIn invoked",
-      data: {
-        emailPresent: typeof email === "string" && email.trim().length > 0,
-        passwordPresent: typeof password === "string" && password.length > 0,
-        nodeEnv: process.env.NODE_ENV ?? null,
-        demoAuthEnabled: isDemoAuthEnabled(),
-      },
-      timestamp: Date.now(),
-    }),
-  }).catch(() => {});
-  // #endregion
   if (!isDemoAuthEnabled()) return { ok: false };
   if (typeof email !== "string" || typeof password !== "string") return { ok: false };
   const passwordOk = await checkDemoPassword(password);
-  // #region agent log
-  fetch("http://127.0.0.1:7817/ingest/c3fc8591-bb49-4618-b7bd-5aef2b04dae3", {
-    method: "POST",
-    headers: { "Content-Type": "application/json", "X-Debug-Session-Id": "268a74" },
-    body: JSON.stringify({
-      sessionId: "268a74",
-      runId: "pre-fix",
-      hypothesisId: "H2",
-      location: "lib/auth/mock.ts:62",
-      message: "password check evaluated",
-      data: { passwordOk },
-      timestamp: Date.now(),
-    }),
-  }).catch(() => {});
-  // #endregion
   if (!passwordOk) return { ok: false };
 
   const normalizedEmail = email.trim().toLowerCase();
@@ -96,25 +68,6 @@ async function mockDemoSignIn(email: string, password: string): Promise<DemoSign
     where: { email: normalizedEmail },
     select: { id: true, role: true, email: true, name: true },
   });
-  // #region agent log
-  fetch("http://127.0.0.1:7817/ingest/c3fc8591-bb49-4618-b7bd-5aef2b04dae3", {
-    method: "POST",
-    headers: { "Content-Type": "application/json", "X-Debug-Session-Id": "268a74" },
-    body: JSON.stringify({
-      sessionId: "268a74",
-      runId: "pre-fix",
-      hypothesisId: "H3",
-      location: "lib/auth/mock.ts:74",
-      message: "user lookup completed",
-      data: {
-        normalizedEmailLength: normalizedEmail.length,
-        userFound: Boolean(user),
-        userRole: user?.role ?? null,
-      },
-      timestamp: Date.now(),
-    }),
-  }).catch(() => {});
-  // #endregion
   if (!user) return { ok: false };
   if (!isAppRole(user.role)) return { ok: false };
 
@@ -123,21 +76,50 @@ async function mockDemoSignIn(email: string, password: string): Promise<DemoSign
     role: user.role,
     exp: Date.now() + TTL_MS,
   });
-  // #region agent log
-  fetch("http://127.0.0.1:7817/ingest/c3fc8591-bb49-4618-b7bd-5aef2b04dae3", {
-    method: "POST",
-    headers: { "Content-Type": "application/json", "X-Debug-Session-Id": "268a74" },
-    body: JSON.stringify({
-      sessionId: "268a74",
-      runId: "pre-fix",
-      hypothesisId: "H4",
-      location: "lib/auth/mock.ts:92",
-      message: "session cookie write completed",
-      data: { userIdPresent: user.id.length > 0, role: user.role },
-      timestamp: Date.now(),
-    }),
-  }).catch(() => {});
-  // #endregion
+  return { ok: true, user };
+}
+
+async function mockDemoSignUp(name: string, email: string, password: string): Promise<DemoSignUpResult> {
+  if (!isDemoAuthEnabled()) return { ok: false };
+  if (typeof name !== "string" || typeof email !== "string" || typeof password !== "string") return { ok: false };
+
+  const passwordOk = await checkDemoPassword(password);
+  if (!passwordOk) return { ok: false };
+
+  const normalizedName = name.trim();
+  const normalizedEmail = email.trim().toLowerCase();
+  if (!normalizedName || !normalizedEmail) return { ok: false };
+  if (!SIMPLE_EMAIL_RE.test(normalizedEmail)) return { ok: false };
+
+  const existing = await prisma.user.findUnique({
+    where: { email: normalizedEmail },
+    select: { id: true },
+  });
+  if (existing) return { ok: false };
+
+  let user: { id: string; role: Role; email: string; name: string };
+  try {
+    user = await prisma.user.create({
+      data: {
+        name: normalizedName,
+        email: normalizedEmail,
+        role: Role.CUSTOMER,
+      },
+      select: { id: true, role: true, email: true, name: true },
+    });
+  } catch (error) {
+    if (error instanceof PrismaClientKnownRequestError && error.code === "P2002") {
+      return { ok: false };
+    }
+    throw error;
+  }
+
+  await writeSessionCookie({
+    uid: user.id,
+    role: user.role,
+    exp: Date.now() + TTL_MS,
+  });
+
   return { ok: true, user };
 }
 
@@ -154,6 +136,7 @@ async function mockReadSessionPayload(): Promise<SessionPayload | null> {
 registerAuthAdapter("mock", {
   devSignInAs: mockDevSignInAs,
   demoSignIn: mockDemoSignIn,
+  demoSignUp: mockDemoSignUp,
   clearSession: mockClearSession,
   readSessionPayload: mockReadSessionPayload,
 });
@@ -162,6 +145,7 @@ registerAuthAdapter("supabase-shadow", {
   // N.1 shadow mode scaffold: keep current behavior while exercising provider wiring.
   devSignInAs: mockDevSignInAs,
   demoSignIn: mockDemoSignIn,
+  demoSignUp: mockDemoSignUp,
   clearSession: mockClearSession,
   readSessionPayload: mockReadSessionPayload,
 });
@@ -172,6 +156,10 @@ export async function devSignInAs(role: Role, userId?: string): Promise<void> {
 
 export async function demoSignIn(email: string, password: string): Promise<DemoSignInResult> {
   return getAuthAdapter().demoSignIn(email, password);
+}
+
+export async function demoSignUp(name: string, email: string, password: string): Promise<DemoSignUpResult> {
+  return getAuthAdapter().demoSignUp(name, email, password);
 }
 
 export async function clearSession(): Promise<void> {
