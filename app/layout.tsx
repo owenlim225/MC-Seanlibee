@@ -18,6 +18,8 @@ export const metadata: Metadata = {
   description: "Multi-role food ordering MVP with mocked integrations",
 };
 
+export const preferredRegion = "hnd1";
+
 export default function RootLayout({
   children,
 }: Readonly<{
