@@ -5,6 +5,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { MenuItemCard } from "@/components/customer/menu-item-card";
 import { SkeletonMenuSection } from "@/components/ui/skeleton";
+import type { ActionFeedback } from "@/lib/actions/action-feedback";
 
 type CategoryItem = {
   id: string;
@@ -41,7 +42,7 @@ function CategoryMenuSectionsContent({
   addToCartAction,
 }: {
   categories: CategorySection[];
-  addToCartAction: (itemId: string, formData: FormData) => Promise<void>;
+  addToCartAction: (itemId: string, formData: FormData) => Promise<ActionFeedback>;
 }) {
   const [visibleByCategory, setVisibleByCategory] = useState<Record<string, number>>(() =>
     initialVisibleByCategory(categories),
@@ -123,7 +124,7 @@ export function CategoryMenuSections({
   addToCartAction,
 }: {
   categories: CategorySection[];
-  addToCartAction: (itemId: string, formData: FormData) => Promise<void>;
+  addToCartAction: (itemId: string, formData: FormData) => Promise<ActionFeedback>;
 }) {
   return (
     <CategoryMenuSectionsContent

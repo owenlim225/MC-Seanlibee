@@ -78,8 +78,9 @@ describe("admin user CRUD actions", () => {
     form.set("email", "  New@Example.com ");
     form.set("role", Role.CUSTOMER);
     form.set("isActive", "true");
+    form.set("password", "supersecure123");
 
-    await createUserForm(form);
+    const result = await createUserForm(form);
 
     expect(userCreateMock).toHaveBeenCalledWith(
       expect.objectContaining({
@@ -88,11 +89,12 @@ describe("admin user CRUD actions", () => {
           email: "new@example.com",
           role: Role.CUSTOMER,
           isActive: true,
-          password: expect.any(String),
+          password: expect.stringMatching(/^scrypt\$/),
         }),
       }),
     );
     expect(revalidatePathMock).toHaveBeenCalledWith("/admin/users");
+    expect(result).toEqual(expect.objectContaining({ ok: true, message: "User created" }));
   });
 
   it("ignores duplicate-email create", async () => {
@@ -100,6 +102,7 @@ describe("admin user CRUD actions", () => {
     form.set("name", "Dup User");
     form.set("email", "dup@example.com");
     form.set("role", Role.CUSTOMER);
+    form.set("password", "supersecure123");
     userCreateMock.mockRejectedValueOnce(
       new PrismaClientKnownRequestError("duplicate", {
         code: "P2002",
@@ -107,8 +110,35 @@ describe("admin user CRUD actions", () => {
       }),
     );
 
+    const result = await createUserForm(form);
+
+    expect(revalidatePathMock).not.toHaveBeenCalled();
+    expect(result).toEqual(expect.objectContaining({ ok: false, code: "duplicate-user" }));
+  });
+
+  it("skips create when password is missing", async () => {
+    const form = new FormData();
+    form.set("name", "No Password");
+    form.set("email", "nopassword@example.com");
+    form.set("role", Role.CUSTOMER);
+    form.set("isActive", "true");
+
     await createUserForm(form);
 
+    expect(userCreateMock).not.toHaveBeenCalled();
+    expect(revalidatePathMock).not.toHaveBeenCalled();
+  });
+
+  it("skips create when password is too short", async () => {
+    const form = new FormData();
+    form.set("name", "Short Password");
+    form.set("email", "short@example.com");
+    form.set("role", Role.CUSTOMER);
+    form.set("password", "short");
+
+    await createUserForm(form);
+
+    expect(userCreateMock).not.toHaveBeenCalled();
     expect(revalidatePathMock).not.toHaveBeenCalled();
   });
 
@@ -138,11 +168,12 @@ describe("admin user CRUD actions", () => {
     const form = new FormData();
     form.set("userId", "admin-1");
 
-    await softDeleteUserForm(form);
+    const result = await softDeleteUserForm(form);
 
     expect(userFindUniqueMock).not.toHaveBeenCalled();
     expect(transactionMock).not.toHaveBeenCalled();
     expect(userUpdateMock).not.toHaveBeenCalled();
+    expect(result).toEqual(expect.objectContaining({ ok: false }));
   });
 
   it("soft-deletes active user via archive snapshot and transaction", async () => {
@@ -207,13 +238,14 @@ describe("admin user CRUD actions", () => {
     const form = new FormData();
     form.set("userId", "u2");
 
-    await restoreUserForm(form);
+    const result = await restoreUserForm(form);
 
     expect(userUpdateMock).toHaveBeenCalledWith({
       where: { id: "u2" },
       data: { isActive: true, deletedAt: null },
     });
     expect(revalidatePathMock).toHaveBeenCalledWith("/admin/users");
+    expect(result).toEqual(expect.objectContaining({ ok: true, message: "User restored" }));
   });
 });
 
@@ -234,7 +266,7 @@ describe("admin menu archive actions", () => {
       deletedAt: null,
     });
 
-    await deleteMenuItem("mi-1");
+    const result = await deleteMenuItem("mi-1");
 
     expect(menuItemFindUniqueMock).toHaveBeenCalledWith({ where: { id: "mi-1" } });
     expect(transactionMock).toHaveBeenCalledTimes(1);
@@ -257,6 +289,7 @@ describe("admin menu archive actions", () => {
     });
     expect(revalidatePathMock).toHaveBeenCalledWith("/admin/menu");
     expect(revalidatePathMock).toHaveBeenCalledWith("/customer");
+    expect(result).toEqual(expect.objectContaining({ ok: true, message: "Menu item archived" }));
   });
 
   it("no-op deleteMenuItem when already archived", async () => {

@@ -1,6 +1,4 @@
 "use server";
-
-import { randomUUID } from "node:crypto";
 import { Role } from "@prisma/client";
 import { PrismaClientKnownRequestError } from "@prisma/client/runtime/library";
 import { revalidatePath } from "next/cache";
@@ -9,6 +7,7 @@ import { hashPassword } from "@/lib/auth/password";
 import { isGroupedCategorySlug } from "@/lib/menu/grouped-taxonomy";
 import { prisma } from "@/lib/prisma";
 import { uploadImage } from "@/lib/storage";
+import { actionNoop, actionSuccess, type ActionFeedback } from "@/lib/actions/action-feedback";
 
 function parseIntSafe(value: FormDataEntryValue | null, fallback: number): number {
   const n = Number.parseInt(String(value ?? ""), 10);
@@ -51,19 +50,26 @@ function parseBoolean(value: FormDataEntryValue | null, fallback: boolean): bool
   return fallback;
 }
 
-export async function createCategory(formData: FormData): Promise<void> {
+function parsePassword(value: FormDataEntryValue | null): string | null {
+  const password = String(value ?? "").trim();
+  if (password.length < 8) return null;
+  return password;
+}
+
+export async function createCategory(formData: FormData): Promise<ActionFeedback> {
   await requireRoleLite(Role.ADMIN);
   const name = String(formData.get("name") ?? "").trim();
   const sortOrder = parseIntSafe(formData.get("sortOrder"), 0);
   const slug = slugify(name);
-  if (!name || !slug) return;
+  if (!name || !slug) return actionNoop("invalid-category");
   await prisma.menuCategory.create({
     data: { name, sortOrder, slug: `${slug}-${Date.now()}` },
   });
   revalidatePath("/admin/menu");
+  return actionSuccess("Category created");
 }
 
-export async function createMenuItem(formData: FormData): Promise<void> {
+export async function createMenuItem(formData: FormData): Promise<ActionFeedback> {
   await requireRoleLite(Role.ADMIN);
   const name = String(formData.get("name") ?? "").trim();
   const description = String(formData.get("description") ?? "").trim();
@@ -75,7 +81,7 @@ export async function createMenuItem(formData: FormData): Promise<void> {
   const categoryIds = selectedCategoryIds.length > 0 ? selectedCategoryIds : legacyCategoryId ? [legacyCategoryId] : [];
   const priceDollars = String(formData.get("price") ?? "").trim();
   const price = Number.parseFloat(priceDollars);
-  if (!name || categoryIds.length === 0 || !Number.isFinite(price)) return;
+  if (!name || categoryIds.length === 0 || !Number.isFinite(price) || price <= 0) return actionNoop("invalid-menu-item");
 
   const groupedCategories = await prisma.menuCategory.findMany({
     where: { id: { in: categoryIds }, deletedAt: null },
@@ -85,7 +91,7 @@ export async function createMenuItem(formData: FormData): Promise<void> {
     groupedCategories.length !== categoryIds.length ||
     groupedCategories.some((category) => !isGroupedCategorySlug(category.slug))
   ) {
-    return;
+    return actionNoop("invalid-categories");
   }
 
   const file = formData.get("image");
@@ -109,23 +115,25 @@ export async function createMenuItem(formData: FormData): Promise<void> {
   });
   revalidatePath("/admin/menu");
   revalidatePath("/customer");
+  return actionSuccess("Menu item created");
 }
 
-export async function updateMenuItemAvailability(menuItemId: string, isAvailable: boolean): Promise<void> {
+export async function updateMenuItemAvailability(menuItemId: string, isAvailable: boolean): Promise<ActionFeedback> {
   await requireRoleLite(Role.ADMIN);
   const updated = await prisma.menuItem.updateMany({
     where: { id: menuItemId, deletedAt: null },
     data: { isAvailable },
   });
-  if (updated.count === 0) return;
+  if (updated.count === 0) return actionNoop("menu-item-not-found");
   revalidatePath("/admin/menu");
   revalidatePath("/customer");
+  return actionSuccess(isAvailable ? "Menu item enabled" : "Menu item disabled");
 }
 
-export async function deleteMenuItem(menuItemId: string): Promise<void> {
+export async function deleteMenuItem(menuItemId: string): Promise<ActionFeedback> {
   const session = await requireRoleLite(Role.ADMIN);
   const item = await prisma.menuItem.findUnique({ where: { id: menuItemId } });
-  if (!item || item.deletedAt) return;
+  if (!item || item.deletedAt) return actionNoop("menu-item-unavailable");
 
   await prisma.$transaction([
     prisma.archivedMenuItem.create({
@@ -148,24 +156,27 @@ export async function deleteMenuItem(menuItemId: string): Promise<void> {
   ]);
   revalidatePath("/admin/menu");
   revalidatePath("/customer");
+  return actionSuccess("Menu item archived");
 }
 
-export async function updateUserRoleForm(formData: FormData): Promise<void> {
+export async function updateUserRoleForm(formData: FormData): Promise<ActionFeedback> {
   await requireRoleLite(Role.ADMIN);
   const userId = String(formData.get("userId") ?? "").trim();
   const roleRaw = String(formData.get("role") ?? "").trim();
-  if (!userId || !(Object.values(Role) as string[]).includes(roleRaw)) return;
+  if (!userId || !(Object.values(Role) as string[]).includes(roleRaw)) return actionNoop("invalid-user-role");
   await prisma.user.update({ where: { id: userId }, data: { role: roleRaw as Role } });
   revalidatePath("/admin/users");
+  return actionSuccess("User role updated");
 }
 
-export async function createUserForm(formData: FormData): Promise<void> {
+export async function createUserForm(formData: FormData): Promise<ActionFeedback> {
   await requireRoleLite(Role.ADMIN);
   const email = parseEmail(formData.get("email"));
   const name = parseName(formData.get("name"));
   const role = parseRole(formData.get("role"));
   const isActive = parseBoolean(formData.get("isActive"), true);
-  if (!email || !name || !role) return;
+  const password = parsePassword(formData.get("password"));
+  if (!email || !name || !role || !password) return actionNoop("invalid-user-create");
 
   try {
     await prisma.user.create({
@@ -173,27 +184,27 @@ export async function createUserForm(formData: FormData): Promise<void> {
         email,
         name,
         role,
-        // Password out of admin CRUD scope: generate non-guessable hash.
-        password: hashPassword(randomUUID()),
+        password: hashPassword(password),
         isActive,
       },
     });
   } catch (error) {
-    if (error instanceof PrismaClientKnownRequestError && error.code === "P2002") return;
+    if (error instanceof PrismaClientKnownRequestError && error.code === "P2002") return actionNoop("duplicate-user");
     throw error;
   }
   revalidatePath("/admin/users");
+  return actionSuccess("User created");
 }
 
-export async function updateUserProfileForm(formData: FormData): Promise<void> {
+export async function updateUserProfileForm(formData: FormData): Promise<ActionFeedback> {
   const session = await requireRoleLite(Role.ADMIN);
   const userId = String(formData.get("userId") ?? "").trim();
   const email = parseEmail(formData.get("email"));
   const name = parseName(formData.get("name"));
   const role = parseRole(formData.get("role"));
   const isActive = parseBoolean(formData.get("isActive"), true);
-  if (!userId || !email || !name || !role) return;
-  if (userId === session.id && role !== Role.ADMIN) return;
+  if (!userId || !email || !name || !role) return actionNoop("invalid-user-update");
+  if (userId === session.id && role !== Role.ADMIN) return actionNoop("self-admin-demotion-blocked");
 
   try {
     await prisma.user.update({
@@ -207,19 +218,20 @@ export async function updateUserProfileForm(formData: FormData): Promise<void> {
       },
     });
   } catch (error) {
-    if (error instanceof PrismaClientKnownRequestError && error.code === "P2002") return;
+    if (error instanceof PrismaClientKnownRequestError && error.code === "P2002") return actionNoop("duplicate-user");
     throw error;
   }
   revalidatePath("/admin/users");
+  return actionSuccess("User profile updated");
 }
 
-export async function softDeleteUserForm(formData: FormData): Promise<void> {
+export async function softDeleteUserForm(formData: FormData): Promise<ActionFeedback> {
   const session = await requireRoleLite(Role.ADMIN);
   const userId = String(formData.get("userId") ?? "").trim();
-  if (!userId || userId === session.id) return;
+  if (!userId || userId === session.id) return actionNoop("invalid-user-archive");
 
   const existing = await prisma.user.findUnique({ where: { id: userId } });
-  if (!existing || !existing.isActive || existing.deletedAt) return;
+  if (!existing || !existing.isActive || existing.deletedAt) return actionNoop("user-not-active");
 
   await prisma.$transaction([
     prisma.archivedUser.create({
@@ -242,15 +254,17 @@ export async function softDeleteUserForm(formData: FormData): Promise<void> {
     }),
   ]);
   revalidatePath("/admin/users");
+  return actionSuccess("User archived");
 }
 
-export async function restoreUserForm(formData: FormData): Promise<void> {
+export async function restoreUserForm(formData: FormData): Promise<ActionFeedback> {
   await requireRoleLite(Role.ADMIN);
   const userId = String(formData.get("userId") ?? "").trim();
-  if (!userId) return;
+  if (!userId) return actionNoop("invalid-user-restore");
   await prisma.user.update({
     where: { id: userId },
     data: { isActive: true, deletedAt: null },
   });
   revalidatePath("/admin/users");
+  return actionSuccess("User restored");
 }

@@ -7,8 +7,9 @@ import { requireRoleLite } from "@/lib/auth";
 import { clearCart, readCart, writeCart } from "@/lib/cart-cookie";
 import { computeCheckoutPricing, resolveDeliveryOption, resolveTipCents } from "@/lib/customer/checkout-pricing";
 import { prisma } from "@/lib/prisma";
+import { actionSuccess, type ActionFeedback } from "@/lib/actions/action-feedback";
 
-export async function addToCart(menuItemId: string): Promise<void> {
+export async function addToCart(menuItemId: string): Promise<ActionFeedback> {
   await requireRoleLite(Role.CUSTOMER);
   const cart = await readCart();
   const idx = cart.findIndex((l) => l.menuItemId === menuItemId);
@@ -21,9 +22,10 @@ export async function addToCart(menuItemId: string): Promise<void> {
   revalidatePath("/customer");
   revalidatePath("/customer/cart");
   revalidatePath("/customer/checkout");
+  return actionSuccess("Added to cart");
 }
 
-export async function setLineQty(menuItemId: string, qty: number): Promise<void> {
+export async function setLineQty(menuItemId: string, qty: number): Promise<ActionFeedback> {
   await requireRoleLite(Role.CUSTOMER);
   let cart = await readCart();
   if (qty <= 0) cart = cart.filter((l) => l.menuItemId !== menuItemId);
@@ -32,6 +34,10 @@ export async function setLineQty(menuItemId: string, qty: number): Promise<void>
   revalidatePath("/", "layout");
   revalidatePath("/customer/cart");
   revalidatePath("/customer/checkout");
+  if (qty <= 0) {
+    return actionSuccess("Removed from cart");
+  }
+  return actionSuccess("Cart updated");
 }
 
 export async function startCheckout(): Promise<void> {
@@ -51,10 +57,25 @@ export async function startCheckout(): Promise<void> {
   redirect("/customer/checkout");
 }
 
-export async function placeOrderMock(formData: FormData): Promise<void> {
+type ExecutePlaceOrderSuccess = {
+  kind: "success";
+  orderId: string;
+  redirectUrl: string;
+};
+
+type ExecutePlaceOrderRedirect = {
+  kind: "redirect";
+  url: string;
+};
+
+type ExecutePlaceOrderResult = ExecutePlaceOrderSuccess | ExecutePlaceOrderRedirect;
+
+async function executePlaceOrder(formData: FormData): Promise<ExecutePlaceOrderResult> {
   const user = await requireRoleLite(Role.CUSTOMER);
   const cart = await readCart();
-  if (cart.length === 0) redirect("/customer/cart");
+  if (cart.length === 0) {
+    return { kind: "redirect", url: "/customer/cart" };
+  }
 
   const fullName = String(formData.get("fullName") ?? "").trim();
   const phone = String(formData.get("phone") ?? "").trim();
@@ -68,7 +89,7 @@ export async function placeOrderMock(formData: FormData): Promise<void> {
   const hasInvalidLengths =
     fullName.length > 120 || phone.length > 40 || email.length > 160 || addressLine1.length > 200 || city.length > 120 || postalCode.length > 20;
   if (!fullName || !phone || !email || !addressLine1 || !city || !postalCode || !isEmailValid || hasInvalidLengths || consentRaw !== "on") {
-    redirect("/customer/checkout?error=missing-required");
+    return { kind: "redirect", url: "/customer/checkout?error=missing-required" };
   }
 
   const rawDeliveryOption = formData.get("deliveryOption");
@@ -91,7 +112,9 @@ export async function placeOrderMock(formData: FormData): Promise<void> {
     };
   });
 
-  if (pricedLines.some((line) => !line)) redirect("/customer/cart?error=invalid-item");
+  if (pricedLines.some((line) => !line)) {
+    return { kind: "redirect", url: "/customer/cart?error=invalid-item" };
+  }
 
   const resolvedLines = pricedLines.filter((line): line is NonNullable<typeof line> => Boolean(line));
   const pricing = computeCheckoutPricing({
@@ -118,5 +141,24 @@ export async function placeOrderMock(formData: FormData): Promise<void> {
   revalidatePath("/customer/cart");
   revalidatePath("/customer/orders");
   revalidatePath(`/customer/orders/${order.id}`);
-  redirect(`/customer/orders/${order.id}?paid=1`);
+
+  const redirectUrl = `/customer/orders/${order.id}?paid=1`;
+  return { kind: "success", orderId: order.id, redirectUrl };
+}
+
+export type PlaceOrderWithResultResponse =
+  | { ok: true; orderId: string; redirectUrl: string }
+  | { ok: false; redirectUrl: string };
+
+export async function placeOrderWithResult(formData: FormData): Promise<PlaceOrderWithResultResponse> {
+  const result = await executePlaceOrder(formData);
+  if (result.kind === "success") {
+    return { ok: true, orderId: result.orderId, redirectUrl: result.redirectUrl };
+  }
+  return { ok: false, redirectUrl: result.url };
+}
+
+export async function placeOrderMock(formData: FormData): Promise<void> {
+  const result = await executePlaceOrder(formData);
+  redirect(result.kind === "success" ? result.redirectUrl : result.url);
 }

@@ -180,7 +180,7 @@ export function FeaturedCategoryRail({
   }
 
   return (
-    <HorizontalScroller role="navigation" aria-label="Featured menu categories">
+    <HorizontalScroller role="navigation" aria-label="Featured menu categories" showControls>
       <div className="snap-start shrink-0">
         <Link
           href={signInRedirect ? `${signInRedirect}?next=${encodeURIComponent("/customer")}` : "/customer"}

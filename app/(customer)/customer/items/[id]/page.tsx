@@ -65,7 +65,7 @@ export default async function ItemDetailPage({ params }: { params: Promise<{ id:
       />
 
       <Card className="flex flex-col gap-4">
-        <div className="relative aspect-video w-full overflow-hidden rounded-md bg-zinc-100 dark:bg-zinc-800">
+        <div className="relative aspect-video w-full overflow-hidden rounded-md bg-zinc-100">
           <Image
             src={resolveMenuImageUrl(item.id, item.imageUrl)}
             alt={item.name}
@@ -97,14 +97,14 @@ export default async function ItemDetailPage({ params }: { params: Promise<{ id:
             {recommendations.map((recommended) => (
               <Card
                 key={recommended.id}
-                className="group relative flex h-full flex-col gap-3 p-3 transition hover:border-zinc-300 hover:shadow-md dark:hover:border-zinc-700"
+                className="group relative flex h-full flex-col gap-3 p-3 transition hover:border-zinc-300 hover:shadow-md"
               >
                 <Link
                   href={`/customer/items/${recommended.id}`}
-                  className="absolute inset-0 z-10 rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#D12E27] focus-visible:ring-offset-2 dark:focus-visible:ring-offset-zinc-950"
+                  className="absolute inset-0 z-10 rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#D12E27] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--surface-base)]"
                   aria-label={`View details for ${recommended.name}`}
                 />
-                <div className="relative aspect-[4/3] w-full overflow-hidden rounded-md bg-zinc-100 dark:bg-zinc-800">
+                <div className="relative aspect-[4/3] w-full overflow-hidden rounded-md bg-zinc-100">
                   <Image
                     src={resolveMenuImageUrl(recommended.id, recommended.imageUrl)}
                     alt={recommended.name}
@@ -123,7 +123,7 @@ export default async function ItemDetailPage({ params }: { params: Promise<{ id:
                   </div>
                 </div>
                 <div className="relative z-20 flex items-center justify-between gap-2">
-                  <span className="text-sm text-zinc-600 dark:text-zinc-400">Tap card for details</span>
+                  <span className="text-sm text-[var(--text-muted)]">Tap card for details</span>
                   <form action={addToCart.bind(null, recommended.id)}>
                     <Button type="submit" variant="secondary">
                       Add to cart

@@ -35,6 +35,16 @@ vi.mock("@/app/auth/actions", () => ({
 import { SiteHeader } from "@/components/site-header";
 
 describe("SiteHeader auth controls", () => {
+  it("renders a mobile burger trigger and mobile nav container", async () => {
+    getSessionMock.mockResolvedValueOnce({ user: null });
+
+    const html = renderToStaticMarkup(await SiteHeader());
+
+    expect(html).toContain("<details");
+    expect(html).toContain('aria-label="Toggle navigation menu"');
+    expect(html).toContain('aria-label="Mobile primary"');
+  });
+
   it("renders Login and Sign up when signed out", async () => {
     getSessionMock.mockResolvedValueOnce({ user: null });
 
@@ -64,6 +74,7 @@ describe("SiteHeader auth controls", () => {
     expect(html).toContain(">Logout<");
     expect(html).toContain('href="/customer/cart"');
     expect(html).toContain('href="/customer/orders"');
+    expect(html).toContain('aria-label="Cart with 3 items"');
     expect(html).toContain('data-testid="cart-badge"');
     expect(html).toContain(">3<");
     expect(html).toContain(">Cart<");

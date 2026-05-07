@@ -9,6 +9,7 @@ import { EmptyState } from "@/components/ui/empty-state";
 import { ErrorState } from "@/components/ui/error-state";
 import { MoneyText } from "@/components/ui/money-text";
 import { PageHeader } from "@/components/ui/page-header";
+import { SuccessActionForm } from "@/components/feedback/success-action-form";
 
 export default async function CartPage({
   searchParams,
@@ -57,27 +58,27 @@ export default async function CartPage({
             <Card key={line.menuItemId} className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
               <div>
                 <div className="font-medium">{line.menuItem.name}</div>
-                <div className="text-sm text-zinc-600 dark:text-zinc-400">
+                <div className="text-sm text-[var(--text-muted)]">
                   <MoneyText cents={line.menuItem.priceCents} /> each
                 </div>
               </div>
               <div className="flex flex-wrap items-center gap-2">
-                <form action={setLineQty.bind(null, line.menuItemId, Math.max(1, line.qty - 1))}>
+                <SuccessActionForm action={setLineQty.bind(null, line.menuItemId, Math.max(1, line.qty - 1))}>
                   <Button type="submit" variant="secondary">
                     −
                   </Button>
-                </form>
+                </SuccessActionForm>
                 <div className="w-10 text-center text-sm">{line.qty}</div>
-                <form action={setLineQty.bind(null, line.menuItemId, line.qty + 1)}>
+                <SuccessActionForm action={setLineQty.bind(null, line.menuItemId, line.qty + 1)}>
                   <Button type="submit" variant="secondary">
                     +
                   </Button>
-                </form>
-                <form action={setLineQty.bind(null, line.menuItemId, 0)}>
+                </SuccessActionForm>
+                <SuccessActionForm action={setLineQty.bind(null, line.menuItemId, 0)}>
                   <Button type="submit" variant="ghost">
                     Remove
                   </Button>
-                </form>
+                </SuccessActionForm>
                 <div className="text-sm font-semibold">
                   <MoneyText cents={line.menuItem.priceCents * line.qty} />
                 </div>
@@ -100,7 +101,7 @@ export default async function CartPage({
                 <span>Service fee</span>
                 <MoneyText cents={pricing.serviceFeeCents} />
               </div>
-              <div className="mt-2 flex items-center justify-between border-t border-zinc-200 pt-2 text-base font-semibold dark:border-zinc-800">
+              <div className="mt-2 flex items-center justify-between border-t border-zinc-200 pt-2 text-base font-semibold">
                 <span>Total</span>
                 <MoneyText cents={pricing.totalCents} />
               </div>

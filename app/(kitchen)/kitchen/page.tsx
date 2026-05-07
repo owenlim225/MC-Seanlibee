@@ -53,8 +53,8 @@ export default async function KitchenQueuePage() {
         {grouped.map((col) => (
           <section key={col.status} className="flex flex-col gap-3">
             <div className="flex items-center justify-between gap-2">
-              <h2 className="text-sm font-semibold uppercase tracking-wide text-zinc-500">{col.status}</h2>
-              <span className="text-xs text-zinc-500">{col.rows.length}</span>
+              <h2 className="text-sm font-semibold uppercase tracking-wide text-[var(--text-meta)]">{col.status}</h2>
+              <span className="text-xs text-[var(--text-meta)]">{col.rows.length}</span>
             </div>
             {col.rows.length === 0 ? (
               <EmptyState title="No orders" />
@@ -63,14 +63,14 @@ export default async function KitchenQueuePage() {
                 <Card key={order.id} className="flex flex-col gap-3">
                   <div className="flex flex-wrap items-center justify-between gap-2">
                     <StatusBadge status={order.status} />
-                    <div className="text-xs text-zinc-500">
+                    <div className="text-xs text-[var(--text-meta)]">
                       <RelativeTime date={order.createdAt} />
                     </div>
                   </div>
                   <div className="text-sm font-semibold">
                     <MoneyText cents={order.totalCents} />
                   </div>
-                  <div className="text-xs text-zinc-500">{order.customer.email}</div>
+                  <div className="text-xs text-[var(--text-meta)]">{order.customer.email}</div>
                   <ul className="list-disc pl-5 text-sm">
                     {order.items.map((li) => (
                       <li key={li.id}>
@@ -79,7 +79,7 @@ export default async function KitchenQueuePage() {
                     ))}
                   </ul>
                   {order.assignment ? (
-                    <div className="text-xs text-emerald-700 dark:text-emerald-300">
+                    <div className="text-xs text-emerald-700">
                       Claimed by driver {order.assignment.driverId}
                     </div>
                   ) : null}

@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { Role } from "@prisma/client";
-import { placeOrderMock } from "@/app/(customer)/customer/actions";
+import { placeOrderWithResult } from "@/app/(customer)/customer/actions";
 import { CheckoutReviewForm } from "@/components/customer/checkout-review-form";
 import {
   resolveDeliveryOption,
@@ -59,7 +59,7 @@ export default async function CheckoutReviewPage({
         initialDeliveryOption={deliveryOption}
         initialTipCents={tipCents}
         defaultUser={{ name: user.name, email: user.email, phone: null }}
-        placeOrderAction={placeOrderMock}
+        placeOrderWithResult={placeOrderWithResult}
       />
     </div>
   );

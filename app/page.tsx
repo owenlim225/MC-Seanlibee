@@ -113,7 +113,7 @@ export default async function Home() {
               className="rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--brand-primary)] focus-visible:ring-offset-2 dark:focus-visible:ring-offset-zinc-950"
             >
               <Card
-                className="flex h-full cursor-pointer flex-col justify-between gap-4 !border-[#CB1A38] !bg-[#CB1A38] p-6 text-white !shadow-none"
+                className="flex h-full cursor-pointer flex-col justify-between gap-4 border-[var(--brand-primary)] !bg-[#B11731] p-6 text-white shadow-none"
               >
                 <div className="flex items-start justify-between gap-3">
                   <div className="space-y-2">

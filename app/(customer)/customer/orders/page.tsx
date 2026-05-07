@@ -35,13 +35,13 @@ export default async function OrdersHistoryPage() {
         <div className="flex flex-col gap-3">
           {orders.map((o) => (
             <Link key={o.id} href={`/customer/orders/${o.id}`} className="block">
-              <Card className="transition hover:border-zinc-400 dark:hover:border-zinc-600">
+              <Card className="transition hover:border-zinc-400">
                 <div className="flex flex-wrap items-center justify-between gap-3">
                   <div className="flex flex-col gap-1">
                     <div className="text-sm font-semibold">
                       <RelativeTime date={o.createdAt} />
                     </div>
-                    <div className="text-xs text-zinc-500">{o.id}</div>
+                    <div className="text-xs text-[var(--text-meta)]">{o.id}</div>
                   </div>
                   <div className="flex flex-wrap items-center gap-3">
                     <StatusBadge status={o.status} />

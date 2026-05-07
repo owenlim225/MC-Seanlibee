@@ -21,12 +21,12 @@ export default async function RoleSwitcherPage({
       />
 
       {sp.denied ? (
-        <div className="rounded-md border border-amber-200 bg-amber-50 p-3 text-sm text-amber-900 dark:border-amber-900 dark:bg-amber-950 dark:text-amber-100">
+        <div className="rounded-md border border-amber-200 bg-amber-50 p-3 text-sm text-amber-900">
           That route requires a different role — pick the matching profile below.
         </div>
       ) : null}
       {sp.error === "no-user" ? (
-        <div className="rounded-md border border-red-200 bg-red-50 p-3 text-sm text-red-900 dark:border-red-950 dark:bg-red-950 dark:text-red-100">
+        <div className="rounded-md border border-red-200 bg-red-50 p-3 text-sm text-red-900">
           No seeded user exists for that role yet. Run `pnpm db:seed`.
         </div>
       ) : null}
@@ -45,12 +45,12 @@ export default async function RoleSwitcherPage({
                   <form key={u.id} action={signInRole.bind(null, role, u.id, sp.next)}>
                     <Button type="submit" variant="secondary" className="w-full justify-between">
                       <span className="truncate text-left">{u.name}</span>
-                      <span className="text-xs text-zinc-500">{u.email}</span>
+                      <span className="text-xs text-[var(--text-meta)]">{u.email}</span>
                     </Button>
                   </form>
                 ))}
               {users.filter((u) => u.role === role).length === 0 ? (
-                <div className="text-sm text-zinc-600 dark:text-zinc-400">No users for this role.</div>
+                <div className="text-sm text-[var(--text-muted)]">No users for this role.</div>
               ) : null}
             </div>
           </Card>

@@ -54,7 +54,7 @@ export default async function DriverHomePage() {
       <section className="flex flex-col gap-3">
         <div className="flex items-center justify-between gap-2">
           <h2 className="text-lg font-semibold">Ready — available</h2>
-          <span className="text-xs text-zinc-500">{readyUnclaimed.length}</span>
+          <span className="text-xs text-[var(--text-meta)]">{readyUnclaimed.length}</span>
         </div>
         {readyUnclaimed.length === 0 ? (
           <EmptyState title="Nothing ready right now" />
@@ -64,14 +64,14 @@ export default async function DriverHomePage() {
               <Card key={order.id} className="flex flex-col gap-3">
                 <div className="flex flex-wrap items-center justify-between gap-2">
                   <StatusBadge status={order.status} />
-                  <div className="text-xs text-zinc-500">
+                  <div className="text-xs text-[var(--text-meta)]">
                     <RelativeTime date={order.createdAt} />
                   </div>
                 </div>
                 <div className="text-sm font-semibold">
                   <MoneyText cents={order.totalCents} />
                 </div>
-                <div className="text-xs text-zinc-500">{order.customer.email}</div>
+                <div className="text-xs text-[var(--text-meta)]">{order.customer.email}</div>
                 <ul className="list-disc pl-5 text-sm">
                   {order.items.map((li) => (
                     <li key={li.id}>
@@ -91,7 +91,7 @@ export default async function DriverHomePage() {
       <section className="flex flex-col gap-3">
         <div className="flex items-center justify-between gap-2">
           <h2 className="text-lg font-semibold">My active deliveries</h2>
-          <span className="text-xs text-zinc-500">{mine.length}</span>
+          <span className="text-xs text-[var(--text-meta)]">{mine.length}</span>
         </div>
         {mine.length === 0 ? (
           <EmptyState title="No active deliveries" description="Claim an order from the READY list." />
@@ -101,12 +101,12 @@ export default async function DriverHomePage() {
               <Card key={order.id} className="flex flex-col gap-3">
                 <div className="flex flex-wrap items-center justify-between gap-2">
                   <StatusBadge status={order.status} />
-                  <div className="text-xs text-zinc-500">{order.id}</div>
+                  <div className="text-xs text-[var(--text-meta)]">{order.id}</div>
                 </div>
                 <div className="text-sm font-semibold">
                   <MoneyText cents={order.totalCents} />
                 </div>
-                <div className="text-xs text-zinc-500">{order.customer.email}</div>
+                <div className="text-xs text-[var(--text-meta)]">{order.customer.email}</div>
                 {order.status === OrderStatus.READY ? <PickupButton orderId={order.id} /> : null}
                 {order.status === OrderStatus.PICKED_UP ? <DeliverButton orderId={order.id} /> : null}
               </Card>

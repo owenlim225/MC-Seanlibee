@@ -2,30 +2,98 @@ import Link from "next/link";
 import Image from "next/image";
 import type { CSSProperties } from "react";
 import { Role } from "@prisma/client";
-import { ClipboardList, ShoppingCart } from "lucide-react";
+import { ClipboardList, Menu, ShoppingCart } from "lucide-react";
 import { logoutAction } from "@/app/auth/actions";
 import { getSession } from "@/lib/auth";
 import { readCart } from "@/lib/cart-cookie";
 
 const HEADER_HEIGHT_PX = 72;
 
+type HeaderUser = Awaited<ReturnType<typeof getSession>>["user"];
+
+function renderHeaderNavItems(
+  user: HeaderUser,
+  cartQty: number,
+  isMobile: boolean,
+  cartBadgeTestId: string,
+) {
+  const baseLinkClass = isMobile
+    ? "inline-flex min-h-11 w-full cursor-pointer items-center gap-2 rounded-md px-3 text-sm text-white transition-colors hover:bg-white/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/60"
+    : "inline-flex cursor-pointer items-center gap-1.5 text-white transition-colors hover:text-[var(--text-on-brand-muted)]";
+
+  const secondaryTextClass = isMobile ? "px-3 py-2 text-sm text-[var(--text-on-brand-muted)]" : "text-[var(--text-on-brand-muted)]";
+
+  if (user) {
+    return (
+      <>
+        {user.role === Role.CUSTOMER ? (
+          <>
+            <Link className={baseLinkClass} href="/customer/orders">
+              <ClipboardList className="size-4" aria-hidden="true" />
+              <span>Orders</span>
+            </Link>
+            <Link
+              className={baseLinkClass}
+              href="/customer/cart"
+              aria-label={cartQty > 0 ? `Cart with ${cartQty} items` : "Cart"}
+            >
+              <ShoppingCart className="size-4" aria-hidden="true" />
+              <span>Cart</span>
+              {cartQty > 0 ? (
+                <span
+                  data-testid={cartBadgeTestId}
+                  className="inline-flex min-w-5 items-center justify-center rounded-full bg-white px-1.5 py-0.5 text-xs font-semibold text-[var(--brand-primary)]"
+                >
+                  {cartQty}
+                </span>
+              ) : null}
+            </Link>
+          </>
+        ) : null}
+        <span className={secondaryTextClass}>{user.email}</span>
+        <form action={logoutAction} className={isMobile ? "w-full" : undefined}>
+          <button
+            type="submit"
+            className={
+              isMobile
+                ? "inline-flex min-h-11 w-full cursor-pointer items-center rounded-md px-3 text-sm text-white transition-colors hover:bg-white/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/60"
+                : "cursor-pointer text-white transition-colors hover:text-[var(--text-on-brand-muted)] hover:underline"
+            }
+          >
+            Logout
+          </button>
+        </form>
+      </>
+    );
+  }
+
+  return (
+    <>
+      <Link
+        className={
+          isMobile
+            ? "inline-flex min-h-11 w-full cursor-pointer items-center rounded-md px-3 text-sm text-white transition-colors hover:bg-white/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/60"
+            : "text-white transition-colors hover:text-[var(--text-on-brand-muted)] hover:underline"
+        }
+        href="/auth/login"
+      >
+        Login
+      </Link>
+      <Link
+        className={
+          isMobile
+            ? "inline-flex min-h-11 w-full cursor-pointer items-center rounded-md px-3 text-sm text-white transition-colors hover:bg-white/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/60"
+            : "text-white transition-colors hover:text-[var(--text-on-brand-muted)] hover:underline"
+        }
+        href="/auth/signup"
+      >
+        Sign up
+      </Link>
+    </>
+  );
+}
+
 export async function SiteHeader() {
-  const renderStartedAt = Date.now();
-  // #region agent log
-  fetch("http://127.0.0.1:7817/ingest/c3fc8591-bb49-4618-b7bd-5aef2b04dae3", {
-    method: "POST",
-    headers: { "Content-Type": "application/json", "X-Debug-Session-Id": "837d50" },
-    body: JSON.stringify({
-      sessionId: "837d50",
-      runId: "pre-fix",
-      hypothesisId: "H4",
-      location: "components/site-header.tsx:SiteHeader:entry",
-      message: "SiteHeader render started",
-      data: { component: "SiteHeader", renderStartedAt },
-      timestamp: Date.now(),
-    }),
-  }).catch(() => {});
-  // #endregion
   const session = await getSession();
   const user = session.user;
   const cart = user?.role === Role.CUSTOMER ? await readCart() : [];
@@ -44,7 +112,7 @@ export async function SiteHeader() {
       <div className="mx-auto flex h-full max-w-6xl items-center justify-between gap-4 px-4">
         <Link
           href="/"
-          className="flex items-center gap-2.5 text-base font-black italic tracking-tight transition-opacity hover:opacity-90 md:text-lg"
+          className="flex items-center gap-2.5 text-base font-black italic tracking-tight transition-colors hover:text-[var(--text-on-brand-muted)] md:text-lg"
           style={{ fontFamily: '"Baskerville", "Palatino Linotype", "Times New Roman", serif' }}
         >
           <Image
@@ -56,64 +124,22 @@ export async function SiteHeader() {
           />
           <span data-testid="site-brand">Mc Seanlibee</span>
         </Link>
-        <div className="flex flex-wrap items-center gap-4 text-sm md:gap-5">
-          {user ? (
-            <>
-              {user.role === Role.CUSTOMER ? (
-                <>
-                  <Link
-                    className="inline-flex cursor-pointer items-center gap-1.5 text-white transition-opacity hover:opacity-80"
-                    href="/customer/orders"
-                    aria-label="Orders"
-                  >
-                    <ClipboardList className="size-4" aria-hidden="true" />
-                    <span>Orders</span>
-                  </Link>
-                  <Link
-                    className="inline-flex cursor-pointer items-center gap-1.5 text-white transition-opacity hover:opacity-80"
-                    href="/customer/cart"
-                    aria-label={cartQty > 0 ? `Cart with ${cartQty} items` : "Cart"}
-                  >
-                    <ShoppingCart className="size-4" aria-hidden="true" />
-                    <span>Cart</span>
-                    {cartQty > 0 ? (
-                      <span
-                        data-testid="cart-badge"
-                        className="inline-flex min-w-5 items-center justify-center rounded-full bg-white px-1.5 py-0.5 text-xs font-semibold text-[var(--brand-primary)]"
-                      >
-                        {cartQty}
-                      </span>
-                    ) : null}
-                  </Link>
-                </>
-              ) : null}
-              <span className="text-white/80">{user.email}</span>
-              <form action={logoutAction}>
-                <button
-                  type="submit"
-                  className="cursor-pointer text-white transition-colors hover:text-white/80 hover:underline"
-                >
-                  Logout
-                </button>
-              </form>
-            </>
-          ) : (
-            <>
-              <Link
-                className="text-white transition-colors hover:text-white/80 hover:underline"
-                href="/auth/login"
-              >
-                Login
-              </Link>
-              <Link
-                className="text-white transition-colors hover:text-white/80 hover:underline"
-                href="/auth/signup"
-              >
-                Sign up
-              </Link>
-            </>
-          )}
-        </div>
+        <nav className="hidden items-center gap-4 text-sm md:flex md:gap-5" aria-label="Primary">
+          {renderHeaderNavItems(user, cartQty, false, "cart-badge")}
+        </nav>
+        <details className="group relative md:hidden">
+          <summary
+            className="inline-flex min-h-11 min-w-11 cursor-pointer list-none items-center justify-center rounded-md text-white transition-colors hover:bg-white/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/60"
+            aria-label="Toggle navigation menu"
+          >
+            <Menu className="size-5" aria-hidden="true" />
+          </summary>
+          <div className="absolute right-0 top-[calc(var(--site-header-h)-1px)] z-40 w-[min(20rem,calc(100vw-2rem))] rounded-b-lg border border-white/20 bg-[var(--brand-primary)] p-2 shadow-lg">
+            <nav className="flex flex-col gap-1" aria-label="Mobile primary">
+              {renderHeaderNavItems(user, cartQty, true, "cart-badge-mobile")}
+            </nav>
+          </div>
+        </details>
       </div>
     </header>
   );

@@ -48,10 +48,10 @@ export default async function OrderDetailPage({
       <Card className="flex flex-col gap-4">
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div>
-            <div className="text-sm text-zinc-600 dark:text-zinc-400">
+            <div className="text-sm text-[var(--text-muted)]">
               Placed <RelativeTime date={order.createdAt} />
             </div>
-            <div className="text-xs text-zinc-500">{order.id}</div>
+            <div className="text-xs text-[var(--text-meta)]">{order.id}</div>
           </div>
           <div className="flex flex-wrap items-center gap-3">
             <StatusBadge status={order.status} />
@@ -67,7 +67,7 @@ export default async function OrderDetailPage({
             {order.items.map((li) => (
               <li key={li.id}>
                 {li.quantity} × {li.menuItem.name}{" "}
-                <span className="text-zinc-500">
+                <span className="text-[var(--text-meta)]">
                   (<MoneyText cents={li.priceCentsAtOrder * li.quantity} />)
                 </span>
               </li>
@@ -80,13 +80,13 @@ export default async function OrderDetailPage({
         <div className="text-sm font-semibold">Timeline</div>
         <ol className="flex flex-col gap-2 text-sm">
           {order.events.map((ev) => (
-            <li key={ev.id} className="rounded-md border border-zinc-200 p-2 dark:border-zinc-800">
+            <li key={ev.id} className="rounded-md border border-zinc-200 p-2">
               <div className="flex flex-wrap items-center justify-between gap-2">
                 <span>
                   {ev.fromStatus ? `${ev.fromStatus} → ` : ""}
                   {ev.toStatus}
                 </span>
-                <span className="text-xs text-zinc-500">
+                <span className="text-xs text-[var(--text-meta)]">
                   <RelativeTime date={ev.at} />
                   {ev.actor ? ` · ${ev.actor.name}` : ""}
                 </span>
