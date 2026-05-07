@@ -57,10 +57,25 @@ export async function startCheckout(): Promise<void> {
   redirect("/customer/checkout");
 }
 
-export async function placeOrderMock(formData: FormData): Promise<void> {
+type ExecutePlaceOrderSuccess = {
+  kind: "success";
+  orderId: string;
+  redirectUrl: string;
+};
+
+type ExecutePlaceOrderRedirect = {
+  kind: "redirect";
+  url: string;
+};
+
+type ExecutePlaceOrderResult = ExecutePlaceOrderSuccess | ExecutePlaceOrderRedirect;
+
+async function executePlaceOrder(formData: FormData): Promise<ExecutePlaceOrderResult> {
   const user = await requireRoleLite(Role.CUSTOMER);
   const cart = await readCart();
-  if (cart.length === 0) redirect("/customer/cart");
+  if (cart.length === 0) {
+    return { kind: "redirect", url: "/customer/cart" };
+  }
 
   const fullName = String(formData.get("fullName") ?? "").trim();
   const phone = String(formData.get("phone") ?? "").trim();
@@ -74,7 +89,7 @@ export async function placeOrderMock(formData: FormData): Promise<void> {
   const hasInvalidLengths =
     fullName.length > 120 || phone.length > 40 || email.length > 160 || addressLine1.length > 200 || city.length > 120 || postalCode.length > 20;
   if (!fullName || !phone || !email || !addressLine1 || !city || !postalCode || !isEmailValid || hasInvalidLengths || consentRaw !== "on") {
-    redirect("/customer/checkout?error=missing-required");
+    return { kind: "redirect", url: "/customer/checkout?error=missing-required" };
   }
 
   const rawDeliveryOption = formData.get("deliveryOption");
@@ -97,7 +112,9 @@ export async function placeOrderMock(formData: FormData): Promise<void> {
     };
   });
 
-  if (pricedLines.some((line) => !line)) redirect("/customer/cart?error=invalid-item");
+  if (pricedLines.some((line) => !line)) {
+    return { kind: "redirect", url: "/customer/cart?error=invalid-item" };
+  }
 
   const resolvedLines = pricedLines.filter((line): line is NonNullable<typeof line> => Boolean(line));
   const pricing = computeCheckoutPricing({
@@ -124,5 +141,24 @@ export async function placeOrderMock(formData: FormData): Promise<void> {
   revalidatePath("/customer/cart");
   revalidatePath("/customer/orders");
   revalidatePath(`/customer/orders/${order.id}`);
-  redirect(`/customer/orders/${order.id}?paid=1`);
+
+  const redirectUrl = `/customer/orders/${order.id}?paid=1`;
+  return { kind: "success", orderId: order.id, redirectUrl };
+}
+
+export type PlaceOrderWithResultResponse =
+  | { ok: true; orderId: string; redirectUrl: string }
+  | { ok: false; redirectUrl: string };
+
+export async function placeOrderWithResult(formData: FormData): Promise<PlaceOrderWithResultResponse> {
+  const result = await executePlaceOrder(formData);
+  if (result.kind === "success") {
+    return { ok: true, orderId: result.orderId, redirectUrl: result.redirectUrl };
+  }
+  return { ok: false, redirectUrl: result.url };
+}
+
+export async function placeOrderMock(formData: FormData): Promise<void> {
+  const result = await executePlaceOrder(formData);
+  redirect(result.kind === "success" ? result.redirectUrl : result.url);
 }
