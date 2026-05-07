@@ -21,7 +21,7 @@ export function Button({
   return (
     <button
       {...props}
-      className={`inline-flex min-h-[40px] items-center justify-center gap-2 rounded-md px-3 py-2 text-sm font-medium transition-[background-color,color,box-shadow,border-color] duration-[var(--motion-base)] ease-[var(--ease-standard)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--focus-ring)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--surface-base)] ${variants[variant]} ${className}`}
+      className={`inline-flex min-h-[40px] items-center justify-center gap-2 rounded-md px-3 py-2 text-sm font-medium transition-[background-color,color,box-shadow,border-color] duration-[var(--motion-base)] ease-[var(--ease-standard)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--focus-ring)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--surface-base)] disabled:pointer-events-none ${variants[variant]} ${className}`}
     />
   );
 }
