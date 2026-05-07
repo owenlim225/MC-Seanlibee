@@ -24,10 +24,10 @@ export async function getSession(): Promise<Session> {
   if (!payload) return { user: null };
   const user = await prisma.user.findUnique({
     where: { id: payload.uid },
-    select: { id: true, role: true, email: true, name: true, isActive: true },
+    select: { id: true, role: true, email: true, name: true, isActive: true, deletedAt: true },
   });
   if (!user) return { user: null };
-  if (!user.isActive) {
+  if (!user.isActive || user.deletedAt) {
     (await cookies()).delete(SESSION_COOKIE);
     return { user: null };
   }
@@ -41,43 +41,13 @@ export async function getSession(): Promise<Session> {
  */
 export async function getSessionLite(): Promise<SessionLite> {
   const payload = await readSessionPayload();
-  // #region agent log
-  fetch("http://127.0.0.1:7817/ingest/c3fc8591-bb49-4618-b7bd-5aef2b04dae3", {
-    method: "POST",
-    headers: { "Content-Type": "application/json", "X-Debug-Session-Id": "a6cb1e" },
-    body: JSON.stringify({
-      sessionId: "a6cb1e",
-      runId: "initial",
-      hypothesisId: "H5",
-      location: "lib/auth/index.ts:44",
-      message: "getSessionLite payload",
-      data: { hasPayload: Boolean(payload), role: payload?.role ?? null, uidPrefix: payload?.uid?.slice(0, 8) ?? null },
-      timestamp: Date.now(),
-    }),
-  }).catch(() => {});
-  // #endregion
   if (!payload) return { user: null };
   const user = await prisma.user.findUnique({
     where: { id: payload.uid },
-    select: { id: true, role: true, isActive: true },
+    select: { id: true, role: true, isActive: true, deletedAt: true },
   });
-  // #region agent log
-  fetch("http://127.0.0.1:7817/ingest/c3fc8591-bb49-4618-b7bd-5aef2b04dae3", {
-    method: "POST",
-    headers: { "Content-Type": "application/json", "X-Debug-Session-Id": "a6cb1e" },
-    body: JSON.stringify({
-      sessionId: "a6cb1e",
-      runId: "initial",
-      hypothesisId: "H6",
-      location: "lib/auth/index.ts:55",
-      message: "getSessionLite db user",
-      data: { userFound: Boolean(user), isActive: user?.isActive ?? null, dbRole: user?.role ?? null, tokenRole: payload.role },
-      timestamp: Date.now(),
-    }),
-  }).catch(() => {});
-  // #endregion
   if (!user) return { user: null };
-  if (!user.isActive) {
+  if (!user.isActive || user.deletedAt) {
     (await cookies()).delete(SESSION_COOKIE);
     return { user: null };
   }
@@ -105,21 +75,6 @@ export async function requireRole(role: Role): Promise<NonNullable<Session["user
  */
 export async function requireRoleLite(role: Role): Promise<NonNullable<SessionLite["user"]>> {
   const session = await getSessionLite();
-  // #region agent log
-  fetch("http://127.0.0.1:7817/ingest/c3fc8591-bb49-4618-b7bd-5aef2b04dae3", {
-    method: "POST",
-    headers: { "Content-Type": "application/json", "X-Debug-Session-Id": "a6cb1e" },
-    body: JSON.stringify({
-      sessionId: "a6cb1e",
-      runId: "initial",
-      hypothesisId: "H7",
-      location: "lib/auth/index.ts:95",
-      message: "requireRoleLite check",
-      data: { expectedRole: role, hasSessionUser: Boolean(session.user), actualRole: session.user?.role ?? null },
-      timestamp: Date.now(),
-    }),
-  }).catch(() => {});
-  // #endregion
   if (!session.user) loginRedirect();
   if (session.user.role !== role) deniedRedirect();
   return session.user;

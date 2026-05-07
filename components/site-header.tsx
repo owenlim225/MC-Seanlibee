@@ -1,4 +1,5 @@
 import Link from "next/link";
+import type { CSSProperties } from "react";
 import { logoutAction } from "@/app/auth/actions";
 import { getSession } from "@/lib/auth";
 
@@ -15,17 +16,15 @@ export async function SiteHeader() {
         {
           "--site-header-h": `${HEADER_HEIGHT_PX}px`,
           height: `${HEADER_HEIGHT_PX}px`,
-        } as React.CSSProperties
+        } as CSSProperties
       }
     >
       <div className="mx-auto flex h-full max-w-6xl items-center justify-between gap-3 px-4">
         <Link href="/" className="text-sm font-semibold tracking-tight">
-          MC Food MVP
+          MC Seanlibee
         </Link>
         <div className="flex flex-wrap items-center gap-3 text-sm">
-          <Link className="text-zinc-700 hover:underline dark:text-zinc-200" href="/customer">
-            Customer
-          </Link>
+          {/* Customer tab removed per updated navigation spec */}
           {user ? (
             <>
               <span className="text-zinc-700 dark:text-zinc-200">{user.email}</span>

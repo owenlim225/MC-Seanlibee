@@ -72,7 +72,7 @@ export async function signInAction(formData: FormData): Promise<void> {
 
     const user = await prisma.user.findUnique({
       where: { email: normalizedEmail },
-      select: { id: true, role: true, password: true, authUserId: true, isActive: true },
+      select: { id: true, role: true, password: true, authUserId: true, isActive: true, deletedAt: true },
     });
     const passwordOk = user
       ? isPasswordHash(user.password)
@@ -84,7 +84,7 @@ export async function signInAction(formData: FormData): Promise<void> {
       passwordMatched: passwordOk,
     });
 
-    if (!user || !passwordOk || !user.isActive) {
+    if (!user || !passwordOk || !user.isActive || user.deletedAt) {
       if (AUTH_DEBUG_ENABLED)
         console.warn("[auth-debug]", {
           flow: "sign-in",

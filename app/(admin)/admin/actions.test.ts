@@ -7,11 +7,27 @@ const {
   revalidatePathMock,
   userCreateMock,
   userUpdateMock,
+  userFindUniqueMock,
+  transactionMock,
+  archivedUserCreateMock,
+  menuItemFindUniqueMock,
+  archivedMenuItemCreateMock,
+  menuItemUpdateMock,
 } = vi.hoisted(() => ({
   requireRoleLiteMock: vi.fn(async () => ({ id: "admin-1", role: Role.ADMIN })),
   revalidatePathMock: vi.fn(),
   userCreateMock: vi.fn(),
   userUpdateMock: vi.fn(),
+  userFindUniqueMock: vi.fn(),
+  transactionMock: vi.fn(async (arg: unknown) => {
+    if (Array.isArray(arg)) {
+      await Promise.all(arg as Promise<unknown>[]);
+    }
+  }),
+  archivedUserCreateMock: vi.fn().mockResolvedValue({}),
+  archivedMenuItemCreateMock: vi.fn().mockResolvedValue({}),
+  menuItemFindUniqueMock: vi.fn(),
+  menuItemUpdateMock: vi.fn().mockResolvedValue({}),
 }));
 
 vi.mock("@/lib/auth", () => ({
@@ -24,17 +40,27 @@ vi.mock("next/cache", () => ({
 
 vi.mock("@/lib/prisma", () => ({
   prisma: {
+    $transaction: transactionMock,
+    archivedUser: { create: archivedUserCreateMock },
+    archivedMenuItem: { create: archivedMenuItemCreateMock },
     user: {
       create: userCreateMock,
       update: userUpdateMock,
+      findUnique: userFindUniqueMock,
     },
     menuCategory: { create: vi.fn(), findMany: vi.fn() },
-    menuItem: { create: vi.fn(), update: vi.fn(), delete: vi.fn() },
+    menuItem: {
+      create: vi.fn(),
+      updateMany: vi.fn().mockResolvedValue({ count: 1 }),
+      update: menuItemUpdateMock,
+      findUnique: menuItemFindUniqueMock,
+    },
   },
 }));
 
 import {
   createUserForm,
+  deleteMenuItem,
   restoreUserForm,
   softDeleteUserForm,
   updateUserProfileForm,
@@ -114,7 +140,67 @@ describe("admin user CRUD actions", () => {
 
     await softDeleteUserForm(form);
 
+    expect(userFindUniqueMock).not.toHaveBeenCalled();
+    expect(transactionMock).not.toHaveBeenCalled();
     expect(userUpdateMock).not.toHaveBeenCalled();
+  });
+
+  it("soft-deletes active user via archive snapshot and transaction", async () => {
+    userFindUniqueMock.mockResolvedValue({
+      id: "u-target",
+      isActive: true,
+      deletedAt: null,
+      authUserId: "auth-1",
+      email: "t@example.com",
+      password: "hashed",
+      role: Role.CUSTOMER,
+      name: "Target",
+    });
+    const form = new FormData();
+    form.set("userId", "u-target");
+
+    await softDeleteUserForm(form);
+
+    expect(userFindUniqueMock).toHaveBeenCalledWith({ where: { id: "u-target" } });
+    expect(transactionMock).toHaveBeenCalledTimes(1);
+    expect(archivedUserCreateMock).toHaveBeenCalledWith({
+      data: {
+        originalId: "u-target",
+        archivedReason: "admin-soft-delete",
+        archivedByUserId: "admin-1",
+        authUserId: "auth-1",
+        email: "t@example.com",
+        password: "hashed",
+        role: Role.CUSTOMER,
+        name: "Target",
+        isActive: true,
+        deletedAt: null,
+      },
+    });
+    expect(userUpdateMock).toHaveBeenCalledWith({
+      where: { id: "u-target" },
+      data: { isActive: false, deletedAt: expect.any(Date) },
+    });
+    expect(revalidatePathMock).toHaveBeenCalledWith("/admin/users");
+  });
+
+  it("skips soft-delete when user already deleted", async () => {
+    userFindUniqueMock.mockResolvedValue({
+      id: "u-old",
+      isActive: false,
+      deletedAt: new Date(),
+      authUserId: null,
+      email: "old@example.com",
+      password: "x",
+      role: Role.CUSTOMER,
+      name: "Old",
+    });
+    const form = new FormData();
+    form.set("userId", "u-old");
+
+    await softDeleteUserForm(form);
+
+    expect(transactionMock).not.toHaveBeenCalled();
   });
 
   it("restores inactive user", async () => {
@@ -128,5 +214,64 @@ describe("admin user CRUD actions", () => {
       data: { isActive: true, deletedAt: null },
     });
     expect(revalidatePathMock).toHaveBeenCalledWith("/admin/users");
+  });
+});
+
+describe("admin menu archive actions", () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+    requireRoleLiteMock.mockResolvedValue({ id: "admin-1", role: Role.ADMIN });
+  });
+
+  it("archives menu item instead of hard delete", async () => {
+    menuItemFindUniqueMock.mockResolvedValue({
+      id: "mi-1",
+      name: "Burger",
+      description: "Good",
+      priceCents: 999,
+      imageUrl: null,
+      isAvailable: true,
+      deletedAt: null,
+    });
+
+    await deleteMenuItem("mi-1");
+
+    expect(menuItemFindUniqueMock).toHaveBeenCalledWith({ where: { id: "mi-1" } });
+    expect(transactionMock).toHaveBeenCalledTimes(1);
+    expect(archivedMenuItemCreateMock).toHaveBeenCalledWith({
+      data: {
+        originalId: "mi-1",
+        archivedReason: "admin-archive-menu-item",
+        archivedByUserId: "admin-1",
+        name: "Burger",
+        description: "Good",
+        priceCents: 999,
+        imageUrl: null,
+        isAvailable: true,
+        deletedAt: null,
+      },
+    });
+    expect(menuItemUpdateMock).toHaveBeenCalledWith({
+      where: { id: "mi-1" },
+      data: { deletedAt: expect.any(Date) },
+    });
+    expect(revalidatePathMock).toHaveBeenCalledWith("/admin/menu");
+    expect(revalidatePathMock).toHaveBeenCalledWith("/customer");
+  });
+
+  it("no-op deleteMenuItem when already archived", async () => {
+    menuItemFindUniqueMock.mockResolvedValue({
+      id: "mi-2",
+      name: "Gone",
+      description: "",
+      priceCents: 100,
+      imageUrl: null,
+      isAvailable: false,
+      deletedAt: new Date(),
+    });
+
+    await deleteMenuItem("mi-2");
+
+    expect(transactionMock).not.toHaveBeenCalled();
   });
 });

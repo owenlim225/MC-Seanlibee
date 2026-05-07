@@ -78,7 +78,7 @@ export async function createMenuItem(formData: FormData): Promise<void> {
   if (!name || categoryIds.length === 0 || !Number.isFinite(price)) return;
 
   const groupedCategories = await prisma.menuCategory.findMany({
-    where: { id: { in: categoryIds } },
+    where: { id: { in: categoryIds }, deletedAt: null },
     select: { id: true, slug: true },
   });
   if (
@@ -113,14 +113,39 @@ export async function createMenuItem(formData: FormData): Promise<void> {
 
 export async function updateMenuItemAvailability(menuItemId: string, isAvailable: boolean): Promise<void> {
   await requireRoleLite(Role.ADMIN);
-  await prisma.menuItem.update({ where: { id: menuItemId }, data: { isAvailable } });
+  const updated = await prisma.menuItem.updateMany({
+    where: { id: menuItemId, deletedAt: null },
+    data: { isAvailable },
+  });
+  if (updated.count === 0) return;
   revalidatePath("/admin/menu");
   revalidatePath("/customer");
 }
 
 export async function deleteMenuItem(menuItemId: string): Promise<void> {
-  await requireRoleLite(Role.ADMIN);
-  await prisma.menuItem.delete({ where: { id: menuItemId } });
+  const session = await requireRoleLite(Role.ADMIN);
+  const item = await prisma.menuItem.findUnique({ where: { id: menuItemId } });
+  if (!item || item.deletedAt) return;
+
+  await prisma.$transaction([
+    prisma.archivedMenuItem.create({
+      data: {
+        originalId: item.id,
+        archivedReason: "admin-archive-menu-item",
+        archivedByUserId: session.id,
+        name: item.name,
+        description: item.description,
+        priceCents: item.priceCents,
+        imageUrl: item.imageUrl,
+        isAvailable: item.isAvailable,
+        deletedAt: item.deletedAt,
+      },
+    }),
+    prisma.menuItem.update({
+      where: { id: menuItemId },
+      data: { deletedAt: new Date() },
+    }),
+  ]);
   revalidatePath("/admin/menu");
   revalidatePath("/customer");
 }
@@ -192,10 +217,30 @@ export async function softDeleteUserForm(formData: FormData): Promise<void> {
   const session = await requireRoleLite(Role.ADMIN);
   const userId = String(formData.get("userId") ?? "").trim();
   if (!userId || userId === session.id) return;
-  await prisma.user.update({
-    where: { id: userId },
-    data: { isActive: false, deletedAt: new Date() },
-  });
+
+  const existing = await prisma.user.findUnique({ where: { id: userId } });
+  if (!existing || !existing.isActive || existing.deletedAt) return;
+
+  await prisma.$transaction([
+    prisma.archivedUser.create({
+      data: {
+        originalId: existing.id,
+        archivedReason: "admin-soft-delete",
+        archivedByUserId: session.id,
+        authUserId: existing.authUserId,
+        email: existing.email,
+        password: existing.password,
+        role: existing.role,
+        name: existing.name,
+        isActive: existing.isActive,
+        deletedAt: existing.deletedAt,
+      },
+    }),
+    prisma.user.update({
+      where: { id: userId },
+      data: { isActive: false, deletedAt: new Date() },
+    }),
+  ]);
   revalidatePath("/admin/users");
 }
 

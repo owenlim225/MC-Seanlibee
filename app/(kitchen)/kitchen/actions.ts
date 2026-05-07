@@ -9,7 +9,7 @@ import { realtime } from "@/lib/realtime";
 export async function advanceKitchenOrder(orderId: string): Promise<void> {
   const actor = await requireRoleLite(Role.KITCHEN);
   const order = await prisma.order.findUnique({ where: { id: orderId } });
-  if (!order) return;
+  if (!order || order.deletedAt) return;
 
   let next: OrderStatus | null = null;
   if (order.status === OrderStatus.RECEIVED) next = OrderStatus.PREPARING;

@@ -5,8 +5,8 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
   directUrl = env("DIRECT_URL")
 }
 
@@ -28,15 +28,15 @@ enum OrderStatus {
 }
 
 model User {
-  id           String             @id @default(cuid())
-  authUserId   String?            @unique
-  email        String             @unique
+  id           String                 @id @default(cuid())
+  authUserId   String?                @unique
+  email        String                 @unique
   password     String
   role         Role
   name         String
-  isActive     Boolean            @default(true)
+  isActive     Boolean                @default(true)
   deletedAt    DateTime?
-  orders       Order[]            @relation("CustomerOrders")
+  orders       Order[]                @relation("CustomerOrders")
   actedEvents  OrderStatusEvent[]
   deliveries   DeliveryAssignment[]
 
@@ -44,31 +44,36 @@ model User {
 }
 
 model MenuCategory {
-  id        String     @id @default(cuid())
-  slug      String     @unique
+  id        String             @id @default(cuid())
+  slug      String             @unique
   name      String
-  sortOrder Int        @default(0)
+  sortOrder Int                @default(0)
+  deletedAt DateTime?
   itemLinks MenuItemCategory[]
+
+  @@index([deletedAt])
 }
 
 model MenuItem {
   id          String             @id @default(cuid())
   name        String
-  description String      @default("")
+  description String             @default("")
   priceCents  Int
   imageUrl    String?
-  isAvailable Boolean     @default(true)
+  isAvailable Boolean            @default(true)
+  deletedAt   DateTime?
   orderItems  OrderItem[]
   categoryLinks MenuItemCategory[]
 
   @@index([isAvailable, name])
+  @@index([deletedAt])
 }
 
 model MenuItemCategory {
-  menuItemId   String
-  categoryId   String
-  menuItem     MenuItem     @relation(fields: [menuItemId], references: [id], onDelete: Cascade)
-  category     MenuCategory @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  menuItemId String
+  categoryId String
+  menuItem   MenuItem     @relation(fields: [menuItemId], references: [id], onDelete: Cascade)
+  category   MenuCategory @relation(fields: [categoryId], references: [id], onDelete: Cascade)
 
   @@id([menuItemId, categoryId])
   @@index([categoryId, menuItemId])
@@ -76,46 +81,52 @@ model MenuItemCategory {
 }
 
 model Order {
-  id          String             @id @default(cuid())
+  id          String                 @id @default(cuid())
   customerId  String
-  customer    User               @relation("CustomerOrders", fields: [customerId], references: [id])
-  status      OrderStatus        @default(PENDING_PAYMENT)
+  customer    User                   @relation("CustomerOrders", fields: [customerId], references: [id])
+  status      OrderStatus            @default(PENDING_PAYMENT)
   totalCents  Int
-  createdAt   DateTime           @default(now())
+  createdAt   DateTime               @default(now())
   paidAt      DateTime?
+  deletedAt   DateTime?
   items       OrderItem[]
   events      OrderStatusEvent[]
   assignment  DeliveryAssignment?
 
   @@index([status, createdAt])
   @@index([customerId, createdAt])
+  @@index([deletedAt])
 }
 
 model OrderItem {
-  id                String   @id @default(cuid())
+  id                String    @id @default(cuid())
   orderId           String
-  order             Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  order             Order     @relation(fields: [orderId], references: [id], onDelete: Cascade)
   menuItemId        String
-  menuItem          MenuItem @relation(fields: [menuItemId], references: [id])
+  menuItem          MenuItem  @relation(fields: [menuItemId], references: [id])
   quantity          Int
   priceCentsAtOrder Int
+  deletedAt         DateTime?
 
   @@index([orderId])
   @@index([menuItemId])
+  @@index([deletedAt])
 }
 
 model OrderStatusEvent {
-  id          String       @id @default(cuid())
+  id          String        @id @default(cuid())
   orderId     String
-  order       Order        @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  order       Order         @relation(fields: [orderId], references: [id], onDelete: Cascade)
   fromStatus  OrderStatus?
   toStatus    OrderStatus
   actorUserId String?
-  actor       User?        @relation(fields: [actorUserId], references: [id])
-  at          DateTime     @default(now())
+  actor       User?         @relation(fields: [actorUserId], references: [id])
+  at          DateTime      @default(now())
+  deletedAt   DateTime?
 
   @@index([orderId])
   @@index([at])
+  @@index([deletedAt])
 }
 
 model DeliveryAssignment {
@@ -126,6 +137,133 @@ model DeliveryAssignment {
   driver      User      @relation(fields: [driverId], references: [id])
   claimedAt   DateTime  @default(now())
   deliveredAt DateTime?
+  deletedAt   DateTime?
 
   @@index([driverId])
+  @@index([deletedAt])
+}
+
+// --- Archive snapshots (no FKs to live rows; originalId = source id at archive time) ---
+
+model ArchivedUser {
+  id               String    @id @default(cuid())
+  originalId       String
+  archivedAt       DateTime  @default(now())
+  archivedReason   String?
+  archivedByUserId String?
+  authUserId       String?
+  email            String
+  password         String
+  role             Role
+  name             String
+  isActive         Boolean
+  deletedAt        DateTime?
+
+  @@index([originalId])
+  @@index([archivedAt])
+  @@index([originalId, archivedAt])
+}
+
+model ArchivedMenuCategory {
+  id               String    @id @default(cuid())
+  originalId       String
+  archivedAt       DateTime  @default(now())
+  archivedReason   String?
+  archivedByUserId String?
+  slug             String
+  name             String
+  sortOrder        Int
+  deletedAt        DateTime?
+
+  @@index([originalId])
+  @@index([archivedAt])
+  @@index([originalId, archivedAt])
+}
+
+model ArchivedMenuItem {
+  id               String    @id @default(cuid())
+  originalId       String
+  archivedAt       DateTime  @default(now())
+  archivedReason   String?
+  archivedByUserId String?
+  name             String
+  description      String
+  priceCents       Int
+  imageUrl         String?
+  isAvailable      Boolean
+  deletedAt        DateTime?
+
+  @@index([originalId])
+  @@index([archivedAt])
+  @@index([originalId, archivedAt])
+}
+
+model ArchivedOrder {
+  id               String       @id @default(cuid())
+  originalId       String
+  archivedAt       DateTime     @default(now())
+  archivedReason   String?
+  archivedByUserId String?
+  customerId       String
+  status           OrderStatus
+  totalCents       Int
+  createdAt        DateTime
+  paidAt           DateTime?
+  deletedAt        DateTime?
+
+  @@index([originalId])
+  @@index([archivedAt])
+  @@index([originalId, archivedAt])
+}
+
+model ArchivedOrderItem {
+  id               String    @id @default(cuid())
+  originalId       String
+  archivedAt       DateTime  @default(now())
+  archivedReason   String?
+  archivedByUserId String?
+  orderId          String
+  menuItemId       String
+  quantity         Int
+  priceCentsAtOrder Int
+  deletedAt        DateTime?
+
+  @@index([originalId])
+  @@index([archivedAt])
+  @@index([originalId, archivedAt])
+}
+
+model ArchivedOrderStatusEvent {
+  id               String        @id @default(cuid())
+  originalId       String
+  archivedAt       DateTime      @default(now())
+  archivedReason   String?
+  archivedByUserId String?
+  orderId          String
+  fromStatus       OrderStatus?
+  toStatus         OrderStatus
+  actorUserId      String?
+  at               DateTime
+  deletedAt        DateTime?
+
+  @@index([originalId])
+  @@index([archivedAt])
+  @@index([originalId, archivedAt])
+}
+
+model ArchivedDeliveryAssignment {
+  id               String    @id @default(cuid())
+  originalId       String
+  archivedAt       DateTime  @default(now())
+  archivedReason   String?
+  archivedByUserId String?
+  orderId          String
+  driverId         String
+  claimedAt        DateTime
+  deliveredAt      DateTime?
+  deletedAt        DateTime?
+
+  @@index([originalId])
+  @@index([archivedAt])
+  @@index([originalId, archivedAt])
 }

@@ -11,9 +11,11 @@ import { PageHeader } from "@/components/ui/page-header";
 
 export default async function AdminMenuPage() {
   const categories = await prisma.menuCategory.findMany({
+    where: { deletedAt: null },
     orderBy: { sortOrder: "asc" },
     include: {
       itemLinks: {
+        where: { menuItem: { deletedAt: null } },
         orderBy: { menuItem: { name: "asc" } },
         include: { menuItem: true },
       },

@@ -170,6 +170,13 @@ async function createSeedUser(data: { email: string; name: string; role: Role })
 }
 
 async function main() {
+  await prisma.archivedDeliveryAssignment.deleteMany();
+  await prisma.archivedOrderStatusEvent.deleteMany();
+  await prisma.archivedOrderItem.deleteMany();
+  await prisma.archivedOrder.deleteMany();
+  await prisma.archivedMenuItem.deleteMany();
+  await prisma.archivedMenuCategory.deleteMany();
+  await prisma.archivedUser.deleteMany();
   await prisma.orderStatusEvent.deleteMany();
   await prisma.deliveryAssignment.deleteMany();
   await prisma.orderItem.deleteMany();

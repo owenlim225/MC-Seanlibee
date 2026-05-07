@@ -16,8 +16,8 @@ export default async function MockStripePage({
   const sp = await searchParams;
   if (!sp.orderId) notFound();
 
-  const order = await prisma.order.findUnique({
-    where: { id: sp.orderId },
+  const order = await prisma.order.findFirst({
+    where: { id: sp.orderId, deletedAt: null },
     include: { items: { include: { menuItem: true } }, customer: true },
   });
   if (!order) notFound();

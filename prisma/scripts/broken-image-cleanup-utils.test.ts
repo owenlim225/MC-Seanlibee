@@ -84,6 +84,7 @@ describe("seeded-item matching and deletion safeguards", () => {
         where: {
           id: { in: ["seed-1", "seed-2"] },
           imageUrl: { in: ["https://img/a.jpg", "https://img/b.jpg"] },
+          deletedAt: null,
         },
         select: {
           id: true,

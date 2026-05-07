@@ -46,4 +46,13 @@ describe("SiteHeader auth controls", () => {
     expect(html).not.toContain(">Login<");
     expect(html).not.toContain(">Sign up<");
   });
+
+  it('renders "MC Seanlibee" title and no Customer tab', async () => {
+    getSessionMock.mockResolvedValueOnce({ user: null });
+
+    const html = renderToStaticMarkup(await SiteHeader());
+
+    expect(html).toContain("MC Seanlibee");
+    expect(html).not.toContain(">Customer<");
+  });
 });

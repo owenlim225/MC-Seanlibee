@@ -29,7 +29,7 @@ export default async function CheckoutReviewPage({
   if (cart.length === 0) redirect("/customer/cart");
 
   const items = await prisma.menuItem.findMany({
-    where: { id: { in: cart.map((line) => line.menuItemId) }, isAvailable: true },
+    where: { id: { in: cart.map((line) => line.menuItemId) }, isAvailable: true, deletedAt: null },
     select: { id: true, name: true, priceCents: true },
   });
   if (items.length !== cart.length) redirect("/customer/cart?error=invalid-item");

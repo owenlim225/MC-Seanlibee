@@ -285,6 +285,7 @@ export async function selectMatchedSeededMenuItems(
     where: {
       id: { in: [...seededIds] },
       imageUrl: { in: uniqueUrls },
+      deletedAt: null,
     },
     select: {
       id: true,

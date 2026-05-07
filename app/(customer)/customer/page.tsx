@@ -15,6 +15,7 @@ export default async function CustomerMenuPage({
 }) {
   const sp = await searchParams;
   const categories = await prisma.menuCategory.findMany({
+    where: { deletedAt: null },
     orderBy: { sortOrder: "asc" },
     select: {
       id: true,
@@ -22,6 +23,7 @@ export default async function CustomerMenuPage({
       name: true,
       sortOrder: true,
       itemLinks: {
+        where: { menuItem: { deletedAt: null } },
         orderBy: { menuItem: { name: "asc" } },
         select: {
           menuItem: {

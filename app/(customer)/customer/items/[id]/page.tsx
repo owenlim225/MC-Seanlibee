@@ -11,10 +11,11 @@ import { resolveMenuImageUrl } from "@/lib/menu/resolve-menu-image-url";
 
 export default async function ItemDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
-  const item = await prisma.menuItem.findUnique({
-    where: { id },
+  const item = await prisma.menuItem.findFirst({
+    where: { id, deletedAt: null },
     include: {
       categoryLinks: {
+        where: { category: { deletedAt: null } },
         include: { category: true },
         orderBy: { category: { sortOrder: "asc" } },
       },
@@ -25,9 +26,10 @@ export default async function ItemDetailPage({ params }: { params: Promise<{ id:
   const categoryIds = item.categoryLinks.map((link) => link.categoryId);
   const sameCategoryItems = await prisma.menuItem.findMany({
     where: {
+      deletedAt: null,
       isAvailable: true,
       id: { not: item.id },
-      categoryLinks: { some: { categoryId: { in: categoryIds } } },
+      categoryLinks: { some: { categoryId: { in: categoryIds }, category: { deletedAt: null } } },
     },
     select: {
       id: true,

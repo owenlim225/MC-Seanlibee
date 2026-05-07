@@ -31,7 +31,7 @@ export default async function KitchenQueuePage() {
   const [received, preparing, ready] = await Promise.all(
     buckets.map((status) =>
       prisma.order.findMany({
-        where: { status },
+        where: { status, deletedAt: null },
         orderBy: { createdAt: "asc" },
         select: kitchenOrderSelect,
       }),

@@ -17,15 +17,16 @@ export default async function AdminDashboardPage() {
   const [statusGroups, paidRevenue, todaysCount, recent, customerCount] = await Promise.all([
     prisma.order.groupBy({
       by: ["status"],
-      where: { createdAt: { gte: today } },
+      where: { createdAt: { gte: today }, deletedAt: null },
       _count: { _all: true },
     }),
     prisma.order.aggregate({
-      where: { createdAt: { gte: today }, paidAt: { not: null } },
+      where: { createdAt: { gte: today }, paidAt: { not: null }, deletedAt: null },
       _sum: { totalCents: true },
     }),
-    prisma.order.count({ where: { createdAt: { gte: today } } }),
+    prisma.order.count({ where: { createdAt: { gte: today }, deletedAt: null } }),
     prisma.order.findMany({
+      where: { deletedAt: null },
       orderBy: { createdAt: "desc" },
       take: 10,
       select: {
@@ -35,7 +36,7 @@ export default async function AdminDashboardPage() {
         customer: { select: { email: true } },
       },
     }),
-    prisma.user.count({ where: { role: Role.CUSTOMER } }),
+    prisma.user.count({ where: { role: Role.CUSTOMER, deletedAt: null } }),
   ]);
 
   const revenue = paidRevenue._sum.totalCents ?? 0;

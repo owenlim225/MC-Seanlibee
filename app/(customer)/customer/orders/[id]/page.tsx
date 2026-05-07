@@ -21,11 +21,11 @@ export default async function OrderDetailPage({
   const { id } = await params;
   const sp = await searchParams;
 
-  const order = await prisma.order.findUnique({
-    where: { id },
+  const order = await prisma.order.findFirst({
+    where: { id, deletedAt: null },
     include: {
-      items: { include: { menuItem: true } },
-      events: { orderBy: { at: "asc" }, include: { actor: true } },
+      items: { where: { deletedAt: null }, include: { menuItem: true } },
+      events: { where: { deletedAt: null }, orderBy: { at: "asc" }, include: { actor: true } },
     },
   });
 

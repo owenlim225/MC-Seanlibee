@@ -31,12 +31,13 @@ export default async function DriverHomePage() {
 
   const [readyUnclaimed, mine] = await Promise.all([
     prisma.order.findMany({
-      where: { status: OrderStatus.READY, assignment: null },
+      where: { status: OrderStatus.READY, deletedAt: null, assignment: null },
       orderBy: { createdAt: "asc" },
       select: driverOrderSelect,
     }),
     prisma.order.findMany({
       where: {
+        deletedAt: null,
         assignment: { driverId: driver.id },
         status: { in: [OrderStatus.READY, OrderStatus.PICKED_UP] },
       },

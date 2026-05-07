@@ -18,7 +18,7 @@ export default async function CartPage({
   const sp = await searchParams;
   const cart = await readCart();
   const items = await prisma.menuItem.findMany({
-    where: { id: { in: cart.map((l) => l.menuItemId) } },
+    where: { id: { in: cart.map((l) => l.menuItemId) }, deletedAt: null },
     select: { id: true, name: true, priceCents: true },
   });
 

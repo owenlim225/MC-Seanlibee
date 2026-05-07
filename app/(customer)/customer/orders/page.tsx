@@ -12,7 +12,7 @@ import { StatusBadge } from "@/components/ui/status-badge";
 export default async function OrdersHistoryPage() {
   const user = await requireRoleLite(Role.CUSTOMER);
   const orders = await prisma.order.findMany({
-    where: { customerId: user.id },
+    where: { customerId: user.id, deletedAt: null },
     orderBy: { createdAt: "desc" },
     take: 50,
     select: { id: true, status: true, totalCents: true, createdAt: true },
