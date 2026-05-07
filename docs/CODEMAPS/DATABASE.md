@@ -1,9 +1,10 @@
 # Database Codemap — Prisma + PostgreSQL Schema & Migrations
 
-**Last Updated:** 2026-05-06  
+**Last Updated:** 2026-05-07  
 **Engine:** PostgreSQL 14+ (Supabase or local)  
 **ORM:** Prisma 6.19.0  
-**Entry Points:** `prisma/schema.prisma`, `prisma/migrations/`
+**Entry Points:** `prisma/schema.prisma`, `prisma/migrations/`  
+**Changes:** Added archive snapshot models for audit trails and soft delete recovery
 
 ## Data Model Architecture
 
@@ -69,6 +70,15 @@ DeliveryAssignment (delivery_assignments)
 │   └── driver (User)
 ├── Indexes:
 │   └── (driverId)
+
+[ARCHIVE SNAPSHOT LAYER — 7 Archive models]
+├── ArchivedUser, ArchivedMenuCategory, ArchivedMenuItem,
+│   ArchivedOrder, ArchivedOrderItem, ArchivedOrderStatusEvent,
+│   ArchivedDeliveryAssignment
+├── Purpose: Audit trail, GDPR compliance, recovery from soft-deletes
+├── Schema mirrors live models + metadata (originalId, archivedAt, archivedReason)
+├── No foreign keys: Snapshots are independent immutable records
+├── Indexes: (originalId), (archivedAt), (originalId, archivedAt)
 ```
 
 ## Schema Walkthrough (`prisma/schema.prisma`)
@@ -215,6 +225,68 @@ model DeliveryAssignment {
 }
 ```
 
+## Archive Snapshot Models
+
+**Purpose:** Immutable audit trail for compliance (GDPR, SOX, etc.) and recovery from soft-deletes.
+
+**Design:** Archived* models snapshot live data at deletion time with no foreign keys to live rows.
+
+### Archived* Model Pattern
+
+```prisma
+model ArchivedUser {
+  id               String    @id @default(cuid())
+  originalId       String                          // FK to source User.id at archive time
+  archivedAt       DateTime  @default(now())       // When archived
+  archivedReason   String?                         // Why (e.g., "GDPR deletion request")
+  archivedByUserId String?                         // Admin who triggered
+  
+  // Snapshot of live User data
+  authUserId       String?
+  email            String
+  password         String
+  role             Role
+  name             String
+  isActive         Boolean
+  deletedAt        DateTime?                       // Can soft-delete archives too
+  
+  @@index([originalId])
+  @@index([archivedAt])
+  @@index([originalId, archivedAt])
+}
+
+// Similar pattern for: ArchivedMenuCategory, ArchivedMenuItem, ArchivedOrder,
+// ArchivedOrderItem, ArchivedOrderStatusEvent, ArchivedDeliveryAssignment
+```
+
+**Key invariants:**
+- No FK references to live tables (independent snapshot)
+- `originalId` is denormalized (no constraint)
+- Indexes on originalId + archivedAt for recovery queries
+- Same soft-delete pattern (deletedAt) for archive retention control
+
+**Common query patterns:**
+```typescript
+// Recover archived user by original ID
+const archived = await prisma.archivedUser.findFirst({
+  where: { originalId: userId },
+  orderBy: { archivedAt: "desc" },
+  take: 1
+})
+
+// Audit trail: all changes to a resource
+const history = await prisma.archivedOrder.findMany({
+  where: { originalId: orderId },
+  orderBy: { archivedAt: "asc" }
+})
+
+// GDPR right-to-be-forgotten: archive + delete
+await prisma.archivedUser.updateMany({
+  where: { originalId: userId },
+  data: { deletedAt: new Date() }  // Soft-delete archives too
+})
+```
+
 ## Migration History
 
 ### `20260506120000_baseline_postgresql`
@@ -226,6 +298,11 @@ model DeliveryAssignment {
 
 ### `20260506170000_drop_user_password_default`
 - Remove default on `User.password`; now explicit on signup
+
+### Archive models (recent addition)
+- Added 7 Archived* models for audit trail and compliance
+- Soft-delete support on archived records
+- Composite indexes on (originalId, archivedAt) for efficient historical queries
 
 ## Common Queries & Patterns
 

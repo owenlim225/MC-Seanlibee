@@ -1,6 +1,6 @@
 # mc-seanlibee Codemaps — Architecture Overview
 
-**Last Updated:** 2026-05-06
+**Last Updated:** 2026-05-07
 
 This directory contains structured architecture documentation for the food ordering MVP. Each codemap focuses on a specific system layer.
 

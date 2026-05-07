@@ -1,6 +1,6 @@
 # Auth & RBAC Codemap — Session Management, Authentication, and Access Control
 
-**Last Updated:** 2026-05-06  
+**Last Updated:** 2026-05-07  
 **Auth Model:** App-managed (Prisma User table) with signed `mc_session` cookie  
 **Entry Points:** `lib/auth/index.ts`, `app/auth/actions.ts`, `lib/supabase/middleware.ts`
 

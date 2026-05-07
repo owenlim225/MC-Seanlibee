@@ -50,7 +50,7 @@ export default async function LoginPage({
               required
               autoComplete="email"
               inputMode="email"
-              className="min-h-[44px] rounded-md border border-zinc-300 bg-background px-3 py-2 text-sm dark:border-zinc-700"
+              className="min-h-[44px] rounded-md border border-[var(--border-default)] bg-[var(--surface-base)] px-3 py-2 text-sm transition-[border-color,box-shadow] duration-[var(--motion-base)] ease-[var(--ease-standard)] focus:border-[var(--brand-primary)] focus:outline-none focus:ring-2 focus:ring-[var(--focus-ring)]/30"
             />
           </label>
           <label className="flex flex-col gap-1 text-sm">
@@ -60,7 +60,7 @@ export default async function LoginPage({
               name="password"
               required
               autoComplete="current-password"
-              className="min-h-[44px] rounded-md border border-zinc-300 bg-background px-3 py-2 text-sm dark:border-zinc-700"
+              className="min-h-[44px] rounded-md border border-[var(--border-default)] bg-[var(--surface-base)] px-3 py-2 text-sm transition-[border-color,box-shadow] duration-[var(--motion-base)] ease-[var(--ease-standard)] focus:border-[var(--brand-primary)] focus:outline-none focus:ring-2 focus:ring-[var(--focus-ring)]/30"
             />
           </label>
           <Button type="submit" className="min-h-[44px] w-full">
@@ -69,23 +69,23 @@ export default async function LoginPage({
         </form>
         <Link
           href={authPath("/auth/signup", sp.next)}
-          className="inline-flex min-h-[44px] w-full items-center justify-center rounded-md border border-zinc-300 bg-background px-3 py-2 text-sm font-medium transition hover:bg-zinc-50 dark:border-zinc-700 dark:hover:bg-zinc-900"
+          className="inline-flex min-h-[44px] w-full items-center justify-center rounded-md border border-[var(--border-default)] bg-[var(--surface-base)] px-3 py-2 text-sm font-medium text-[var(--text-primary)] transition-[background-color,color,border-color] duration-[var(--motion-base)] ease-[var(--ease-standard)] hover:bg-[var(--surface-subtle)] hover:text-[var(--brand-primary)]"
         >
           Create account
         </Link>
       </Card>
 
-      <details className="rounded-md border border-zinc-200 bg-background p-3 text-sm dark:border-zinc-800">
+      <details className="rounded-md border border-[var(--border-default)] bg-[var(--surface-base)] p-3 text-sm">
         <summary className="cursor-pointer font-medium">Demo accounts</summary>
-        <ul className="mt-2 flex flex-col gap-1 text-zinc-700 dark:text-zinc-300">
+        <ul className="mt-2 flex flex-col gap-1 text-[var(--text-muted)]">
           {DEMO_ACCOUNTS.map((a) => (
             <li key={a.email} className="flex flex-wrap items-center justify-between gap-2">
               <span className="font-mono text-xs">{a.email}</span>
-              <span className="text-xs text-zinc-500">{a.role}</span>
+              <span className="text-xs text-[var(--text-muted)]">{a.role}</span>
             </li>
           ))}
         </ul>
-        <p className="mt-2 text-xs text-zinc-500">
+        <p className="mt-2 text-xs text-[var(--text-muted)]">
           Shared password: <span className="font-mono">{demoPassword}</span>
         </p>
       </details>

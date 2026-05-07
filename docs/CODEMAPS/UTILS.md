@@ -1,6 +1,6 @@
 # Utils & Helpers Codemap — Shared Utilities, Validators, and Business Logic
 
-**Last Updated:** 2026-05-06  
+**Last Updated:** 2026-05-07  
 **Entry Points:** `lib/menu/`, `lib/customer/`, `lib/rbac.ts`, `lib/roles.ts`
 
 ## Utilities Organization

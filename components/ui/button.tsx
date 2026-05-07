@@ -4,11 +4,13 @@ type Variant = "primary" | "secondary" | "ghost" | "danger";
 
 const variants: Record<Variant, string> = {
   primary:
-    "bg-foreground text-background hover:opacity-90 disabled:opacity-50 dark:bg-zinc-50 dark:text-zinc-950",
+    "bg-[var(--brand-primary)] text-[var(--brand-primary-foreground)] shadow-sm hover:bg-[var(--brand-primary-hover)] active:bg-[var(--brand-primary-active)] disabled:opacity-50",
   secondary:
-    "border border-zinc-300 bg-background hover:bg-zinc-50 disabled:opacity-50 dark:border-zinc-700 dark:hover:bg-zinc-900",
-  ghost: "hover:bg-zinc-100 dark:hover:bg-zinc-900 disabled:opacity-50",
-  danger: "bg-red-600 text-white hover:bg-red-700 disabled:opacity-50",
+    "border border-[var(--border-default)] bg-[var(--surface-base)] text-[var(--text-primary)] hover:bg-[var(--surface-subtle)] disabled:opacity-50",
+  ghost:
+    "text-[var(--text-primary)] hover:bg-[var(--surface-subtle)] disabled:opacity-50",
+  danger:
+    "bg-[var(--danger)] text-[var(--danger-foreground)] hover:opacity-90 disabled:opacity-50",
 };
 
 export function Button({
@@ -19,7 +21,7 @@ export function Button({
   return (
     <button
       {...props}
-      className={`inline-flex items-center justify-center gap-2 rounded-md px-3 py-2 text-sm font-medium transition ${variants[variant]} ${className}`}
+      className={`inline-flex min-h-[40px] items-center justify-center gap-2 rounded-md px-3 py-2 text-sm font-medium transition-[background-color,color,box-shadow,border-color] duration-[var(--motion-base)] ease-[var(--ease-standard)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--focus-ring)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--surface-base)] ${variants[variant]} ${className}`}
     />
   );
 }

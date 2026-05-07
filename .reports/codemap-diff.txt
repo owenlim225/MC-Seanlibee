@@ -1,0 +1,46 @@
+Codemap Refresh Report
+Generated: 2026-05-07
+Scanner scope: app/, lib/, prisma/, scripts/, tests/, package.json
+
+1) Files Added / Removed / Modified Since Last Scan
+- Added codemap set (token-lean):
+  - docs/CODEMAPS/architecture.md
+  - docs/CODEMAPS/backend.md
+  - docs/CODEMAPS/frontend.md
+  - docs/CODEMAPS/data.md
+  - docs/CODEMAPS/dependencies.md
+- Existing legacy codemaps retained (uppercase naming):
+  - docs/CODEMAPS/BACKEND.md
+  - docs/CODEMAPS/FRONTEND.md
+  - docs/CODEMAPS/DATABASE.md
+  - docs/CODEMAPS/INTEGRATIONS.md
+  - docs/CODEMAPS/AUTH.md
+  - docs/CODEMAPS/UTILS.md
+  - docs/CODEMAPS/INDEX.md
+
+2) Diff Percentage (legacy -> new token-lean set)
+- architecture: new file (no direct legacy counterpart)
+- backend (BACKEND.md -> backend.md): ~68% structural/content diff
+- frontend (FRONTEND.md -> frontend.md): ~64% structural/content diff
+- data (DATABASE.md -> data.md): ~59% structural/content diff
+- dependencies (INTEGRATIONS.md + package.json -> dependencies.md): ~72% structural/content diff
+
+Decision:
+- Since several mapped documents exceed 30% diff, legacy codemaps were not overwritten.
+- New lowercase codemaps were generated alongside existing docs for review-safe adoption.
+
+3) New Dependencies Detected
+- No new package dependencies detected from package manifest scan.
+- Existing integration surfaces confirmed: Prisma, Supabase client/SSR, Playwright, Vitest.
+
+4) Architecture Changes Detected
+- Data layer now includes archive snapshot models:
+  ArchivedUser, ArchivedMenuCategory, ArchivedMenuItem, ArchivedOrder,
+  ArchivedOrderItem, ArchivedOrderStatusEvent, ArchivedDeliveryAssignment.
+- Migration history includes new archival migration:
+  20260507063215_add_archive_tables.
+- Soft-delete indexing patterns are now present across key live tables.
+
+5) Staleness Warnings (>=90 days)
+- No codemap files exceeded 90-day staleness threshold.
+- Legacy codemap set last updated ~1 day ago; freshness acceptable.

@@ -11,7 +11,7 @@ export async function SiteHeader() {
 
   return (
     <header
-      className="sticky top-0 z-30 border-b border-zinc-200 bg-white/90 backdrop-blur dark:border-zinc-800 dark:bg-zinc-950/90"
+      className="sticky top-0 z-30 border-b border-[var(--border-default)] bg-[var(--surface-base)] backdrop-blur"
       style={
         {
           "--site-header-h": `${HEADER_HEIGHT_PX}px`,
@@ -20,18 +20,18 @@ export async function SiteHeader() {
       }
     >
       <div className="mx-auto flex h-full max-w-6xl items-center justify-between gap-3 px-4">
-        <Link href="/" className="text-sm font-semibold tracking-tight">
+        <Link href="/" className="text-sm font-semibold tracking-tight transition-colors hover:text-[var(--brand-primary)]">
           MC Seanlibee
         </Link>
         <div className="flex flex-wrap items-center gap-3 text-sm">
           {/* Customer tab removed per updated navigation spec */}
           {user ? (
             <>
-              <span className="text-zinc-700 dark:text-zinc-200">{user.email}</span>
+              <span className="text-[var(--text-muted)]">{user.email}</span>
               <form action={logoutAction}>
                 <button
                   type="submit"
-                  className="cursor-pointer text-zinc-700 hover:underline dark:text-zinc-200"
+                  className="cursor-pointer text-[var(--text-primary)] transition-colors hover:text-[var(--brand-primary)] hover:underline"
                 >
                   Logout
                 </button>
@@ -39,20 +39,32 @@ export async function SiteHeader() {
             </>
           ) : (
             <>
-              <Link className="text-zinc-700 hover:underline dark:text-zinc-200" href="/auth/login">
+              <Link
+                className="text-[var(--text-primary)] transition-colors hover:text-[var(--brand-primary)] hover:underline"
+                href="/auth/login"
+              >
                 Login
               </Link>
-              <Link className="text-zinc-700 hover:underline dark:text-zinc-200" href="/auth/signup">
+              <Link
+                className="text-[var(--text-primary)] transition-colors hover:text-[var(--brand-primary)] hover:underline"
+                href="/auth/signup"
+              >
                 Sign up
               </Link>
             </>
           )}
           {process.env.NODE_ENV !== "production" ? (
             <>
-              <Link className="text-zinc-700 hover:underline dark:text-zinc-200" href="/dev/role-switcher">
+              <Link
+                className="text-[var(--text-muted)] transition-colors hover:text-[var(--brand-primary)] hover:underline"
+                href="/dev/role-switcher"
+              >
                 Dev roles
               </Link>
-              <Link className="text-zinc-700 hover:underline dark:text-zinc-200" href="/dev/multi-role">
+              <Link
+                className="text-[var(--text-muted)] transition-colors hover:text-[var(--brand-primary)] hover:underline"
+                href="/dev/multi-role"
+              >
                 Multi-role demo
               </Link>
             </>

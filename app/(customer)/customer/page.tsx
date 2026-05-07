@@ -74,10 +74,16 @@ export default async function CustomerMenuPage({
         description="Add dishes to your cart — checkout uses mock Stripe."
         actions={
           <>
-            <Link className="text-sm underline" href="/customer/cart">
+            <Link
+              className="text-sm text-[var(--text-primary)] transition-colors hover:text-[var(--brand-primary)] hover:underline"
+              href="/customer/cart"
+            >
               Cart
             </Link>
-            <Link className="text-sm underline" href="/customer/orders">
+            <Link
+              className="text-sm text-[var(--text-primary)] transition-colors hover:text-[var(--brand-primary)] hover:underline"
+              href="/customer/orders"
+            >
               Orders
             </Link>
           </>
@@ -85,7 +91,7 @@ export default async function CustomerMenuPage({
       />
 
       <section className="flex flex-col gap-3">
-        <h2 className="text-lg font-semibold tracking-tight text-zinc-900 dark:text-zinc-50">
+        <h2 className="text-lg font-semibold tracking-tight text-[var(--text-primary)]">
           Featured Menu
         </h2>
         <FeaturedCategoryRail
@@ -95,7 +101,7 @@ export default async function CustomerMenuPage({
       </section>
 
       <section className="flex flex-col gap-3">
-        <h2 className="text-lg font-semibold tracking-tight text-zinc-900 dark:text-zinc-50">
+        <h2 className="text-lg font-semibold tracking-tight text-[var(--text-primary)]">
           Most Popular
         </h2>
         <PopularCarouselRail items={popularItems} addToCartAction={addToCart} />

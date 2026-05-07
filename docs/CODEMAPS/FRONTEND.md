@@ -1,6 +1,57 @@
+<!-- Generated: 2026-05-07 | Files scanned: 128 core / 708 tracked | Token estimate: ~850 -->
+# Frontend
+
+## Page Tree
+- Public:
+  - `app/page.tsx`
+  - `app/auth/login/page.tsx`
+  - `app/auth/signup/page.tsx`
+- Customer:
+  - `app/(customer)/customer/page.tsx`
+  - `app/(customer)/customer/items/[id]/page.tsx`
+  - `app/(customer)/customer/cart/page.tsx`
+  - `app/(customer)/customer/checkout/page.tsx`
+  - `app/(customer)/customer/orders/page.tsx`
+  - `app/(customer)/customer/orders/[id]/page.tsx`
+- Kitchen: `app/(kitchen)/kitchen/page.tsx`
+- Driver: `app/(driver)/driver/page.tsx`
+- Admin:
+  - `app/(admin)/admin/page.tsx`
+  - `app/(admin)/admin/menu/page.tsx`
+  - `app/(admin)/admin/users/page.tsx`
+  - `app/(admin)/admin/audit/page.tsx`
+- Dev tools:
+  - `app/dev/role-switcher/page.tsx`
+  - `app/dev/multi-role/page.tsx`
+  - `app/dev/mock-stripe/page.tsx`
+  - `app/dev/ui/page.tsx`
+
+## Component/State Hierarchy
+- Layout root: `app/layout.tsx` -> global shell + route children
+- Route-group layouts: role-specific wrappers and navigation
+- Mutation pattern: form submit -> server action -> re-render/redirect
+- Local state: mostly UI state + cookie-backed cart (`lib/cart-cookie.ts`)
+
+## Frontend Data Flow
+```text
+Page render
+  -> server component fetches Prisma-backed data
+  -> user submits form/button action
+  -> server action mutation
+  -> redirect/revalidate and render updated state
+```
+
+## Shared UI/Data Helpers
+- Menu shaping: `lib/menu/grouped-taxonomy.ts`, `lib/menu/select-popular-items.ts`
+- Media hygiene: `lib/menu/resolve-menu-image-url.ts`, `lib/menu/featured-menu-image-quality.ts`
+- Checkout totals: `lib/customer/checkout-pricing.ts`
+
+## Notes
+- App follows role-sliced page ownership instead of centralized feature modules
+- No dedicated client-side global store; server actions are the primary mutation boundary
 # Frontend Codemap — Next.js 16 + React 19
 
-**Last Updated:** 2026-05-06  
+**Last Updated:** 2026-05-07  
 **Framework:** Next.js 16.2.4, React 19.2.4, Tailwind CSS 4, TypeScript 5  
 **Entry Points:** `app/layout.tsx`, `app/page.tsx`
 

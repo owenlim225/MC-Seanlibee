@@ -1,6 +1,6 @@
 # Integrations Codemap — Mocked External Services & API Patterns
 
-**Last Updated:** 2026-05-06  
+**Last Updated:** 2026-05-07  
 **Status:** MVP with mocked integrations (see `docs/follow-up.md` for real key wiring)  
 **Entry Points:** `lib/payments/`, `lib/realtime/`, `lib/storage/`, `lib/supabase/`
 

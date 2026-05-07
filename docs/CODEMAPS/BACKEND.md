@@ -1,3 +1,49 @@
+<!-- Generated: 2026-05-07 | Files scanned: 128 core / 708 tracked | Token estimate: ~900 -->
+# Backend
+
+## Route Surface (App Router + Server Actions)
+- `app/auth/actions.ts` -> login/signup/session setup
+- `app/(customer)/customer/actions.ts` -> checkout/order mutations
+- `app/(kitchen)/kitchen/actions.ts` -> kitchen status transitions
+- `app/(driver)/driver/actions.ts` -> claim/deliver actions
+- `app/(admin)/admin/actions.ts` -> admin menu/user management
+- Dev-only: `app/dev/mock-stripe/actions.ts`, `app/dev/role-switcher/actions.ts`, `app/login/actions.ts`
+
+## Middleware Chain
+- `middleware.ts` -> delegates to `lib/supabase/middleware.ts`
+- `lib/supabase/middleware.ts` -> request/session update and protected path handling
+- Protected prefixes: `/customer`, `/kitchen`, `/driver`, `/admin`
+
+## Service -> Repository Mapping
+- Auth/session service: `lib/auth/*` -> Prisma `User` via actions
+- Order workflows: action files -> `lib/customer/checkout-pricing.ts` + Prisma `Order*` models
+- RBAC guard: `lib/rbac.ts` -> session provider `lib/auth/provider.ts`
+- Payments abstraction: `lib/payments/index.ts` -> mock adapter `lib/payments/mock.ts`
+- Realtime abstraction: `lib/realtime/index.ts` -> provider/mock/browser adapters
+- Storage abstraction: `lib/storage/index.ts` -> provider/mock adapters
+- Repository layer: direct Prisma client usage through `lib/prisma.ts` (no separate repo classes)
+
+## Key Files
+- `lib/prisma.ts` (Prisma singleton boundary)
+- `lib/auth/provider.ts` (session decoding + user context)
+- `lib/auth/password.ts` (hash/verify primitives)
+- `lib/supabase/middleware.ts` (edge auth propagation)
+- `lib/roles.ts`, `lib/rbac.ts` (role policy helpers)
+
+## Integration Boundaries
+- Payments: Stripe-like flow abstracted, currently mock-backed
+- Realtime: provider interface + browser binding, currently mock-supported
+- Storage: upload/provider interface, mock and provider tests present
+
+## Observed Backend Pattern
+```text
+Server Action
+  -> validate session/role
+  -> compute/validate domain input
+  -> Prisma mutation/query
+  -> optional integration call (payments/realtime/storage)
+  -> redirect or action result
+```
 # Backend & API Codemap — Server Actions, Handlers, and Middleware
 
 **Last Updated:** 2026-05-06  

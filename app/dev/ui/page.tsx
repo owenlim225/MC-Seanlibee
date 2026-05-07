@@ -26,7 +26,7 @@ export default function UiKitDemoPage() {
 
       <Card className="flex flex-col gap-3">
         <CardTitle>Buttons</CardTitle>
-        <CardDescription>Variants mirror Tailwind tokens.</CardDescription>
+        <CardDescription>Variants mirror brand design tokens.</CardDescription>
         <div className="flex flex-wrap gap-2">
           <Button type="button">Primary</Button>
           <Button type="button" variant="secondary">
