@@ -3,12 +3,14 @@ import Link from "next/link";
 
 import { FeaturedCategoryRail } from "@/components/customer/category-carousel-rail";
 import { Card, CardDescription, CardTitle } from "@/components/ui/card";
+import { getSessionLite } from "@/lib/auth";
 import { buildFeaturedCategoryRail, type FeaturedCategorySource } from "@/lib/menu/featured-menu-image-quality";
 import { prisma } from "@/lib/prisma";
 
 function buildHomepageHighlightCards(featuredCategories: ReturnType<typeof buildFeaturedCategoryRail>) {
   return featuredCategories.slice(0, 3).map((category) => ({
     id: category.id,
+    slug: category.slug,
     name: category.name,
     description: `Explore popular ${category.name.toLowerCase()} picks curated for quick ordering.`,
     thumbnailUrl: category.thumbnailUrl,
@@ -16,27 +18,30 @@ function buildHomepageHighlightCards(featuredCategories: ReturnType<typeof build
 }
 
 export default async function Home() {
-  const categories = await prisma.menuCategory.findMany({
-    where: { deletedAt: null },
-    orderBy: { sortOrder: "asc" },
-    select: {
-      id: true,
-      slug: true,
-      name: true,
-      itemLinks: {
-        where: { menuItem: { deletedAt: null } },
-        select: {
-          menuItem: {
-            select: {
-              name: true,
-              imageUrl: true,
-              isAvailable: true,
+  const [categories, session] = await Promise.all([
+    prisma.menuCategory.findMany({
+      where: { deletedAt: null },
+      orderBy: { sortOrder: "asc" },
+      select: {
+        id: true,
+        slug: true,
+        name: true,
+        itemLinks: {
+          where: { menuItem: { deletedAt: null } },
+          select: {
+            menuItem: {
+              select: {
+                name: true,
+                imageUrl: true,
+                isAvailable: true,
+              },
             },
           },
         },
       },
-    },
-  });
+    }),
+    getSessionLite(),
+  ]);
 
   const normalizedCategories: FeaturedCategorySource[] = categories.map((category) => ({
     id: category.id,
@@ -53,6 +58,14 @@ export default async function Home() {
 
   const featuredCategories = buildFeaturedCategoryRail(normalizedCategories);
   const heroHighlightCards = buildHomepageHighlightCards(featuredCategories);
+  const featuredMenuCards = featuredCategories.slice(0, 8);
+  const isSignedIn = Boolean(session.user);
+
+  function buildHomepageDestination(categorySlug?: string): string {
+    const targetPath = categorySlug ? `/customer?category=${categorySlug}` : "/customer";
+    if (isSignedIn) return targetPath;
+    return `/auth/login?next=${encodeURIComponent(targetPath)}`;
+  }
   // #region agent log
   fetch("http://127.0.0.1:7817/ingest/c3fc8591-bb49-4618-b7bd-5aef2b04dae3", {
     method: "POST",
@@ -68,7 +81,6 @@ export default async function Home() {
         heroCardCount: heroHighlightCards.length,
         hasFeaturedCategoryRailImport: true,
       },
-      timestamp: Date.now(),
     }),
   }).catch(() => {});
   // #endregion
@@ -96,25 +108,31 @@ export default async function Home() {
           {heroHighlightCards.map((card) => (
             <Link
               key={card.id}
-              href="/login"
-              aria-label={`Open ${card.name} menu, then sign in to continue`}
-              className="group rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#D12E27] focus-visible:ring-offset-2 dark:focus-visible:ring-offset-zinc-950"
+              href={buildHomepageDestination(card.slug)}
+              aria-label={isSignedIn ? `Open ${card.name} menu` : `Open ${card.name} menu, then sign in to continue`}
+              className="rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--brand-primary)] focus-visible:ring-offset-2 dark:focus-visible:ring-offset-zinc-950"
             >
-              <Card className="flex h-full cursor-pointer flex-col justify-between gap-3 border-[var(--brand-primary)] bg-[var(--brand-primary)] p-4 text-white shadow-sm transition-[background-color,box-shadow,ring-color] duration-200 motion-safe:group-hover:bg-[#B92924] motion-safe:group-hover:shadow-lg motion-safe:group-hover:shadow-[#D12E27]/25 motion-safe:group-hover:ring-1 motion-safe:group-hover:ring-white/30 motion-safe:group-focus-visible:ring-2 motion-safe:group-focus-visible:ring-white/70">
+              <Card
+                className={`flex h-full cursor-pointer flex-col justify-between gap-4 p-6 text-white shadow-sm ${
+                  card.id === heroHighlightCards[0]?.id
+                    ? "border-[var(--brand-primary)] bg-[var(--brand-primary)]"
+                    : "border-zinc-700 bg-zinc-900"
+                }`}
+              >
                 <div className="flex items-start justify-between gap-3">
                   <div className="space-y-2">
-                    <CardTitle className="text-lg leading-tight text-white">{card.name}</CardTitle>
-                    <CardDescription className="line-clamp-3 text-sm leading-relaxed text-white/90">
+                    <CardTitle className="text-xl leading-tight text-white">{card.name}</CardTitle>
+                    <CardDescription className="line-clamp-3 text-base leading-relaxed text-white/90">
                       {card.description}
                     </CardDescription>
                   </div>
-                  <div className="relative h-16 w-16 shrink-0 overflow-hidden rounded-md border border-white/30 bg-white/10 md:h-20 md:w-20">
+                  <div className="relative h-24 w-24 shrink-0 overflow-hidden rounded-md border border-white/30 bg-white/10 md:h-28 md:w-28">
                     <Image
                       src={card.thumbnailUrl}
                       alt={card.name}
                       fill
                       className="object-cover"
-                      sizes="(max-width: 768px) 64px, 80px"
+                      sizes="(max-width: 768px) 96px, 112px"
                     />
                   </div>
                 </div>
@@ -142,16 +160,15 @@ export default async function Home() {
                 hrefBuilderType: "function",
                 ariaLabelBuilderType: "function",
               },
-              timestamp: Date.now(),
             }),
           }).catch(() => {});
           return null;
         })()}
         {/* #endregion */}
         <FeaturedCategoryRail
-          categories={featuredCategories}
+          categories={featuredMenuCards}
           activeSelection="all"
-          signInRedirect="/login"
+          signInRedirect={isSignedIn ? undefined : "/auth/login"}
         />
       </section>
 

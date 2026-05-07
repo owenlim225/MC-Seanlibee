@@ -12,14 +12,10 @@ export type CategoryCarouselEntry = {
   name: string;
 };
 
-export type FeaturedCategoryEntry = CategoryCarouselEntry;
-type FeaturedRailTarget = { kind: "all" } | { kind: "category"; category: FeaturedCategoryEntry };
+export type FeaturedCategoryEntry = CategoryCarouselEntry & { thumbnailUrl?: string };
+type FeaturedRailTarget = { kind: "category"; category: FeaturedCategoryEntry };
 
 const ALL_KEY = "all";
-
-function isFeaturedAllActive(activeSelection: "all" | string | undefined): boolean {
-  return activeSelection === undefined || activeSelection === "all";
-}
 
 function isFeaturedCategoryActive(c: FeaturedCategoryEntry, activeSelection: string | undefined): boolean {
   if (activeSelection === undefined || activeSelection === "all") return false;
@@ -32,7 +28,7 @@ function isAllCategories(categoryParam: string | undefined): boolean {
 
 function chipClasses(active: boolean): string {
   return active
-    ? "border-zinc-900 bg-zinc-900 text-white dark:border-zinc-50 dark:bg-zinc-50 dark:text-zinc-950"
+    ? "border-[var(--brand-primary)] bg-[var(--brand-primary)] text-[var(--brand-primary-foreground)]"
     : "border-zinc-200 bg-white text-zinc-900 dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-50";
 }
 
@@ -90,7 +86,7 @@ export function CategoryCarouselRail({
       ref={containerRef}
       onKeyDown={onKeyDown}
       aria-busy={pending}
-      className="sticky top-[var(--site-header-h,56px)] z-20 -mx-4 border-b border-zinc-200 bg-white/90 px-4 pt-2 backdrop-blur dark:border-zinc-800 dark:bg-zinc-950/90"
+      className="sticky top-[var(--site-header-h,72px)] z-20 -mx-4 border-b border-zinc-200 bg-white/90 px-4 pt-2 backdrop-blur dark:border-zinc-800 dark:bg-zinc-950/90"
     >
       <HorizontalScroller role="navigation" aria-label="Menu categories" data-scroll-region className="pt-0 pb-2">
         {pending ? (
@@ -167,59 +163,54 @@ export function FeaturedCategoryRail({
         hasSignInRedirect: Boolean(signInRedirect),
         signInRedirectType: typeof signInRedirect,
       },
-      timestamp: Date.now(),
     }),
   }).catch(() => {});
   // #endregion
-  const allActive = isFeaturedAllActive(activeSelection);
+  const visibleCategories = categories.slice(0, 8);
 
   function buildHref(target: FeaturedRailTarget): string {
-    if (signInRedirect) return signInRedirect;
-    return target.kind === "all" ? "/customer" : `/customer?category=${target.category.slug}`;
+    const nextPath = `/customer?category=${target.category.slug}`;
+    if (!signInRedirect) return nextPath;
+    return `${signInRedirect}?next=${encodeURIComponent(nextPath)}`;
   }
 
   function buildAriaLabel(target: FeaturedRailTarget): string | undefined {
-    if (!signInRedirect) return undefined;
-    return target.kind === "all"
-      ? "Browse the full menu, then sign in to continue"
-      : `Open ${target.category.name} menu, then sign in to continue`;
+    if (!signInRedirect) return `Open ${target.category.name} menu`;
+    return `Open ${target.category.name} menu, then sign in to continue`;
   }
 
   return (
-    <HorizontalScroller role="navigation" aria-label="Featured menu categories">
-      <div className="snap-start shrink-0">
-        <Link
-          href={buildHref({ kind: "all" })}
-          aria-label={buildAriaLabel({ kind: "all" })}
-          aria-current={allActive ? "page" : undefined}
-          className={`inline-flex min-h-[44px] items-center whitespace-nowrap rounded-full px-5 py-2 text-sm font-semibold transition-colors ${
-            allActive
-              ? "bg-[var(--brand-primary)] text-white"
-              : "bg-transparent text-zinc-700 hover:bg-zinc-100 dark:text-zinc-200 dark:hover:bg-zinc-800"
-          }`}
-        >
-          All
-        </Link>
-      </div>
-      {categories.map((c) => {
+    <div
+      role="navigation"
+      aria-label="Featured menu categories"
+      className="flex flex-wrap gap-2"
+    >
+      <Link
+        href={signInRedirect ? `${signInRedirect}?next=${encodeURIComponent("/customer")}` : "/customer"}
+        aria-current={activeSelection === "all" || !activeSelection ? "page" : undefined}
+        aria-label={signInRedirect ? "Open all menu categories, then sign in to continue" : "Open all menu categories"}
+        className={`inline-flex min-h-[44px] cursor-pointer items-center rounded-full border px-4 py-2 text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--brand-primary)] focus-visible:ring-offset-2 dark:focus-visible:ring-offset-zinc-950 ${
+          chipClasses(activeSelection === "all" || !activeSelection)
+        }`}
+      >
+        All
+      </Link>
+      {visibleCategories.map((c) => {
         const categoryActive = isFeaturedCategoryActive(c, activeSelection);
         return (
-          <div key={c.id} className="snap-start shrink-0">
-            <Link
-              href={buildHref({ kind: "category", category: c })}
-              aria-label={buildAriaLabel({ kind: "category", category: c })}
-              aria-current={categoryActive ? "page" : undefined}
-              className={`inline-flex min-h-[44px] items-center whitespace-nowrap rounded-full px-5 py-2 text-sm font-semibold transition-colors ${
-                categoryActive
-                  ? "bg-[var(--brand-primary)] text-white"
-                  : "bg-transparent text-zinc-700 hover:bg-zinc-100 dark:text-zinc-200 dark:hover:bg-zinc-800"
-              }`}
-            >
-              {c.name}
-            </Link>
-          </div>
+          <Link
+            key={c.id}
+            href={buildHref({ kind: "category", category: c })}
+            aria-label={buildAriaLabel({ kind: "category", category: c })}
+            aria-current={categoryActive ? "page" : undefined}
+            className={`inline-flex min-h-[44px] max-w-[220px] cursor-pointer items-center truncate rounded-full border px-4 py-2 text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--brand-primary)] focus-visible:ring-offset-2 dark:focus-visible:ring-offset-zinc-950 ${
+              chipClasses(categoryActive)
+            }`}
+          >
+            {c.name}
+          </Link>
         );
       })}
-    </HorizontalScroller>
+    </div>
   );
 }

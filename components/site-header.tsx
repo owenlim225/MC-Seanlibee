@@ -7,20 +7,21 @@ import { logoutAction } from "@/app/auth/actions";
 import { getSession } from "@/lib/auth";
 import { readCart } from "@/lib/cart-cookie";
 
-const HEADER_HEIGHT_PX = 56;
+const HEADER_HEIGHT_PX = 72;
 
 export async function SiteHeader() {
+  const renderStartedAt = Date.now();
   // #region agent log
   fetch("http://127.0.0.1:7817/ingest/c3fc8591-bb49-4618-b7bd-5aef2b04dae3", {
     method: "POST",
-    headers: { "Content-Type": "application/json", "X-Debug-Session-Id": "7690ea" },
+    headers: { "Content-Type": "application/json", "X-Debug-Session-Id": "837d50" },
     body: JSON.stringify({
-      sessionId: "7690ea",
+      sessionId: "837d50",
       runId: "pre-fix",
-      hypothesisId: "H5",
-      location: "components/site-header.tsx:13",
+      hypothesisId: "H4",
+      location: "components/site-header.tsx:SiteHeader:entry",
       message: "SiteHeader render started",
-      data: { component: "SiteHeader" },
+      data: { component: "SiteHeader", renderStartedAt },
       timestamp: Date.now(),
     }),
   }).catch(() => {});
@@ -40,10 +41,11 @@ export async function SiteHeader() {
         } as CSSProperties
       }
     >
-      <div className="mx-auto flex h-full max-w-6xl items-center justify-between gap-3 px-4">
+      <div className="mx-auto flex h-full max-w-6xl items-center justify-between gap-4 px-4">
         <Link
           href="/"
-          className="flex items-center gap-2 text-sm font-semibold tracking-tight transition-opacity hover:opacity-90"
+          className="flex items-center gap-2.5 text-base font-black italic tracking-tight transition-opacity hover:opacity-90 md:text-lg"
+          style={{ fontFamily: '"Baskerville", "Palatino Linotype", "Times New Roman", serif' }}
         >
           <Image
             src="https://sdgpxydkqdthgolfmpei.supabase.co/storage/v1/object/public/website-assets/logo.webp"
@@ -52,9 +54,9 @@ export async function SiteHeader() {
             height={32}
             priority
           />
-          <span data-testid="site-brand">MC Seanlibee</span>
+          <span data-testid="site-brand">Mc Seanlibee</span>
         </Link>
-        <div className="flex flex-wrap items-center gap-3 text-sm">
+        <div className="flex flex-wrap items-center gap-4 text-sm md:gap-5">
           {user ? (
             <>
               {user.role === Role.CUSTOMER ? (

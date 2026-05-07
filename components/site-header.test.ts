@@ -79,7 +79,7 @@ describe("SiteHeader auth controls", () => {
     const html = renderToStaticMarkup(await SiteHeader());
 
     expect(html).toContain('data-testid="site-brand"');
-    expect(html).toContain("MC Seanlibee");
+    expect(html).toContain("Mc Seanlibee");
     expect(html).toContain('src="https://sdgpxydkqdthgolfmpei.supabase.co/storage/v1/object/public/website-assets/logo.webp"');
     expect(html).toContain('alt=""');
     expect(html).not.toContain(">Customer<");

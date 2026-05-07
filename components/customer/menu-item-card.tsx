@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { Plus } from "lucide-react";
+import { ShoppingCart } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardDescription, CardTitle } from "@/components/ui/card";
 import { MoneyText } from "@/components/ui/money-text";
@@ -74,7 +74,7 @@ export function MenuItemCard({ item, addToCartAction, compact = false, className
             onClick={(e) => e.stopPropagation()}
             aria-label={`Add ${item.name} to cart`}
           >
-            <Plus className="size-4" aria-hidden="true" />
+            <ShoppingCart className="size-4" aria-hidden="true" />
           </Button>
         </form>
       </div>
