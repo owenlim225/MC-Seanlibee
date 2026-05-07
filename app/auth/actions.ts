@@ -4,6 +4,7 @@ import { timingSafeEqual } from "node:crypto";
 import { redirect } from "next/navigation";
 import { isRedirectError } from "next/dist/client/components/redirect-error";
 import { cookies } from "next/headers";
+import { clearSession } from "@/lib/auth";
 import { isAppRole, ROLE_HOME } from "@/lib/roles";
 import type { AppRole } from "@/lib/roles";
 import { safeNextPath } from "@/lib/auth/safe-next-path";
@@ -254,4 +255,9 @@ export async function signUpAction(formData: FormData): Promise<void> {
     if (typeof next === "string" && next.length > 0) params.set("next", next);
     redirect(`/auth/signup?${params.toString()}`);
   }
+}
+
+export async function logoutAction(): Promise<void> {
+  await clearSession();
+  redirect("/");
 }

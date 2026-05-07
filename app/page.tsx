@@ -1,45 +1,30 @@
-import Link from "next/link";
 import { Card, CardDescription, CardTitle } from "@/components/ui/card";
 
 export default function Home() {
   return (
-    <div className="flex flex-col gap-6">
-      <div>
-        <h1 className="text-3xl font-semibold tracking-tight">Food ordering MVP</h1>
-        <p className="mt-2 max-w-2xl text-sm text-zinc-600 dark:text-zinc-400">
-          Each role lives under its own route prefix. Use the dev role switcher to impersonate mock users
-          (never enabled in production builds).
+    <div className="flex flex-col gap-8">
+      <section className="space-y-3">
+        <p className="text-sm font-medium uppercase tracking-[0.2em] text-zinc-600 dark:text-zinc-400">
+          Welcome
         </p>
-      </div>
+        <h1 className="text-4xl font-semibold tracking-tight md:text-5xl">Mc Seanlibee</h1>
+        <p className="max-w-2xl text-base text-zinc-600 dark:text-zinc-400">
+          A focused platform for building and shipping reliable products with clear workflows.
+        </p>
+      </section>
 
-      <div className="grid gap-4 md:grid-cols-2">
+      <div className="grid gap-4 md:grid-cols-3">
         <Card className="flex flex-col gap-2">
-          <CardTitle>Customer</CardTitle>
-          <CardDescription>Browse the menu, checkout with mock Stripe, track deliveries.</CardDescription>
-          <Link className="text-sm font-medium text-blue-700 underline dark:text-blue-300" href="/customer">
-            Open customer app →
-          </Link>
+          <CardTitle>Fast Delivery</CardTitle>
+          <CardDescription>Move from idea to production quickly with a lightweight, practical stack.</CardDescription>
         </Card>
         <Card className="flex flex-col gap-2">
-          <CardTitle>Kitchen</CardTitle>
-          <CardDescription>Operate the live queue and advance order statuses.</CardDescription>
-          <Link className="text-sm font-medium text-blue-700 underline dark:text-blue-300" href="/kitchen">
-            Open kitchen console →
-          </Link>
+          <CardTitle>Reliable Quality</CardTitle>
+          <CardDescription>Ship with confidence using clear standards and repeatable verification.</CardDescription>
         </Card>
         <Card className="flex flex-col gap-2">
-          <CardTitle>Driver</CardTitle>
-          <CardDescription>Claim READY orders and complete pickup/delivery milestones.</CardDescription>
-          <Link className="text-sm font-medium text-blue-700 underline dark:text-blue-300" href="/driver">
-            Open driver app →
-          </Link>
-        </Card>
-        <Card className="flex flex-col gap-2">
-          <CardTitle>Admin</CardTitle>
-          <CardDescription>Manage catalog, users, and audit events.</CardDescription>
-          <Link className="text-sm font-medium text-blue-700 underline dark:text-blue-300" href="/admin">
-            Open admin console →
-          </Link>
+          <CardTitle>Scalable Foundation</CardTitle>
+          <CardDescription>Grow features on a clean structure designed for long-term maintainability.</CardDescription>
         </Card>
       </div>
     </div>
