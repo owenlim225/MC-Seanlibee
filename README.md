@@ -57,6 +57,82 @@ Source of truth: **`prisma/schema.prisma`**.
 - **`DeliveryAssignment`** — one driver claim per order (`orderId` unique).
 - **`Archived*`** models — point-in-time snapshots (**no FKs** to live rows) for audit/recovery.
 
+### Prisma ERD (live operational models)
+
+Rendered from **`prisma/schema.prisma`** (Mermaid — works on GitHub). **Archive snapshot** tables (`ArchivedUser`, `ArchivedMenuItem`, …) are intentionally omitted here; they mirror the entities below **without FKs** to active rows.
+
+```mermaid
+erDiagram
+    User {
+        string id PK
+        string authUserId UK
+        string email UK
+        string password
+        string role "enum Role"
+        string name
+        boolean isActive
+        datetime deletedAt
+    }
+    MenuCategory {
+        string id PK
+        string slug UK
+        string name
+        int sortOrder
+        datetime deletedAt
+    }
+    MenuItem {
+        string id PK
+        string name
+        string description
+        int priceCents
+        string imageUrl
+        boolean isAvailable
+        datetime deletedAt
+    }
+    MenuItemCategory {
+        string menuItemId "PK FK"
+        string categoryId "PK FK"
+    }
+    Order {
+        string id PK
+        string status "enum OrderStatus"
+        int totalCents
+        datetime createdAt
+        datetime paidAt
+        datetime deletedAt
+    }
+    OrderItem {
+        string id PK
+        int quantity
+        int priceCentsAtOrder
+        datetime deletedAt
+    }
+    OrderStatusEvent {
+        string id PK
+        string fromStatus "nullable enum"
+        string toStatus "enum OrderStatus"
+        datetime at
+        datetime deletedAt
+    }
+    DeliveryAssignment {
+        string id PK
+        string orderId UK
+        datetime claimedAt
+        datetime deliveredAt
+        datetime deletedAt
+    }
+
+    User ||--o{ Order : "customer customerId"
+    User ||--o{ OrderStatusEvent : "actor optional"
+    User ||--o{ DeliveryAssignment : "driver"
+    Order ||--o{ OrderItem : "lines"
+    Order ||--o{ OrderStatusEvent : "timeline"
+    Order ||--o| DeliveryAssignment : "at most one"
+    MenuItem ||--o{ OrderItem : "menuItemId"
+    MenuCategory ||--o{ MenuItemCategory : "N to M bridge"
+    MenuItem ||--o{ MenuItemCategory : "N to M bridge"
+```
+
 **Cart before checkout** lives in **cookies** (`lib/cart-cookie`), not a `Cart` table. **RLS** is not defined in the Prisma schema; access is **app-layer** (middleware + **`requireRole`** / **`requireRoleLite`**). If your Supabase project adds DB policies, document them separately.
 
 ---
