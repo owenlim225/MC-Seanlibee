@@ -1,10 +1,7 @@
-import Link from "next/link";
 import { addToCart } from "@/app/(customer)/customer/actions";
 import { FeaturedCategoryRail } from "@/components/customer/category-carousel-rail";
 import { CategoryMenuSections } from "@/components/customer/category-menu-sections";
 import { PopularCarouselRail } from "@/components/customer/popular-carousel-rail";
-import { PageHeader } from "@/components/ui/page-header";
-import { buildFeaturedCategoryRail } from "@/lib/menu/featured-menu-image-quality";
 import { selectPopularItems } from "@/lib/menu/select-popular-items";
 import { prisma } from "@/lib/prisma";
 
@@ -65,30 +62,18 @@ export default async function CustomerMenuPage({
 
   const popularItems = selectPopularItems(normalizedCategories);
 
-  const featuredCategories = buildFeaturedCategoryRail(normalizedCategories);
+  const featuredCategories = normalizedCategories.map((category) => ({
+    id: category.id,
+    slug: category.slug,
+    name: category.name,
+  }));
 
   return (
     <div className="flex flex-col gap-6">
-      <PageHeader
-        title="Menu"
-        description="Add dishes to your cart — checkout uses mock Stripe."
-        actions={
-          <>
-            <Link
-              className="text-sm text-[var(--text-primary)] transition-colors hover:text-[var(--brand-primary)] hover:underline"
-              href="/customer/cart"
-            >
-              Cart
-            </Link>
-            <Link
-              className="text-sm text-[var(--text-primary)] transition-colors hover:text-[var(--brand-primary)] hover:underline"
-              href="/customer/orders"
-            >
-              Orders
-            </Link>
-          </>
-        }
-      />
+      <section className="flex flex-col items-center gap-2 text-center">
+        <p className="text-sm font-semibold uppercase tracking-[0.14em] text-[var(--brand-primary)]">Menu</p>
+        <h1 className="text-3xl font-semibold tracking-tight text-[var(--text-primary)] md:text-4xl">Browse our Menu</h1>
+      </section>
 
       <section className="flex flex-col gap-3">
         <h2 className="text-lg font-semibold tracking-tight text-[var(--text-primary)]">

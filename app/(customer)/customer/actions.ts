@@ -17,6 +17,7 @@ export async function addToCart(menuItemId: string): Promise<void> {
       ? cart.map((line) => (line.menuItemId === menuItemId ? { menuItemId, qty: line.qty + 1 } : line))
       : [...cart, { menuItemId, qty: 1 }];
   await writeCart(nextCart);
+  revalidatePath("/", "layout");
   revalidatePath("/customer");
   revalidatePath("/customer/cart");
   revalidatePath("/customer/checkout");
@@ -28,6 +29,7 @@ export async function setLineQty(menuItemId: string, qty: number): Promise<void>
   if (qty <= 0) cart = cart.filter((l) => l.menuItemId !== menuItemId);
   else cart = cart.map((l) => (l.menuItemId === menuItemId ? { menuItemId, qty } : l));
   await writeCart(cart);
+  revalidatePath("/", "layout");
   revalidatePath("/customer/cart");
   revalidatePath("/customer/checkout");
 }
@@ -112,6 +114,7 @@ export async function placeOrderMock(formData: FormData): Promise<void> {
   });
 
   await clearCart();
+  revalidatePath("/", "layout");
   revalidatePath("/customer/cart");
   revalidatePath("/customer/orders");
   revalidatePath(`/customer/orders/${order.id}`);

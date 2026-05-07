@@ -1,14 +1,19 @@
 import Link from "next/link";
 import Image from "next/image";
 import type { CSSProperties } from "react";
+import { Role } from "@prisma/client";
+import { ClipboardList, ShoppingCart } from "lucide-react";
 import { logoutAction } from "@/app/auth/actions";
 import { getSession } from "@/lib/auth";
+import { readCart } from "@/lib/cart-cookie";
 
 const HEADER_HEIGHT_PX = 56;
 
 export async function SiteHeader() {
   const session = await getSession();
   const user = session.user;
+  const cart = user?.role === Role.CUSTOMER ? await readCart() : [];
+  const cartQty = cart.reduce((total, line) => total + line.qty, 0);
 
   return (
     <header
@@ -37,6 +42,34 @@ export async function SiteHeader() {
         <div className="flex flex-wrap items-center gap-3 text-sm">
           {user ? (
             <>
+              {user.role === Role.CUSTOMER ? (
+                <>
+                  <Link
+                    className="inline-flex cursor-pointer items-center gap-1.5 text-white transition-opacity hover:opacity-80"
+                    href="/customer/orders"
+                    aria-label="Orders"
+                  >
+                    <ClipboardList className="size-4" aria-hidden="true" />
+                    <span>Orders</span>
+                  </Link>
+                  <Link
+                    className="inline-flex cursor-pointer items-center gap-1.5 text-white transition-opacity hover:opacity-80"
+                    href="/customer/cart"
+                    aria-label={cartQty > 0 ? `Cart with ${cartQty} items` : "Cart"}
+                  >
+                    <ShoppingCart className="size-4" aria-hidden="true" />
+                    <span>Cart</span>
+                    {cartQty > 0 ? (
+                      <span
+                        data-testid="cart-badge"
+                        className="inline-flex min-w-5 items-center justify-center rounded-full bg-white px-1.5 py-0.5 text-xs font-semibold text-[var(--brand-primary)]"
+                      >
+                        {cartQty}
+                      </span>
+                    ) : null}
+                  </Link>
+                </>
+              ) : null}
               <span className="text-white/80">{user.email}</span>
               <form action={logoutAction}>
                 <button

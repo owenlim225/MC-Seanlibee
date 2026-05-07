@@ -2,8 +2,9 @@ import { describe, expect, it, vi } from "vitest";
 import { renderToStaticMarkup } from "react-dom/server";
 import React from "react";
 
-const { getSessionMock } = vi.hoisted(() => ({
+const { getSessionMock, readCartMock } = vi.hoisted(() => ({
   getSessionMock: vi.fn(),
+  readCartMock: vi.fn(),
 }));
 
 vi.mock("next/link", () => ({
@@ -21,6 +22,10 @@ vi.mock("next/image", () => ({
 
 vi.mock("@/lib/auth", () => ({
   getSession: getSessionMock,
+}));
+
+vi.mock("@/lib/cart-cookie", () => ({
+  readCart: readCartMock,
 }));
 
 vi.mock("@/app/auth/actions", () => ({
@@ -48,11 +53,20 @@ describe("SiteHeader auth controls", () => {
     getSessionMock.mockResolvedValueOnce({
       user: { id: "u1", role: "CUSTOMER", email: "user@example.com", name: "User" },
     });
+    readCartMock.mockResolvedValueOnce([
+      { menuItemId: "m1", qty: 2 },
+      { menuItemId: "m2", qty: 1 },
+    ]);
 
     const html = renderToStaticMarkup(await SiteHeader());
 
     expect(html).toContain("user@example.com");
     expect(html).toContain(">Logout<");
+    expect(html).toContain('href="/customer/cart"');
+    expect(html).toContain('href="/customer/orders"');
+    expect(html).toContain('data-testid="cart-badge"');
+    expect(html).toContain(">3<");
+    expect(html).toContain(">Cart<");
     expect(html).not.toContain(">Login<");
     expect(html).not.toContain(">Sign up<");
     expect(html).not.toContain('href="/dev/role-switcher"');
@@ -69,5 +83,16 @@ describe("SiteHeader auth controls", () => {
     expect(html).toContain('src="https://sdgpxydkqdthgolfmpei.supabase.co/storage/v1/object/public/website-assets/logo.webp"');
     expect(html).toContain('alt=""');
     expect(html).not.toContain(">Customer<");
+  });
+
+  it("does not render customer cart/orders controls for non-customer role", async () => {
+    getSessionMock.mockResolvedValueOnce({
+      user: { id: "u2", role: "ADMIN", email: "admin@example.com", name: "Admin" },
+    });
+    const html = renderToStaticMarkup(await SiteHeader());
+
+    expect(html).toContain(">Logout<");
+    expect(html).not.toContain('href="/customer/cart"');
+    expect(html).not.toContain('href="/customer/orders"');
   });
 });

@@ -22,7 +22,7 @@ export function HorizontalScroller({
     <div
       role={roleProp ?? (ariaLabel ? "region" : undefined)}
       aria-label={ariaLabel}
-      className={`flex snap-x snap-mandatory gap-3 overflow-x-auto pb-2 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden ${className ?? ""}`}
+      className={`flex snap-x snap-mandatory items-center gap-3 overflow-x-auto py-3 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden ${className ?? ""}`}
       {...rest}
     >
       {children}
