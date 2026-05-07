@@ -25,6 +25,11 @@ export async function addToCart(menuItemId: string): Promise<ActionFeedback> {
   return actionSuccess("Added to cart");
 }
 
+/** Form `action` prop must be `Promise<void>`; use this from server components. */
+export async function submitAddToCart(menuItemId: string, _formData: FormData): Promise<void> {
+  await addToCart(menuItemId);
+}
+
 export async function setLineQty(menuItemId: string, qty: number): Promise<ActionFeedback> {
   await requireRoleLite(Role.CUSTOMER);
   let cart = await readCart();

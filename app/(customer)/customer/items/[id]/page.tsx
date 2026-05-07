@@ -2,7 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { prisma } from "@/lib/prisma";
-import { addToCart } from "@/app/(customer)/customer/actions";
+import { submitAddToCart } from "@/app/(customer)/customer/actions";
 import { Button } from "@/components/ui/button";
 import { Card, CardDescription, CardTitle } from "@/components/ui/card";
 import { MoneyText } from "@/components/ui/money-text";
@@ -85,7 +85,7 @@ export default async function ItemDetailPage({ params }: { params: Promise<{ id:
           </div>
         </div>
 
-        <form action={addToCart.bind(null, item.id)}>
+        <form action={submitAddToCart.bind(null, item.id)}>
           <Button type="submit">Add to cart</Button>
         </form>
       </Card>
@@ -124,7 +124,7 @@ export default async function ItemDetailPage({ params }: { params: Promise<{ id:
                 </div>
                 <div className="relative z-20 flex items-center justify-between gap-2">
                   <span className="text-sm text-[var(--text-muted)]">Tap card for details</span>
-                  <form action={addToCart.bind(null, recommended.id)}>
+                  <form action={submitAddToCart.bind(null, recommended.id)}>
                     <Button type="submit" variant="secondary">
                       Add to cart
                     </Button>
