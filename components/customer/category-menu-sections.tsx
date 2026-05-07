@@ -1,14 +1,10 @@
 "use client";
 
-import Image from "next/image";
-import Link from "next/link";
 import { useEffect, useMemo, useRef, useState } from "react";
 
 import { Button } from "@/components/ui/button";
-import { Card, CardDescription, CardTitle } from "@/components/ui/card";
-import { MoneyText } from "@/components/ui/money-text";
+import { MenuItemCard } from "@/components/customer/menu-item-card";
 import { SkeletonMenuSection } from "@/components/ui/skeleton";
-import { resolveMenuImageUrl } from "@/lib/menu/resolve-menu-image-url";
 
 type CategoryItem = {
   id: string;
@@ -97,48 +93,11 @@ function CategoryMenuSectionsContent({
               <h2 className="text-lg font-semibold">{category.name}</h2>
               <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
                 {visibleItems.map((item) => (
-                  <Card
+                  <MenuItemCard
                     key={item.id}
-                    className="group relative flex h-full flex-col gap-3 p-3 motion-safe:transition motion-safe:duration-200 motion-safe:hover:-translate-y-1 motion-safe:hover:border-zinc-300 motion-safe:hover:shadow-lg motion-safe:hover:shadow-[#D12E27]/15 motion-safe:hover:ring-2 motion-safe:hover:ring-[#D12E27]/20 dark:motion-safe:hover:border-zinc-700 dark:motion-safe:hover:shadow-[#D12E27]/25 dark:motion-safe:hover:ring-[#D12E27]/30"
-                  >
-                    <Link
-                      href={`/customer/items/${item.id}`}
-                      className="absolute inset-0 z-10 rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#D12E27] focus-visible:ring-offset-2 dark:focus-visible:ring-offset-zinc-950"
-                      aria-label={`View details for ${item.name}`}
-                    />
-                    <div className="relative aspect-[4/3] w-full overflow-hidden rounded-md bg-zinc-100 dark:bg-zinc-800">
-                      <Image
-                        src={resolveMenuImageUrl(item.id, item.imageUrl)}
-                        alt={item.name}
-                        fill
-                        className="object-cover transition-transform duration-200 group-hover:scale-[1.02]"
-                        sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, (max-width: 1280px) 33vw, 25vw"
-                      />
-                    </div>
-                    <div className="flex min-h-24 items-start justify-between gap-3">
-                      <div className="space-y-1">
-                        <CardTitle>{item.name}</CardTitle>
-                        <CardDescription className="line-clamp-2">{item.description}</CardDescription>
-                      </div>
-                      <div className="text-sm font-semibold">
-                        <MoneyText cents={item.priceCents} />
-                      </div>
-                    </div>
-                    <div className="flex items-center justify-between gap-2">
-                      <span className="pointer-events-none text-sm text-zinc-600 dark:text-zinc-400">
-                        Tap card for details
-                      </span>
-                      <form
-                        className="relative z-20"
-                        action={addToCartAction.bind(null, item.id)}
-                        onClick={(e) => e.stopPropagation()}
-                      >
-                        <Button type="submit" variant="secondary" onClick={(e) => e.stopPropagation()}>
-                          Add to cart
-                        </Button>
-                      </form>
-                    </div>
-                  </Card>
+                    item={item}
+                    addToCartAction={addToCartAction}
+                  />
                 ))}
               </div>
               {hasMore ? (
