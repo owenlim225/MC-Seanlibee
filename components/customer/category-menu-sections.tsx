@@ -2,11 +2,12 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 
 import { Button } from "@/components/ui/button";
 import { Card, CardDescription, CardTitle } from "@/components/ui/card";
 import { MoneyText } from "@/components/ui/money-text";
+import { SkeletonMenuSection } from "@/components/ui/skeleton";
 import { resolveMenuImageUrl } from "@/lib/menu/resolve-menu-image-url";
 
 type CategoryItem = {
@@ -27,8 +28,10 @@ const ITEMS_BATCH_SIZE = 9;
 
 function initialVisibleByCategory(categories: CategorySection[]): Record<string, number> {
   return categories.reduce<Record<string, number>>((acc, category) => {
-    acc[category.id] = Math.min(ITEMS_BATCH_SIZE, category.items.length);
-    return acc;
+    return {
+      ...acc,
+      [category.id]: Math.min(ITEMS_BATCH_SIZE, category.items.length),
+    };
   }, {});
 }
 
@@ -47,6 +50,19 @@ function CategoryMenuSectionsContent({
   const [visibleByCategory, setVisibleByCategory] = useState<Record<string, number>>(() =>
     initialVisibleByCategory(categories),
   );
+  const [showTransitionSkeleton, setShowTransitionSkeleton] = useState(false);
+  const categoryStateKey = useMemo(() => categoriesResetKey(categories), [categories]);
+  const hasMountedRef = useRef(false);
+
+  useEffect(() => {
+    if (!hasMountedRef.current) {
+      hasMountedRef.current = true;
+      return;
+    }
+    setShowTransitionSkeleton(true);
+    const timeout = window.setTimeout(() => setShowTransitionSkeleton(false), 220);
+    return () => window.clearTimeout(timeout);
+  }, [categoryStateKey]);
 
   function handleViewMore(categoryId: string, totalItems: number): void {
     setVisibleByCategory((prev) => {
@@ -59,7 +75,15 @@ function CategoryMenuSectionsContent({
   }
 
   return (
-    <div className="flex flex-col gap-6">
+    <div className="relative flex flex-col gap-6" aria-busy={showTransitionSkeleton}>
+      {showTransitionSkeleton ? (
+        <div className="pointer-events-none absolute inset-0 z-20 bg-[var(--surface-base)]/70 backdrop-blur-[1px]">
+          <div className="flex flex-col gap-6">
+            <SkeletonMenuSection cardCount={4} />
+            <SkeletonMenuSection cardCount={4} />
+          </div>
+        </div>
+      ) : null}
       {categories.map((category) => {
           const visibleCount = Math.min(
             visibleByCategory[category.id] ?? ITEMS_BATCH_SIZE,
