@@ -9,11 +9,12 @@ import { DEFAULT_DEMO_AUTH_PASSWORD } from "@/lib/auth/demo-password";
 export const metadata = { title: "Sign in · Food Ordering MVP" };
 
 const DEMO_ACCOUNTS: { email: string; role: string }[] = [
-  { email: "customer1@example.com", role: "Customer" },
-  { email: "customer2@example.com", role: "Customer" },
-  { email: "kitchen@example.com", role: "Kitchen" },
-  { email: "driver@example.com", role: "Driver" },
-  { email: "admin@example.com", role: "Admin" },
+  { email: "ginalyn@customer.com", role: "Customer" },
+  { email: "marvin@customer.com", role: "Customer" },
+  { email: "rhene@customer.com", role: "Customer" },
+  { email: "sean@driver.com", role: "Driver" },
+  { email: "christian@kitchen.com", role: "Kitchen" },
+  { email: "sherwin@admin.com", role: "Admin" },
 ];
 
 function authPath(path: "/auth/login" | "/auth/signup", next?: string, error?: string): string {

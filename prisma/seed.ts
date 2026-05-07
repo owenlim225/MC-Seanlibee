@@ -187,18 +187,18 @@ async function main() {
   await prisma.user.deleteMany();
 
   const admin = await createSeedUser({
-    email: "admin@example.com",
-    name: "Alex Admin",
+    email: "sherwin@admin.com",
+    name: "Sherwin Admin",
     role: Role.ADMIN,
   });
   const kitchen = await createSeedUser({
-    email: "kitchen@example.com",
-    name: "Kim Kitchen",
+    email: "christian@kitchen.com",
+    name: "Christian Kitchen",
     role: Role.KITCHEN,
   });
   const driver = await createSeedUser({
-    email: "driver@example.com",
-    name: "Dana Driver",
+    email: "sean@driver.com",
+    name: "Sean Driver",
     role: Role.DRIVER,
   });
   const driverTwo = await createSeedUser({
@@ -210,40 +210,24 @@ async function main() {
   const customers = await prisma.$transaction([
     prisma.user.create({
       data: {
-        email: "customer1@example.com",
-        name: "Chris Customer",
+        email: "ginalyn@customer.com",
+        name: "Ginalyn Customer",
         role: Role.CUSTOMER,
         password: hashPassword(SEED_PASSWORD),
       },
     }),
     prisma.user.create({
       data: {
-        email: "customer2@example.com",
-        name: "Casey Customer",
+        email: "marvin@customer.com",
+        name: "Marvin Customer",
         role: Role.CUSTOMER,
         password: hashPassword(SEED_PASSWORD),
       },
     }),
     prisma.user.create({
       data: {
-        email: "customer3@example.com",
-        name: "Cameron Customer",
-        role: Role.CUSTOMER,
-        password: hashPassword(SEED_PASSWORD),
-      },
-    }),
-    prisma.user.create({
-      data: {
-        email: "customer4@example.com",
-        name: "Cody Customer",
-        role: Role.CUSTOMER,
-        password: hashPassword(SEED_PASSWORD),
-      },
-    }),
-    prisma.user.create({
-      data: {
-        email: "customer5@example.com",
-        name: "Charlie Customer",
+        email: "rhene@customer.com",
+        name: "Rhene Customer",
         role: Role.CUSTOMER,
         password: hashPassword(SEED_PASSWORD),
       },

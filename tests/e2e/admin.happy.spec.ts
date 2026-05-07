@@ -2,13 +2,13 @@ import { expect, test } from "@playwright/test";
 import { signInUser } from "./utils/auth";
 
 test("admin can view the dashboard", async ({ page }) => {
-  await signInUser(page, "admin@example.com", "ADMIN", "Alex Admin");
+  await signInUser(page, "sherwin@admin.com", "ADMIN", "Sherwin Admin");
   await page.goto("/admin");
   await expect(page.getByRole("heading", { name: "Operations dashboard" })).toBeVisible();
 });
 
 test("admin can run user CRUD lifecycle", async ({ page }) => {
-  await signInUser(page, "admin@example.com", "ADMIN", "Alex Admin");
+  await signInUser(page, "sherwin@admin.com", "ADMIN", "Sherwin Admin");
   await page.goto("/admin/users");
 
   const stamp = Date.now();

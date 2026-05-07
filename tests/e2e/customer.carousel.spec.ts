@@ -2,7 +2,7 @@ import { expect, test } from "@playwright/test";
 import { signInUser } from "./utils/auth";
 
 test("category carousel marks the URL-selected chip as current", async ({ page }) => {
-  await signInUser(page, "customer1@example.com", "CUSTOMER", "Chris Customer");
+  await signInUser(page, "ginalyn@customer.com", "CUSTOMER", "Ginalyn Customer");
   await page.goto("/customer");
 
   const carousel = page.getByRole("region", { name: "Menu categories" });
@@ -21,7 +21,7 @@ test("category carousel marks the URL-selected chip as current", async ({ page }
 
 test("customer page has no horizontal page overflow at mobile width", async ({ page }) => {
   await page.setViewportSize({ width: 375, height: 720 });
-  await signInUser(page, "customer1@example.com", "CUSTOMER", "Chris Customer");
+  await signInUser(page, "ginalyn@customer.com", "CUSTOMER", "Ginalyn Customer");
   await page.goto("/customer");
 
   const overflow = await page.evaluate(() => {
