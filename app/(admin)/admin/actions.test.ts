@@ -80,7 +80,7 @@ describe("admin user CRUD actions", () => {
     form.set("isActive", "true");
     form.set("password", "supersecure123");
 
-    await createUserForm(form);
+    const result = await createUserForm(form);
 
     expect(userCreateMock).toHaveBeenCalledWith(
       expect.objectContaining({
@@ -94,6 +94,7 @@ describe("admin user CRUD actions", () => {
       }),
     );
     expect(revalidatePathMock).toHaveBeenCalledWith("/admin/users");
+    expect(result).toEqual(expect.objectContaining({ ok: true, message: "User created" }));
   });
 
   it("ignores duplicate-email create", async () => {
@@ -109,9 +110,10 @@ describe("admin user CRUD actions", () => {
       }),
     );
 
-    await createUserForm(form);
+    const result = await createUserForm(form);
 
     expect(revalidatePathMock).not.toHaveBeenCalled();
+    expect(result).toEqual(expect.objectContaining({ ok: false, code: "duplicate-user" }));
   });
 
   it("skips create when password is missing", async () => {
@@ -166,11 +168,12 @@ describe("admin user CRUD actions", () => {
     const form = new FormData();
     form.set("userId", "admin-1");
 
-    await softDeleteUserForm(form);
+    const result = await softDeleteUserForm(form);
 
     expect(userFindUniqueMock).not.toHaveBeenCalled();
     expect(transactionMock).not.toHaveBeenCalled();
     expect(userUpdateMock).not.toHaveBeenCalled();
+    expect(result).toEqual(expect.objectContaining({ ok: false }));
   });
 
   it("soft-deletes active user via archive snapshot and transaction", async () => {
@@ -235,13 +238,14 @@ describe("admin user CRUD actions", () => {
     const form = new FormData();
     form.set("userId", "u2");
 
-    await restoreUserForm(form);
+    const result = await restoreUserForm(form);
 
     expect(userUpdateMock).toHaveBeenCalledWith({
       where: { id: "u2" },
       data: { isActive: true, deletedAt: null },
     });
     expect(revalidatePathMock).toHaveBeenCalledWith("/admin/users");
+    expect(result).toEqual(expect.objectContaining({ ok: true, message: "User restored" }));
   });
 });
 
@@ -262,7 +266,7 @@ describe("admin menu archive actions", () => {
       deletedAt: null,
     });
 
-    await deleteMenuItem("mi-1");
+    const result = await deleteMenuItem("mi-1");
 
     expect(menuItemFindUniqueMock).toHaveBeenCalledWith({ where: { id: "mi-1" } });
     expect(transactionMock).toHaveBeenCalledTimes(1);
@@ -285,6 +289,7 @@ describe("admin menu archive actions", () => {
     });
     expect(revalidatePathMock).toHaveBeenCalledWith("/admin/menu");
     expect(revalidatePathMock).toHaveBeenCalledWith("/customer");
+    expect(result).toEqual(expect.objectContaining({ ok: true, message: "Menu item archived" }));
   });
 
   it("no-op deleteMenuItem when already archived", async () => {

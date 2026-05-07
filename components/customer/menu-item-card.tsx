@@ -6,6 +6,8 @@ import { ShoppingCart } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardDescription, CardTitle } from "@/components/ui/card";
 import { MoneyText } from "@/components/ui/money-text";
+import { useSuccessToast } from "@/components/feedback/success-toast-provider";
+import type { ActionFeedback } from "@/lib/actions/action-feedback";
 import { resolveMenuImageUrl } from "@/lib/menu/resolve-menu-image-url";
 
 export const TAP_FOR_DETAILS_TEXT = "Tap card for details";
@@ -20,23 +22,25 @@ export type MenuItemCardData = {
 
 type MenuItemCardProps = {
   item: MenuItemCardData;
-  addToCartAction: (itemId: string, formData: FormData) => Promise<void>;
+  addToCartAction: (itemId: string, formData: FormData) => Promise<ActionFeedback>;
   compact?: boolean;
   className?: string;
 };
 
 export function MenuItemCard({ item, addToCartAction, compact = false, className }: MenuItemCardProps) {
+  const { showSuccess } = useSuccessToast();
+
   return (
     <Card
-      className={`group relative flex h-full flex-col gap-3 p-3 motion-safe:transition motion-safe:duration-200 motion-safe:hover:-translate-y-1 motion-safe:hover:border-zinc-300 motion-safe:hover:shadow-lg motion-safe:hover:shadow-[#D12E27]/15 motion-safe:hover:ring-2 motion-safe:hover:ring-[#D12E27]/20 dark:motion-safe:hover:border-zinc-700 dark:motion-safe:hover:shadow-[#D12E27]/25 dark:motion-safe:hover:ring-[#D12E27]/30 ${className ?? ""}`}
+      className={`group relative flex h-full flex-col gap-3 p-3 motion-safe:transition motion-safe:duration-200 motion-safe:hover:-translate-y-1 motion-safe:hover:border-zinc-300 motion-safe:hover:shadow-lg motion-safe:hover:shadow-[#D12E27]/15 motion-safe:hover:ring-2 motion-safe:hover:ring-[#D12E27]/20 ${className ?? ""}`}
     >
       <Link
         href={`/customer/items/${item.id}`}
-        className="absolute inset-0 z-10 rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#D12E27] focus-visible:ring-offset-2 dark:focus-visible:ring-offset-zinc-950"
+        className="absolute inset-0 z-10 rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#D12E27] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--surface-base)]"
         aria-label={`View details for ${item.name}`}
       />
       <div
-        className={`relative w-full overflow-hidden rounded-md bg-zinc-100 dark:bg-zinc-800 ${compact ? "aspect-square" : "aspect-[4/3]"}`}
+        className={`relative w-full overflow-hidden rounded-md bg-zinc-100 ${compact ? "aspect-square" : "aspect-[4/3]"}`}
       >
         <Image
           src={resolveMenuImageUrl(item.id, item.imageUrl)}
@@ -60,12 +64,16 @@ export function MenuItemCard({ item, addToCartAction, compact = false, className
         </div>
       </div>
       <div className="flex items-center justify-between gap-2">
-        <span className="pointer-events-none text-sm text-zinc-600 dark:text-zinc-400">
+        <span className="pointer-events-none text-sm text-[var(--text-muted)]">
           {TAP_FOR_DETAILS_TEXT}
         </span>
         <form
           className="relative z-20"
-          action={addToCartAction.bind(null, item.id)}
+          action={async (formData) => {
+            const result = await addToCartAction(item.id, formData);
+            if (!result.ok) return;
+            showSuccess(result.message ?? "Added to cart");
+          }}
           onClick={(e) => e.stopPropagation()}
         >
           <Button

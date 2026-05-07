@@ -34,6 +34,7 @@ describe("AdminMenuPage", () => {
     ]);
     archivedMenuItemFindManyMock.mockResolvedValueOnce([
       {
+        id: "arch-row-1",
         originalId: "menu-arch-1",
         name: "Old Burger",
         description: "Legacy recipe",

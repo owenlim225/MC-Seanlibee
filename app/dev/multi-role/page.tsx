@@ -28,11 +28,11 @@ export default function MultiRoleDemoPage() {
       <div className="grid gap-3 lg:grid-cols-2">
         {panels.map((panel) => (
           <section key={panel.title} className="flex flex-col gap-2">
-            <div className="text-xs font-semibold uppercase tracking-wide text-zinc-500">{panel.title}</div>
+            <div className="text-xs font-semibold uppercase tracking-wide text-[var(--text-meta)]">{panel.title}</div>
             <iframe
               title={panel.title}
               src={panel.src}
-              className="h-[520px] w-full rounded-lg border border-zinc-200 bg-white dark:border-zinc-800 dark:bg-black"
+              className="h-[520px] w-full rounded-lg border border-zinc-200 bg-white"
               // @ts-expect-error -- credentialless is supported in Chromium-powered browsers
               credentialless=""
             />

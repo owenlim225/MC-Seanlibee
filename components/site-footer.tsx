@@ -81,12 +81,12 @@ const BOTTOM_ICON_LINKS: ReadonlyArray<
 
 function FooterLink({ item }: { item: FooterLinkItem }) {
   if (!item.href) {
-    return <span className="text-sm text-white/80">{item.label}</span>;
+    return <span className="text-sm text-[var(--text-on-brand-muted)]">{item.label}</span>;
   }
 
   const isExternal = item.href.startsWith("http");
   const commonClassName =
-    "text-sm text-white/90 underline-offset-4 transition-colors duration-200 hover:text-white hover:underline focus-visible:rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--brand-primary)]";
+    "text-sm text-[var(--text-on-brand-muted)] underline-offset-4 transition-colors duration-200 hover:text-white hover:underline focus-visible:rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--brand-primary)]";
 
   if (isExternal) {
     return (
@@ -144,7 +144,7 @@ export function SiteFooter() {
               />
               <p className="text-base font-semibold">MC Seanlibee</p>
             </div>
-            <p className="max-w-md text-sm leading-relaxed text-white/80">
+            <p className="max-w-md text-sm leading-relaxed text-[var(--text-on-brand-muted)]">
               Multi-role food ordering MVP with mocked integrations
             </p>
           </div>
@@ -171,7 +171,7 @@ export function SiteFooter() {
         </section>
 
         <section
-          className="flex flex-col gap-3 text-sm text-white/85 sm:flex-row sm:items-center sm:justify-between"
+          className="flex flex-col gap-3 text-sm text-[var(--text-on-brand-muted)] sm:flex-row sm:items-center sm:justify-between"
           aria-label="Legal and external links"
         >
           <p>{`© ${copyrightYear} MC Seanlibee`}</p>

@@ -7,8 +7,9 @@ import { requireRoleLite } from "@/lib/auth";
 import { clearCart, readCart, writeCart } from "@/lib/cart-cookie";
 import { computeCheckoutPricing, resolveDeliveryOption, resolveTipCents } from "@/lib/customer/checkout-pricing";
 import { prisma } from "@/lib/prisma";
+import { actionSuccess, type ActionFeedback } from "@/lib/actions/action-feedback";
 
-export async function addToCart(menuItemId: string): Promise<void> {
+export async function addToCart(menuItemId: string): Promise<ActionFeedback> {
   await requireRoleLite(Role.CUSTOMER);
   const cart = await readCart();
   const idx = cart.findIndex((l) => l.menuItemId === menuItemId);
@@ -21,9 +22,10 @@ export async function addToCart(menuItemId: string): Promise<void> {
   revalidatePath("/customer");
   revalidatePath("/customer/cart");
   revalidatePath("/customer/checkout");
+  return actionSuccess("Added to cart");
 }
 
-export async function setLineQty(menuItemId: string, qty: number): Promise<void> {
+export async function setLineQty(menuItemId: string, qty: number): Promise<ActionFeedback> {
   await requireRoleLite(Role.CUSTOMER);
   let cart = await readCart();
   if (qty <= 0) cart = cart.filter((l) => l.menuItemId !== menuItemId);
@@ -32,6 +34,10 @@ export async function setLineQty(menuItemId: string, qty: number): Promise<void>
   revalidatePath("/", "layout");
   revalidatePath("/customer/cart");
   revalidatePath("/customer/checkout");
+  if (qty <= 0) {
+    return actionSuccess("Removed from cart");
+  }
+  return actionSuccess("Cart updated");
 }
 
 export async function startCheckout(): Promise<void> {

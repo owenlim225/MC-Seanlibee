@@ -42,14 +42,14 @@ export default async function MockStripePage({
 
         <div className="flex flex-wrap items-center gap-3">
           <StatusBadge status={order.status} />
-          <span className="text-xs text-zinc-500">{order.id}</span>
+          <span className="text-xs text-[var(--text-meta)]">{order.id}</span>
         </div>
 
         <ul className="list-disc pl-5 text-sm">
           {order.items.map((li) => (
             <li key={li.id}>
               {li.quantity} × {li.menuItem.name}{" "}
-              <span className="text-zinc-500">
+              <span className="text-[var(--text-meta)]">
                 (<MoneyText cents={li.priceCentsAtOrder * li.quantity} />)
               </span>
             </li>

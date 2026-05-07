@@ -4,16 +4,17 @@ import { Card } from "@/components/ui/card";
 import { ErrorState } from "@/components/ui/error-state";
 import { PageHeader } from "@/components/ui/page-header";
 import { signInAction } from "@/app/auth/actions";
-import { DEFAULT_DEMO_AUTH_PASSWORD } from "@/lib/auth/demo-password";
 
 export const metadata = { title: "Sign in · Food Ordering MVP" };
+const DEMO_SHARED_PASSWORD_LABEL = "Demo123!";
 
 const DEMO_ACCOUNTS: { email: string; role: string }[] = [
-  { email: "customer1@example.com", role: "Customer" },
-  { email: "customer2@example.com", role: "Customer" },
-  { email: "kitchen@example.com", role: "Kitchen" },
-  { email: "driver@example.com", role: "Driver" },
-  { email: "admin@example.com", role: "Admin" },
+  { email: "ginalyn@customer.com", role: "Customer" },
+  { email: "marvin@customer.com", role: "Customer" },
+  { email: "rhene@customer.com", role: "Customer" },
+  { email: "sean@driver.com", role: "Driver" },
+  { email: "christian@kitchen.com", role: "Kitchen" },
+  { email: "sherwin@admin.com", role: "Admin" },
 ];
 
 function authPath(path: "/auth/login" | "/auth/signup", next?: string, error?: string): string {
@@ -30,7 +31,6 @@ export default async function LoginPage({
   searchParams: Promise<{ next?: string; error?: string }>;
 }) {
   const sp = await searchParams;
-  const demoPassword = process.env.DEMO_AUTH_PASSWORD ?? DEFAULT_DEMO_AUTH_PASSWORD;
 
   return (
     <div className="mx-auto flex w-full max-w-md flex-col gap-6 px-4">
@@ -86,7 +86,7 @@ export default async function LoginPage({
           ))}
         </ul>
         <p className="mt-2 text-xs text-[var(--text-muted)]">
-          Shared password: <span className="font-mono">{demoPassword}</span>
+          Shared password: <span className="font-mono">{DEMO_SHARED_PASSWORD_LABEL}</span>
         </p>
       </details>
     </div>
