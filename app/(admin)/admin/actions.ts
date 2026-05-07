@@ -1,6 +1,4 @@
 "use server";
-
-import { randomUUID } from "node:crypto";
 import { Role } from "@prisma/client";
 import { PrismaClientKnownRequestError } from "@prisma/client/runtime/library";
 import { revalidatePath } from "next/cache";
@@ -49,6 +47,12 @@ function parseBoolean(value: FormDataEntryValue | null, fallback: boolean): bool
   if (normalized === "true" || normalized === "1" || normalized === "on") return true;
   if (normalized === "false" || normalized === "0" || normalized === "off") return false;
   return fallback;
+}
+
+function parsePassword(value: FormDataEntryValue | null): string | null {
+  const password = String(value ?? "").trim();
+  if (password.length < 8) return null;
+  return password;
 }
 
 export async function createCategory(formData: FormData): Promise<void> {
@@ -165,7 +169,8 @@ export async function createUserForm(formData: FormData): Promise<void> {
   const name = parseName(formData.get("name"));
   const role = parseRole(formData.get("role"));
   const isActive = parseBoolean(formData.get("isActive"), true);
-  if (!email || !name || !role) return;
+  const password = parsePassword(formData.get("password"));
+  if (!email || !name || !role || !password) return;
 
   try {
     await prisma.user.create({
@@ -173,8 +178,7 @@ export async function createUserForm(formData: FormData): Promise<void> {
         email,
         name,
         role,
-        // Password out of admin CRUD scope: generate non-guessable hash.
-        password: hashPassword(randomUUID()),
+        password: hashPassword(password),
         isActive,
       },
     });

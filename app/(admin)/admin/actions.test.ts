@@ -78,6 +78,7 @@ describe("admin user CRUD actions", () => {
     form.set("email", "  New@Example.com ");
     form.set("role", Role.CUSTOMER);
     form.set("isActive", "true");
+    form.set("password", "supersecure123");
 
     await createUserForm(form);
 
@@ -88,7 +89,7 @@ describe("admin user CRUD actions", () => {
           email: "new@example.com",
           role: Role.CUSTOMER,
           isActive: true,
-          password: expect.any(String),
+          password: expect.stringMatching(/^scrypt\$/),
         }),
       }),
     );
@@ -100,6 +101,7 @@ describe("admin user CRUD actions", () => {
     form.set("name", "Dup User");
     form.set("email", "dup@example.com");
     form.set("role", Role.CUSTOMER);
+    form.set("password", "supersecure123");
     userCreateMock.mockRejectedValueOnce(
       new PrismaClientKnownRequestError("duplicate", {
         code: "P2002",
@@ -109,6 +111,32 @@ describe("admin user CRUD actions", () => {
 
     await createUserForm(form);
 
+    expect(revalidatePathMock).not.toHaveBeenCalled();
+  });
+
+  it("skips create when password is missing", async () => {
+    const form = new FormData();
+    form.set("name", "No Password");
+    form.set("email", "nopassword@example.com");
+    form.set("role", Role.CUSTOMER);
+    form.set("isActive", "true");
+
+    await createUserForm(form);
+
+    expect(userCreateMock).not.toHaveBeenCalled();
+    expect(revalidatePathMock).not.toHaveBeenCalled();
+  });
+
+  it("skips create when password is too short", async () => {
+    const form = new FormData();
+    form.set("name", "Short Password");
+    form.set("email", "short@example.com");
+    form.set("role", Role.CUSTOMER);
+    form.set("password", "short");
+
+    await createUserForm(form);
+
+    expect(userCreateMock).not.toHaveBeenCalled();
     expect(revalidatePathMock).not.toHaveBeenCalled();
   });
 

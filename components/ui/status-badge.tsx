@@ -1,13 +1,13 @@
 import { OrderStatus } from "@prisma/client";
 
 const tone: Record<OrderStatus, string> = {
-  PENDING_PAYMENT: "bg-amber-100 text-amber-900 dark:bg-amber-900/30 dark:text-amber-200",
-  RECEIVED: "bg-blue-100 text-blue-900 dark:bg-blue-900/30 dark:text-blue-200",
-  PREPARING: "bg-indigo-100 text-indigo-900 dark:bg-indigo-900/30 dark:text-indigo-200",
-  READY: "bg-emerald-100 text-emerald-900 dark:bg-emerald-900/30 dark:text-emerald-200",
-  PICKED_UP: "bg-cyan-100 text-cyan-900 dark:bg-cyan-900/30 dark:text-cyan-200",
-  DELIVERED: "bg-[var(--surface-subtle)] text-[var(--text-primary)]",
-  CANCELED: "bg-[var(--danger-surface)] text-[var(--danger)]",
+  PENDING_PAYMENT: "bg-[#fff1f4] text-[#8f1630] dark:bg-[#4d0f1d] dark:text-[#ffd8e1]",
+  RECEIVED: "bg-[#ffe3ea] text-[#89142d] dark:bg-[#5a1123] dark:text-[#ffd4df]",
+  PREPARING: "bg-[#ffd4de] text-[#7c1228] dark:bg-[#68132a] dark:text-[#ffd0dc]",
+  READY: "bg-[#ffc6d3] text-[#6c1023] dark:bg-[#77162f] dark:text-[#ffccda]",
+  PICKED_UP: "bg-[#ffb6c8] text-[#5f0d1f] dark:bg-[#891934] dark:text-[#ffc8d8]",
+  DELIVERED: "bg-[var(--brand-primary)] text-[var(--brand-primary-foreground)] dark:bg-[#e55773] dark:text-[#2a0710]",
+  CANCELED: "bg-[#ffe8ed] text-[#9f1239] dark:bg-[#5d1329] dark:text-[#ffcddd]",
 };
 
 export function StatusBadge({ status }: { status: OrderStatus }) {

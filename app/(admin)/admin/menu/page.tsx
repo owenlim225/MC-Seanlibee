@@ -10,17 +10,30 @@ import { Card, CardDescription, CardTitle } from "@/components/ui/card";
 import { PageHeader } from "@/components/ui/page-header";
 
 export default async function AdminMenuPage() {
-  const categories = await prisma.menuCategory.findMany({
-    where: { deletedAt: null },
-    orderBy: { sortOrder: "asc" },
-    include: {
-      itemLinks: {
-        where: { menuItem: { deletedAt: null } },
-        orderBy: { menuItem: { name: "asc" } },
-        include: { menuItem: true },
+  const [categories, archivedMenuItems] = await Promise.all([
+    prisma.menuCategory.findMany({
+      where: { deletedAt: null },
+      orderBy: { sortOrder: "asc" },
+      include: {
+        itemLinks: {
+          where: { menuItem: { deletedAt: null } },
+          orderBy: { menuItem: { name: "asc" } },
+          include: { menuItem: true },
+        },
       },
-    },
-  });
+    }),
+    prisma.archivedMenuItem.findMany({
+      orderBy: { archivedAt: "desc" },
+      select: {
+        originalId: true,
+        name: true,
+        description: true,
+        priceCents: true,
+        isAvailable: true,
+        archivedAt: true,
+      },
+    }),
+  ]);
 
   const totalItems = categories.reduce((count, category) => count + category.itemLinks.length, 0);
   const categoriesWithItems = categories.filter((category) => category.itemLinks.length > 0).length;
@@ -58,6 +71,7 @@ export default async function AdminMenuPage() {
             { href: "#new-category", label: "Category form" },
             { href: "#new-item", label: "Item form" },
             { href: "#category-browser", label: "Category browser" },
+            { href: "#archived-menu-items", label: "Archived menu items" },
           ].map((link) => (
             <li key={link.href}>
               <a
@@ -225,6 +239,38 @@ export default async function AdminMenuPage() {
             </details>
           ))}
         </div>
+      </section>
+
+      <section id="archived-menu-items" className="scroll-mt-20 flex flex-col gap-4">
+        <div>
+          <h2 className="text-lg font-semibold text-zinc-100">Archived menu items</h2>
+          <p className="text-sm text-zinc-500">Snapshot records for menu items archived by admins.</p>
+        </div>
+        {archivedMenuItems.length === 0 ? (
+          <Card className="p-4 text-sm text-zinc-500">No archived menu items yet.</Card>
+        ) : (
+          <div className="grid gap-3 md:grid-cols-2">
+            {archivedMenuItems.map((item) => (
+              <Card key={item.originalId} className="flex flex-col gap-2 p-4">
+                <div className="flex items-start justify-between gap-3">
+                  <CardTitle className="text-base">{item.name}</CardTitle>
+                  <span
+                    className={`rounded-full border px-2 py-0.5 text-xs ${
+                      item.isAvailable ? "border-emerald-700/70 text-emerald-400" : "border-zinc-700 text-zinc-400"
+                    }`}
+                  >
+                    {item.isAvailable ? "Available" : "Unavailable"}
+                  </span>
+                </div>
+                <CardDescription className="line-clamp-2">{item.description}</CardDescription>
+                <div className="text-xs text-zinc-500">
+                  Price: ${(item.priceCents / 100).toFixed(2)} · Archived: {item.archivedAt.toLocaleString()}
+                </div>
+                <div className="text-xs text-zinc-500">Original ID: {item.originalId}</div>
+              </Card>
+            ))}
+          </div>
+        )}
       </section>
     </div>
   );
