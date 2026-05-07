@@ -7,6 +7,11 @@ const nextConfig: NextConfig = {
         protocol: "https",
         hostname: "goldbelly.imgix.net",
       },
+      {
+        protocol: "https",
+        hostname: "sdgpxydkqdthgolfmpei.supabase.co",
+        pathname: "/storage/v1/object/public/**",
+      },
     ],
   },
 };

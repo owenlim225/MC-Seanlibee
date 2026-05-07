@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import type { CSSProperties } from "react";
 import { logoutAction } from "@/app/auth/actions";
 import { getSession } from "@/lib/auth";
@@ -11,7 +12,7 @@ export async function SiteHeader() {
 
   return (
     <header
-      className="sticky top-0 z-30 border-b border-[var(--border-default)] bg-[var(--surface-base)] backdrop-blur"
+      className="sticky top-0 z-30 border-b border-[var(--brand-primary-hover)] bg-[var(--brand-primary)] text-[var(--brand-primary-foreground)] backdrop-blur"
       style={
         {
           "--site-header-h": `${HEADER_HEIGHT_PX}px`,
@@ -20,18 +21,27 @@ export async function SiteHeader() {
       }
     >
       <div className="mx-auto flex h-full max-w-6xl items-center justify-between gap-3 px-4">
-        <Link href="/" className="text-sm font-semibold tracking-tight transition-colors hover:text-[var(--brand-primary)]">
-          MC Seanlibee
+        <Link
+          href="/"
+          className="flex items-center gap-2 text-sm font-semibold tracking-tight transition-opacity hover:opacity-90"
+        >
+          <Image
+            src="https://sdgpxydkqdthgolfmpei.supabase.co/storage/v1/object/public/website-assets/logo.webp"
+            alt=""
+            width={32}
+            height={32}
+            priority
+          />
+          <span data-testid="site-brand">MC Seanlibee</span>
         </Link>
         <div className="flex flex-wrap items-center gap-3 text-sm">
-          {/* Customer tab removed per updated navigation spec */}
           {user ? (
             <>
-              <span className="text-[var(--text-muted)]">{user.email}</span>
+              <span className="text-white/80">{user.email}</span>
               <form action={logoutAction}>
                 <button
                   type="submit"
-                  className="cursor-pointer text-[var(--text-primary)] transition-colors hover:text-[var(--brand-primary)] hover:underline"
+                  className="cursor-pointer text-white transition-colors hover:text-white/80 hover:underline"
                 >
                   Logout
                 </button>
@@ -40,35 +50,19 @@ export async function SiteHeader() {
           ) : (
             <>
               <Link
-                className="text-[var(--text-primary)] transition-colors hover:text-[var(--brand-primary)] hover:underline"
+                className="text-white transition-colors hover:text-white/80 hover:underline"
                 href="/auth/login"
               >
                 Login
               </Link>
               <Link
-                className="text-[var(--text-primary)] transition-colors hover:text-[var(--brand-primary)] hover:underline"
+                className="text-white transition-colors hover:text-white/80 hover:underline"
                 href="/auth/signup"
               >
                 Sign up
               </Link>
             </>
           )}
-          {process.env.NODE_ENV !== "production" ? (
-            <>
-              <Link
-                className="text-[var(--text-muted)] transition-colors hover:text-[var(--brand-primary)] hover:underline"
-                href="/dev/role-switcher"
-              >
-                Dev roles
-              </Link>
-              <Link
-                className="text-[var(--text-muted)] transition-colors hover:text-[var(--brand-primary)] hover:underline"
-                href="/dev/multi-role"
-              >
-                Multi-role demo
-              </Link>
-            </>
-          ) : null}
         </div>
       </div>
     </header>

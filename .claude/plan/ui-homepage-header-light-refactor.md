@@ -10,10 +10,10 @@
 - Enforce light mode visual baseline: white (or near-white) surfaces, high-contrast dark text, readable spacing.
 - Set header background to primary brand color.
 - Apply provided assets:
-  - Image 1 as homepage hero banner
+  - Banner image as homepage hero banner: `https://sdgpxydkqdthgolfmpei.supabase.co/storage/v1/object/public/website-assets/banner.jpg`
   - Image 2 only as visual/layout guidance
-  - Logo in header brand area
-  - Icon as favicon/app icon
+  - Logo in header brand area: `https://sdgpxydkqdthgolfmpei.supabase.co/storage/v1/object/public/website-assets/logo.webp`
+  - Icon as favicon/app icon: `https://sdgpxydkqdthgolfmpei.supabase.co/storage/v1/object/public/website-assets/logo.ico`
 - Remove all dev-related navigation links from header, including:
   - `/dev/role-switcher` ("Dev roles")
   - `/dev/multi-role` ("Multi-role demo")
@@ -68,14 +68,15 @@
 ### Phase 3 — Homepage Hero
 **Deliverable:** Home hero using provided Image 1 and adapted layout from reference Image 2.
 1. Edit `app/page.tsx`:
-   - Create hero section with banner image and concise text hierarchy.
+   - Create hero section with banner image from `https://sdgpxydkqdthgolfmpei.supabase.co/storage/v1/object/public/website-assets/banner.jpg` and concise text hierarchy.
    - Keep the existing value cards but align spacing, typography, and CTA affordances to the new visual direction.
-2. Use `next/image` for hero and any logo image usage; ensure descriptive `alt`.
+2. Use `next/image` for hero and logo image usage; ensure descriptive `alt`.
+   - Header logo source: `https://sdgpxydkqdthgolfmpei.supabase.co/storage/v1/object/public/website-assets/logo.webp`
 3. Maintain mobile-first layout and avoid horizontal overflow.
 
 ### Phase 4 — App Icon/Favicon Integration
 **Deliverable:** Icon wired into app metadata.
-1. Edit `app/layout.tsx` metadata icons config to point at the provided icon asset (copied to a stable public path if needed).
+1. Edit `app/layout.tsx` metadata icons config to point directly at `https://sdgpxydkqdthgolfmpei.supabase.co/storage/v1/object/public/website-assets/logo.ico`.
 2. Keep title/description consistent unless product copy update is explicitly requested.
 
 ### Phase 5 — Test & Verification Updates
@@ -106,7 +107,7 @@
 <header className="sticky ... bg-[var(--brand-primary)] text-[var(--brand-primary-foreground)]">
   <div className="...">
     <Link href="/" className="flex items-center gap-2">
-      <Image src="/branding/logo.png" alt="Mc Seanlibee logo" width={32} height={32} />
+      <Image src="https://sdgpxydkqdthgolfmpei.supabase.co/storage/v1/object/public/website-assets/logo.webp" alt="Mc Seanlibee logo" width={32} height={32} />
       <span>MC Seanlibee</span>
     </Link>
     <nav>
@@ -120,7 +121,7 @@
 // app/page.tsx (shape only)
 <section className="rounded-xl border ... bg-white">
   <div className="relative aspect-[16/6] w-full overflow-hidden rounded-lg">
-    <Image src="/branding/hero-banner.png" alt="Mc Seanlibee hero banner" fill className="object-cover" priority />
+    <Image src="https://sdgpxydkqdthgolfmpei.supabase.co/storage/v1/object/public/website-assets/banner.jpg" alt="Mc Seanlibee hero banner" fill className="object-cover" priority />
   </div>
   <h1>Welcome to Mc Seanlibee</h1>
   <p>...supporting text...</p>
@@ -132,9 +133,9 @@
 export const metadata = {
   ...,
   icons: {
-    icon: "/branding/icon.png",
-    shortcut: "/branding/icon.png",
-    apple: "/branding/icon.png",
+    icon: "https://sdgpxydkqdthgolfmpei.supabase.co/storage/v1/object/public/website-assets/logo.ico",
+    shortcut: "https://sdgpxydkqdthgolfmpei.supabase.co/storage/v1/object/public/website-assets/logo.ico",
+    apple: "https://sdgpxydkqdthgolfmpei.supabase.co/storage/v1/object/public/website-assets/logo.ico",
   },
 }
 ```
@@ -144,7 +145,7 @@ export const metadata = {
 |------|------------|
 | Header contrast regression on red background | Use `--brand-primary-foreground` and verify WCAG contrast for text/actions |
 | Layout shift from image insertion | Use fixed aspect ratio containers and `next/image` sizing patterns |
-| Asset path breakage | Copy assets to stable public branding path and reference from there |
+| Asset URL availability issues | Use provided public Supabase Storage URLs directly and verify accessibility in browser/network panel |
 | Unintended nav behavior changes | Restrict edits to visual + dev-link removal only; keep auth branch logic intact |
 | Theme drift from existing tokens | Update token mappings centrally in `globals.css` rather than ad hoc class overrides |
 
