@@ -1,5 +1,4 @@
 import { Role } from "@prisma/client";
-import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import { readSessionPayload } from "@/lib/auth/mock";
@@ -13,14 +12,42 @@ export type SessionLite = {
   user: { id: string; role: Role } | null;
 };
 
-const SESSION_COOKIE = "mc_session";
-
 /**
  * Full session: hits the DB to read fresh email/name and verify role hasn't
  * changed. Use for layouts/pages that render user-identifying fields.
  */
 export async function getSession(): Promise<Session> {
+  // #region agent log
+  fetch("http://127.0.0.1:7817/ingest/c3fc8591-bb49-4618-b7bd-5aef2b04dae3", {
+    method: "POST",
+    headers: { "Content-Type": "application/json", "X-Debug-Session-Id": "7690ea" },
+    body: JSON.stringify({
+      sessionId: "7690ea",
+      runId: "pre-fix",
+      hypothesisId: "H1",
+      location: "lib/auth/index.ts:23",
+      message: "getSession entered",
+      data: { fn: "getSession" },
+      timestamp: Date.now(),
+    }),
+  }).catch(() => {});
+  // #endregion
   const payload = await readSessionPayload();
+  // #region agent log
+  fetch("http://127.0.0.1:7817/ingest/c3fc8591-bb49-4618-b7bd-5aef2b04dae3", {
+    method: "POST",
+    headers: { "Content-Type": "application/json", "X-Debug-Session-Id": "7690ea" },
+    body: JSON.stringify({
+      sessionId: "7690ea",
+      runId: "pre-fix",
+      hypothesisId: "H2",
+      location: "lib/auth/index.ts:38",
+      message: "session payload resolved",
+      data: { hasPayload: Boolean(payload) },
+      timestamp: Date.now(),
+    }),
+  }).catch(() => {});
+  // #endregion
   if (!payload) return { user: null };
   const user = await prisma.user.findUnique({
     where: { id: payload.uid },
@@ -28,7 +55,25 @@ export async function getSession(): Promise<Session> {
   });
   if (!user) return { user: null };
   if (!user.isActive || user.deletedAt) {
-    (await cookies()).delete(SESSION_COOKIE);
+    // #region agent log
+    fetch("http://127.0.0.1:7817/ingest/c3fc8591-bb49-4618-b7bd-5aef2b04dae3", {
+      method: "POST",
+      headers: { "Content-Type": "application/json", "X-Debug-Session-Id": "ad1060" },
+      body: JSON.stringify({
+        sessionId: "ad1060",
+        runId: "post-fix",
+        hypothesisId: "H2",
+        location: "lib/auth/index.ts:getSession",
+        message: "inactive/deleted user; returning null without mutating cookies",
+        data: {
+          userId: user.id,
+          isActive: user.isActive,
+          hasDeletedAt: Boolean(user.deletedAt),
+        },
+        timestamp: Date.now(),
+      }),
+    }).catch(() => {});
+    // #endregion
     return { user: null };
   }
   return { user };
@@ -48,7 +93,25 @@ export async function getSessionLite(): Promise<SessionLite> {
   });
   if (!user) return { user: null };
   if (!user.isActive || user.deletedAt) {
-    (await cookies()).delete(SESSION_COOKIE);
+    // #region agent log
+    fetch("http://127.0.0.1:7817/ingest/c3fc8591-bb49-4618-b7bd-5aef2b04dae3", {
+      method: "POST",
+      headers: { "Content-Type": "application/json", "X-Debug-Session-Id": "ad1060" },
+      body: JSON.stringify({
+        sessionId: "ad1060",
+        runId: "post-fix",
+        hypothesisId: "H3",
+        location: "lib/auth/index.ts:getSessionLite",
+        message: "inactive/deleted user; returning null without mutating cookies",
+        data: {
+          userId: user.id,
+          isActive: user.isActive,
+          hasDeletedAt: Boolean(user.deletedAt),
+        },
+        timestamp: Date.now(),
+      }),
+    }).catch(() => {});
+    // #endregion
     return { user: null };
   }
   return { user: { id: user.id, role: user.role } };

@@ -10,6 +10,21 @@ import { readCart } from "@/lib/cart-cookie";
 const HEADER_HEIGHT_PX = 56;
 
 export async function SiteHeader() {
+  // #region agent log
+  fetch("http://127.0.0.1:7817/ingest/c3fc8591-bb49-4618-b7bd-5aef2b04dae3", {
+    method: "POST",
+    headers: { "Content-Type": "application/json", "X-Debug-Session-Id": "7690ea" },
+    body: JSON.stringify({
+      sessionId: "7690ea",
+      runId: "pre-fix",
+      hypothesisId: "H5",
+      location: "components/site-header.tsx:13",
+      message: "SiteHeader render started",
+      data: { component: "SiteHeader" },
+      timestamp: Date.now(),
+    }),
+  }).catch(() => {});
+  // #endregion
   const session = await getSession();
   const user = session.user;
   const cart = user?.role === Role.CUSTOMER ? await readCart() : [];

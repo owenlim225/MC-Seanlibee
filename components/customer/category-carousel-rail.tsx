@@ -13,6 +13,7 @@ export type CategoryCarouselEntry = {
 };
 
 export type FeaturedCategoryEntry = CategoryCarouselEntry;
+type FeaturedRailTarget = { kind: "all" } | { kind: "category"; category: FeaturedCategoryEntry };
 
 const ALL_KEY = "all";
 
@@ -139,17 +140,57 @@ export function CategoryCarouselRail({
 export function FeaturedCategoryRail({
   categories,
   activeSelection,
+  signInRedirect,
 }: {
   categories: FeaturedCategoryEntry[];
   activeSelection?: "all" | string;
+  /**
+   * When set, every chip links to this URL (e.g. "/login") and aria-labels are
+   * rewritten to indicate the user must sign in first. Used on the public
+   * homepage. Serializable so it can cross the RSC boundary.
+   */
+  signInRedirect?: string;
 }) {
+  // #region agent log
+  fetch("http://127.0.0.1:7817/ingest/c3fc8591-bb49-4618-b7bd-5aef2b04dae3", {
+    method: "POST",
+    headers: { "Content-Type": "application/json", "X-Debug-Session-Id": "ad1060" },
+    body: JSON.stringify({
+      sessionId: "ad1060",
+      runId: "post-fix",
+      hypothesisId: "H1",
+      location: "components/customer/category-carousel-rail.tsx",
+      message: "FeaturedCategoryRail invoked with serializable props",
+      data: {
+        categoriesCount: categories.length,
+        activeSelectionType: typeof activeSelection,
+        hasSignInRedirect: Boolean(signInRedirect),
+        signInRedirectType: typeof signInRedirect,
+      },
+      timestamp: Date.now(),
+    }),
+  }).catch(() => {});
+  // #endregion
   const allActive = isFeaturedAllActive(activeSelection);
+
+  function buildHref(target: FeaturedRailTarget): string {
+    if (signInRedirect) return signInRedirect;
+    return target.kind === "all" ? "/customer" : `/customer?category=${target.category.slug}`;
+  }
+
+  function buildAriaLabel(target: FeaturedRailTarget): string | undefined {
+    if (!signInRedirect) return undefined;
+    return target.kind === "all"
+      ? "Browse the full menu, then sign in to continue"
+      : `Open ${target.category.name} menu, then sign in to continue`;
+  }
 
   return (
     <HorizontalScroller role="navigation" aria-label="Featured menu categories">
       <div className="snap-start shrink-0">
         <Link
-          href="/customer"
+          href={buildHref({ kind: "all" })}
+          aria-label={buildAriaLabel({ kind: "all" })}
           aria-current={allActive ? "page" : undefined}
           className={`inline-flex min-h-[44px] items-center whitespace-nowrap rounded-full px-5 py-2 text-sm font-semibold transition-colors ${
             allActive
@@ -165,7 +206,8 @@ export function FeaturedCategoryRail({
         return (
           <div key={c.id} className="snap-start shrink-0">
             <Link
-              href={`/customer?category=${c.slug}`}
+              href={buildHref({ kind: "category", category: c })}
+              aria-label={buildAriaLabel({ kind: "category", category: c })}
               aria-current={categoryActive ? "page" : undefined}
               className={`inline-flex min-h-[44px] items-center whitespace-nowrap rounded-full px-5 py-2 text-sm font-semibold transition-colors ${
                 categoryActive

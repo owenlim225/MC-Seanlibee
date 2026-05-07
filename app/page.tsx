@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 
+import { FeaturedCategoryRail } from "@/components/customer/category-carousel-rail";
 import { Card, CardDescription, CardTitle } from "@/components/ui/card";
 import { buildFeaturedCategoryRail, type FeaturedCategorySource } from "@/lib/menu/featured-menu-image-quality";
 import { prisma } from "@/lib/prisma";
@@ -52,6 +53,25 @@ export default async function Home() {
 
   const featuredCategories = buildFeaturedCategoryRail(normalizedCategories);
   const heroHighlightCards = buildHomepageHighlightCards(featuredCategories);
+  // #region agent log
+  fetch("http://127.0.0.1:7817/ingest/c3fc8591-bb49-4618-b7bd-5aef2b04dae3", {
+    method: "POST",
+    headers: { "Content-Type": "application/json", "X-Debug-Session-Id": "7690ea" },
+    body: JSON.stringify({
+      sessionId: "7690ea",
+      runId: "pre-fix",
+      hypothesisId: "H1",
+      location: "app/page.tsx:57",
+      message: "Home render computed featured data",
+      data: {
+        featuredCount: featuredCategories.length,
+        heroCardCount: heroHighlightCards.length,
+        hasFeaturedCategoryRailImport: true,
+      },
+      timestamp: Date.now(),
+    }),
+  }).catch(() => {});
+  // #endregion
 
   return (
     <div className="flex flex-col gap-8">
@@ -71,59 +91,110 @@ export default async function Home() {
       </section>
 
       {heroHighlightCards.length > 0 ? (
-        <section className="grid gap-4 md:grid-cols-3">
+        <section className="grid gap-4 sm:grid-cols-2 md:grid-cols-3">
           <h2 className="sr-only">Homepage highlights</h2>
           {heroHighlightCards.map((card) => (
-            <Card
+            <Link
               key={card.id}
-              className="group flex h-full flex-col gap-3 p-3 motion-safe:transition motion-safe:duration-200 motion-safe:hover:-translate-y-1 motion-safe:hover:border-zinc-300 motion-safe:hover:shadow-lg motion-safe:hover:shadow-[#D12E27]/15 motion-safe:hover:ring-2 motion-safe:hover:ring-[#D12E27]/20 dark:motion-safe:hover:border-zinc-700 dark:motion-safe:hover:shadow-[#D12E27]/25 dark:motion-safe:hover:ring-[#D12E27]/30"
+              href="/login"
+              aria-label={`Open ${card.name} menu, then sign in to continue`}
+              className="group rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#D12E27] focus-visible:ring-offset-2 dark:focus-visible:ring-offset-zinc-950"
             >
-              <div className="relative aspect-[4/3] w-full overflow-hidden rounded-md bg-zinc-100 dark:bg-zinc-800">
-                <Image
-                  src={card.thumbnailUrl}
-                  alt={card.name}
-                  fill
-                  className="object-cover transition-transform duration-200 group-hover:scale-[1.02]"
-                  sizes="(max-width: 768px) 100vw, (max-width: 1280px) 33vw, 360px"
-                />
-              </div>
-              <div className="space-y-1">
-                <CardTitle>{card.name}</CardTitle>
-                <CardDescription className="line-clamp-2">{card.description}</CardDescription>
-              </div>
-            </Card>
+              <Card className="flex h-full cursor-pointer flex-col justify-between gap-3 border-[var(--brand-primary)] bg-[var(--brand-primary)] p-4 text-white shadow-sm transition-[background-color,box-shadow,ring-color] duration-200 motion-safe:group-hover:bg-[#B92924] motion-safe:group-hover:shadow-lg motion-safe:group-hover:shadow-[#D12E27]/25 motion-safe:group-hover:ring-1 motion-safe:group-hover:ring-white/30 motion-safe:group-focus-visible:ring-2 motion-safe:group-focus-visible:ring-white/70">
+                <div className="flex items-start justify-between gap-3">
+                  <div className="space-y-2">
+                    <CardTitle className="text-lg leading-tight text-white">{card.name}</CardTitle>
+                    <CardDescription className="line-clamp-3 text-sm leading-relaxed text-white/90">
+                      {card.description}
+                    </CardDescription>
+                  </div>
+                  <div className="relative h-16 w-16 shrink-0 overflow-hidden rounded-md border border-white/30 bg-white/10 md:h-20 md:w-20">
+                    <Image
+                      src={card.thumbnailUrl}
+                      alt={card.name}
+                      fill
+                      className="object-cover"
+                      sizes="(max-width: 768px) 64px, 80px"
+                    />
+                  </div>
+                </div>
+              </Card>
+            </Link>
           ))}
         </section>
       ) : null}
 
       <section className="flex flex-col gap-3">
         <h2 className="text-lg font-semibold tracking-tight text-[var(--text-primary)]">Featured Menu</h2>
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {featuredCategories.map((category) => (
-            <Link
-              key={category.id}
-              href="/login"
-              aria-label={`Open ${category.name} menu, then sign in to continue`}
-              className="rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#D12E27] focus-visible:ring-offset-2 dark:focus-visible:ring-offset-zinc-950"
-            >
-              <Card className="group border-transparent bg-transparent p-0 shadow-none motion-safe:transition motion-safe:duration-200 motion-safe:hover:-translate-y-1 motion-safe:hover:bg-zinc-50 motion-safe:hover:shadow-lg motion-safe:hover:shadow-[#D12E27]/10 dark:motion-safe:hover:bg-zinc-900/40">
-                <div className="relative aspect-[4/3] w-full overflow-hidden rounded-lg bg-zinc-100 dark:bg-zinc-800">
-                  <Image
-                    src={category.thumbnailUrl}
-                    alt={category.name}
-                    fill
-                    className="object-cover transition-transform duration-200 group-hover:scale-[1.03]"
-                    sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
-                  />
-                </div>
-                <div className="px-1 pt-3 pb-1">
-                  <CardTitle className="text-base">{category.name}</CardTitle>
-                  <CardDescription>Sign in to order</CardDescription>
-                </div>
-              </Card>
-            </Link>
-          ))}
+        {/* #region agent log */}
+        {(() => {
+          fetch("http://127.0.0.1:7817/ingest/c3fc8591-bb49-4618-b7bd-5aef2b04dae3", {
+            method: "POST",
+            headers: { "Content-Type": "application/json", "X-Debug-Session-Id": "7690ea" },
+            body: JSON.stringify({
+              sessionId: "7690ea",
+              runId: "pre-fix",
+              hypothesisId: "H2",
+              location: "app/page.tsx:121",
+              message: "Preparing FeaturedCategoryRail props",
+              data: {
+                activeSelection: "all",
+                hrefBuilderType: "function",
+                ariaLabelBuilderType: "function",
+              },
+              timestamp: Date.now(),
+            }),
+          }).catch(() => {});
+          return null;
+        })()}
+        {/* #endregion */}
+        <FeaturedCategoryRail
+          categories={featuredCategories}
+          activeSelection="all"
+          signInRedirect="/login"
+        />
+      </section>
+
+      <section className="overflow-hidden rounded-xl border border-[var(--border-default)] bg-white shadow-sm">
+        <div className="grid grid-cols-1 items-center gap-6 p-6 md:grid-cols-12 md:gap-10 md:p-10">
+          <div className="md:col-span-5">
+            <div className="relative aspect-square w-full overflow-hidden rounded-2xl bg-zinc-100">
+              <Image
+                src="https://sdgpxydkqdthgolfmpei.supabase.co/storage/v1/object/public/website-assets/card.webp"
+                alt="Mc Seanlibee mascot holding signature menu items"
+                fill
+                className="object-cover"
+                sizes="(max-width: 768px) 100vw, 480px"
+              />
+            </div>
+          </div>
+          <div className="space-y-4 md:col-span-7">
+            <h2 className="text-2xl font-bold tracking-tight text-[var(--text-primary)] md:text-3xl">
+              Mc Seanlibee: Bringing SARAP to You
+            </h2>
+            <p className="leading-relaxed text-[var(--text-muted)]">
+              Welcome to Mc Seanlibee, your ultimate destination for every craving.
+            </p>
+            <p className="leading-relaxed text-[var(--text-muted)]">
+              Our menu is a celebration of variety, serving up an extensive selection of all your favorite meals under
+              one roof. Whether you&apos;re in the mood for our signature crispy fried chicken, hearty burgers, savory
+              pasta, or golden fries, we have it all. From local classics to international favorites, Mc Seanlibee offers
+              a world of flavors designed to satisfy every palate at prices that make every meal a treat.
+            </p>
+            <p className="leading-relaxed text-[var(--text-muted)]">
+              Explore our diverse menu and discover why we are quickly becoming the go-to spot for those who want
+              everything delicious in one place. At Mc Seanlibee, we don&apos;t just serve food; we serve the best
+              version of what you&apos;re craving today.
+            </p>
+            <p className="leading-relaxed text-[var(--text-muted)]">
+              So bring your family, gather your friends, or enjoy a satisfying solo feast at a Mc Seanlibee near you.
+              Whether you choose to dine-in, swing through our drive-thru, or order for takeout and delivery, we are
+              dedicated to excellence. Wherever you are, we commit our best to serving you high-quality, delicious
+              meals—because at Mc Seanlibee, bida kana, masarap pa tinda!
+            </p>
+          </div>
         </div>
+        <div className="h-2 bg-[var(--brand-primary)]" aria-hidden="true" />
       </section>
     </div>
   );
