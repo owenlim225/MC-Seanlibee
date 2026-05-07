@@ -113,11 +113,7 @@ export default async function Home() {
               className="rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--brand-primary)] focus-visible:ring-offset-2 dark:focus-visible:ring-offset-zinc-950"
             >
               <Card
-                className={`flex h-full cursor-pointer flex-col justify-between gap-4 p-6 text-white shadow-none ${
-                  card.id === heroHighlightCards[0]?.id
-                    ? "border-[var(--brand-primary)] bg-[rgba(203,26,56,1)]"
-                    : "border-[rgba(255,0,38,1)] bg-zinc-900"
-                }`}
+                className="flex h-full cursor-pointer flex-col justify-between gap-4 !border-[#CB1A38] !bg-[#CB1A38] p-6 text-white !shadow-none"
               >
                 <div className="flex items-start justify-between gap-3">
                   <div className="space-y-2">
