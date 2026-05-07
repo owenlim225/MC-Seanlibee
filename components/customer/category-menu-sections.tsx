@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 import { Button } from "@/components/ui/button";
 import { Card, CardDescription, CardTitle } from "@/components/ui/card";
@@ -32,7 +32,12 @@ function initialVisibleByCategory(categories: CategorySection[]): Record<string,
   }, {});
 }
 
-export function CategoryMenuSections({
+/** Remount when category tree changes so visible counts reset without effect + setState. */
+function categoriesResetKey(categories: CategorySection[]): string {
+  return categories.map((c) => `${c.id}:${c.items.length}`).join("|");
+}
+
+function CategoryMenuSectionsContent({
   categories,
   addToCartAction,
 }: {
@@ -42,10 +47,6 @@ export function CategoryMenuSections({
   const [visibleByCategory, setVisibleByCategory] = useState<Record<string, number>>(() =>
     initialVisibleByCategory(categories),
   );
-
-  useEffect(() => {
-    setVisibleByCategory(initialVisibleByCategory(categories));
-  }, [categories]);
 
   function handleViewMore(categoryId: string, totalItems: number): void {
     setVisibleByCategory((prev) => {
@@ -131,5 +132,21 @@ export function CategoryMenuSections({
           );
         })}
     </div>
+  );
+}
+
+export function CategoryMenuSections({
+  categories,
+  addToCartAction,
+}: {
+  categories: CategorySection[];
+  addToCartAction: (itemId: string, formData: FormData) => Promise<void>;
+}) {
+  return (
+    <CategoryMenuSectionsContent
+      key={categoriesResetKey(categories)}
+      categories={categories}
+      addToCartAction={addToCartAction}
+    />
   );
 }

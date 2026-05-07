@@ -1,5 +1,7 @@
 generator client {
-  provider = "prisma-client-js"
+  provider   = "prisma-client-js"
+  // Binary engine avoids query_engine-windows.dll.node rename EPERM on locked DLL (common with AV / editors).
+  engineType = "binary"
 }
 
 datasource db {

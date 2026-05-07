@@ -34,7 +34,6 @@ async function probe(url) {
       headers: { "User-Agent": "Mozilla/5.0 (compatible; FoodImageProbe/1.0)" },
     });
     clearTimeout(t);
-    const ct = r.headers.get("content-type") ?? "";
     if (r.status === 405 || r.status === 501) {
       const ac2 = new AbortController();
       const t2 = setTimeout(() => ac2.abort(), 20000);
