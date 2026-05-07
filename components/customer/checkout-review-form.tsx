@@ -22,7 +22,9 @@ import { Card } from "@/components/ui/card";
 import { MoneyText } from "@/components/ui/money-text";
 
 function pickSuccessDwellMs(): number {
-  return 900 + Math.floor(Math.random() * 301);
+  const baseMs = 900 + Math.floor(Math.random() * 301);
+  const extraMs = 10000 + Math.floor(Math.random() * 5001); // +5s–10s
+  return baseMs + extraMs;
 }
 
 type CheckoutReviewFormProps = {
