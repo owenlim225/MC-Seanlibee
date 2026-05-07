@@ -180,37 +180,36 @@ export function FeaturedCategoryRail({
   }
 
   return (
-    <div
-      role="navigation"
-      aria-label="Featured menu categories"
-      className="flex flex-wrap gap-2"
-    >
-      <Link
-        href={signInRedirect ? `${signInRedirect}?next=${encodeURIComponent("/customer")}` : "/customer"}
-        aria-current={activeSelection === "all" || !activeSelection ? "page" : undefined}
-        aria-label={signInRedirect ? "Open all menu categories, then sign in to continue" : "Open all menu categories"}
-        className={`inline-flex min-h-[44px] cursor-pointer items-center rounded-full border px-4 py-2 text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--brand-primary)] focus-visible:ring-offset-2 dark:focus-visible:ring-offset-zinc-950 ${
-          chipClasses(activeSelection === "all" || !activeSelection)
-        }`}
-      >
-        All
-      </Link>
+    <HorizontalScroller role="navigation" aria-label="Featured menu categories">
+      <div className="snap-start shrink-0">
+        <Link
+          href={signInRedirect ? `${signInRedirect}?next=${encodeURIComponent("/customer")}` : "/customer"}
+          aria-current={activeSelection === "all" || !activeSelection ? "page" : undefined}
+          aria-label={signInRedirect ? "Open all menu categories, then sign in to continue" : "Open all menu categories"}
+          className={`inline-flex min-h-[44px] cursor-pointer items-center rounded-full border px-4 py-2 text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--brand-primary)] focus-visible:ring-offset-2 dark:focus-visible:ring-offset-zinc-950 ${
+            chipClasses(activeSelection === "all" || !activeSelection)
+          }`}
+        >
+          All
+        </Link>
+      </div>
       {visibleCategories.map((c) => {
         const categoryActive = isFeaturedCategoryActive(c, activeSelection);
         return (
-          <Link
-            key={c.id}
-            href={buildHref({ kind: "category", category: c })}
-            aria-label={buildAriaLabel({ kind: "category", category: c })}
-            aria-current={categoryActive ? "page" : undefined}
-            className={`inline-flex min-h-[44px] max-w-[220px] cursor-pointer items-center truncate rounded-full border px-4 py-2 text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--brand-primary)] focus-visible:ring-offset-2 dark:focus-visible:ring-offset-zinc-950 ${
-              chipClasses(categoryActive)
-            }`}
-          >
-            {c.name}
-          </Link>
+          <div key={c.id} className="snap-start shrink-0">
+            <Link
+              href={buildHref({ kind: "category", category: c })}
+              aria-label={buildAriaLabel({ kind: "category", category: c })}
+              aria-current={categoryActive ? "page" : undefined}
+              className={`inline-flex min-h-[44px] max-w-[220px] cursor-pointer items-center truncate rounded-full border px-4 py-2 text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--brand-primary)] focus-visible:ring-offset-2 dark:focus-visible:ring-offset-zinc-950 ${
+                chipClasses(categoryActive)
+              }`}
+            >
+              {c.name}
+            </Link>
+          </div>
         );
       })}
-    </div>
+    </HorizontalScroller>
   );
 }

@@ -94,12 +94,14 @@ export default async function CustomerMenuPage({
         />
       </section>
 
-      <section className="flex flex-col gap-3">
-        <h2 className="text-lg font-semibold tracking-tight text-[var(--text-primary)]">
-          Explore More Categories
-        </h2>
-        <NonFeaturedCategoryGrid categories={nonFeaturedCategories} isAuthenticated={isAuthenticated} />
-      </section>
+      {nonFeaturedCategories.length > 0 ? (
+        <section className="flex flex-col gap-3">
+          <h2 className="text-lg font-semibold tracking-tight text-[var(--text-primary)]">
+            Explore More Categories
+          </h2>
+          <NonFeaturedCategoryGrid categories={nonFeaturedCategories} isAuthenticated={isAuthenticated} />
+        </section>
+      ) : null}
 
       <section className="flex flex-col gap-3">
         <h2 className="text-lg font-semibold tracking-tight text-[var(--text-primary)]">
