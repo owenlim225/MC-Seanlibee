@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useSyncExternalStore } from "react";
 import { createPortal } from "react-dom";
 import { Loader2 } from "lucide-react";
 
@@ -17,18 +17,18 @@ const LIVE_MESSAGES: Record<CheckoutPaymentModalPhase, string> = {
   success: "Payment successful.",
 };
 
-function usePrefersReducedMotion(): boolean {
-  const [reduced, setReduced] = useState(false);
-  useEffect(() => {
-    const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
-    setReduced(mq.matches);
-    function onChange() {
-      setReduced(mq.matches);
-    }
-    mq.addEventListener("change", onChange);
-    return () => mq.removeEventListener("change", onChange);
-  }, []);
-  return reduced;
+function subscribeReducedMotion(onStoreChange: () => void) {
+  const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
+  mq.addEventListener("change", onStoreChange);
+  return () => mq.removeEventListener("change", onStoreChange);
+}
+
+function reducedMotionSnapshot() {
+  return window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+}
+
+function reducedMotionServerSnapshot() {
+  return false;
 }
 
 export function CheckoutPaymentStatusModal({ phase }: CheckoutPaymentStatusModalProps) {
@@ -36,9 +36,15 @@ export function CheckoutPaymentStatusModal({ phase }: CheckoutPaymentStatusModal
   const dialogRef = useRef<HTMLDivElement>(null);
   const previousFocusRef = useRef<HTMLElement | null>(null);
   const [mounted, setMounted] = useState(false);
-  const reducedMotion = usePrefersReducedMotion();
+
+  const reducedMotion = useSyncExternalStore(
+    subscribeReducedMotion,
+    reducedMotionSnapshot,
+    reducedMotionServerSnapshot,
+  );
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- document.body is unavailable until after SSR; portal must mount on client only (matches admin modal pattern).
     setMounted(true);
   }, []);
 
