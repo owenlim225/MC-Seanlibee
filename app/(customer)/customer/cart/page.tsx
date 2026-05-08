@@ -2,7 +2,7 @@ import Link from "next/link";
 import { prisma } from "@/lib/prisma";
 import { readCart } from "@/lib/cart-cookie";
 import { computeCheckoutPricing } from "@/lib/customer/checkout-pricing";
-import { setLineQty, startCheckout } from "@/app/(customer)/customer/actions";
+import { setLineNotes, setLineQty, startCheckout } from "@/app/(customer)/customer/actions";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { EmptyState } from "@/components/ui/empty-state";
@@ -56,11 +56,30 @@ export default async function CartPage({
         <div className="flex flex-col gap-4">
           {lines.map((line) => (
             <Card key={line.menuItemId} className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
-              <div>
+              <div className="flex-1">
                 <div className="font-medium">{line.menuItem.name}</div>
                 <div className="text-sm text-[var(--text-muted)]">
                   <MoneyText cents={line.menuItem.priceCents} /> each
                 </div>
+                <SuccessActionForm action={setLineNotes.bind(null, line.menuItemId)} className="mt-3 flex flex-col gap-2">
+                  <label className="text-xs font-medium uppercase tracking-wide text-[var(--text-meta)]" htmlFor={`line-note-${line.menuItemId}`}>
+                    Notes for kitchen (optional)
+                  </label>
+                  <textarea
+                    id={`line-note-${line.menuItemId}`}
+                    name="notes"
+                    rows={2}
+                    maxLength={500}
+                    defaultValue={line.notes ?? ""}
+                    placeholder="Add preferences or allergy notes"
+                    className="w-full rounded-md border border-zinc-300 bg-transparent px-3 py-2 text-sm dark:border-zinc-700"
+                  />
+                  <div className="flex justify-end">
+                    <Button type="submit" variant="secondary">
+                      Save notes
+                    </Button>
+                  </div>
+                </SuccessActionForm>
               </div>
               <div className="flex flex-wrap items-center gap-2">
                 <SuccessActionForm action={setLineQty.bind(null, line.menuItemId, Math.max(1, line.qty - 1))}>

@@ -4,7 +4,7 @@ import { OrderStatus, Role } from "@prisma/client";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { requireRoleLite } from "@/lib/auth";
-import { clearCart, readCart, writeCart } from "@/lib/cart-cookie";
+import { clearCart, readCart, sanitizeCartNoteInput, writeCart } from "@/lib/cart-cookie";
 import { computeCheckoutPricing, resolveDeliveryOption, resolveTipCents } from "@/lib/customer/checkout-pricing";
 import { prisma } from "@/lib/prisma";
 import { realtime } from "@/lib/realtime";
@@ -17,7 +17,7 @@ export async function addToCart(menuItemId: string): Promise<ActionFeedback> {
   const idx = cart.findIndex((l) => l.menuItemId === menuItemId);
   const nextCart =
     idx >= 0
-      ? cart.map((line) => (line.menuItemId === menuItemId ? { menuItemId, qty: line.qty + 1 } : line))
+      ? cart.map((line) => (line.menuItemId === menuItemId ? { ...line, qty: line.qty + 1 } : line))
       : [...cart, { menuItemId, qty: 1 }];
   await writeCart(nextCart);
   revalidatePath("/", "layout");
@@ -80,7 +80,7 @@ export async function setLineQty(menuItemId: string, qty: number): Promise<Actio
   await requireRoleLite(Role.CUSTOMER);
   let cart = await readCart();
   if (qty <= 0) cart = cart.filter((l) => l.menuItemId !== menuItemId);
-  else cart = cart.map((l) => (l.menuItemId === menuItemId ? { menuItemId, qty } : l));
+  else cart = cart.map((l) => (l.menuItemId === menuItemId ? { ...l, qty } : l));
   await writeCart(cart);
   revalidatePath("/", "layout");
   revalidatePath("/customer/cart");
@@ -89,6 +89,20 @@ export async function setLineQty(menuItemId: string, qty: number): Promise<Actio
     return actionSuccess("Removed from cart");
   }
   return actionSuccess("Cart updated");
+}
+
+export async function setLineNotes(menuItemId: string, formData: FormData): Promise<ActionFeedback> {
+  await requireRoleLite(Role.CUSTOMER);
+  const cart = await readCart();
+  const notes = sanitizeCartNoteInput(formData.get("notes"));
+  const nextCart = cart.map((line) =>
+    line.menuItemId === menuItemId ? (notes ? { ...line, notes } : { menuItemId: line.menuItemId, qty: line.qty }) : line,
+  );
+  await writeCart(nextCart);
+  revalidatePath("/", "layout");
+  revalidatePath("/customer/cart");
+  revalidatePath("/customer/checkout");
+  return actionSuccess("Notes saved");
 }
 
 export async function startCheckout(): Promise<void> {
@@ -160,6 +174,7 @@ async function executePlaceOrder(formData: FormData): Promise<ExecutePlaceOrderR
       menuItemId: menuItem.id,
       quantity: line.qty,
       priceCentsAtOrder: menuItem.priceCents,
+      notes: line.notes,
     };
   });
 

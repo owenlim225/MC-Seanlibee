@@ -23,24 +23,6 @@ export function StatusDistributionChart({ rows }: { rows: StatusCountRow[] }) {
     color: segmentColors[index % segmentColors.length],
   }));
 
-  const pieStops = rowsWithColor
-    .filter((row) => row.count > 0)
-    .reduce<{ running: number; stops: string[] }>(
-      (acc, row) => {
-        const start = (acc.running / total) * 100;
-        const nextRunning = acc.running + row.count;
-        const end = (nextRunning / total) * 100;
-        return {
-          running: nextRunning,
-          stops: [...acc.stops, `${row.color} ${start}% ${end}%`],
-        };
-      },
-      { running: 0, stops: [] },
-    )
-    .stops
-    .join(", ");
-  const pieBackground = pieStops.length > 0 ? `conic-gradient(${pieStops})` : "var(--surface-muted)";
-
   return (
     <section className="flex flex-col gap-3" aria-labelledby="orders-by-status-heading">
       <h2 id="orders-by-status-heading" className="text-sm font-semibold">
@@ -55,11 +37,14 @@ export function StatusDistributionChart({ rows }: { rows: StatusCountRow[] }) {
           <div
             className="h-full w-full rounded-full"
             style={{
-              background: pieBackground,
+              backgroundColor: "rgba(197, 180, 180, 1)",
+              background:
+                "conic-gradient(from 0deg at 50% 50%, rgba(203, 26, 56, 1) 0%, rgba(203, 26, 56, 1) 80%, rgba(255, 255, 255, 1) 80%, rgba(253, 164, 175, 1) 100%)",
+              color: "rgba(255, 255, 255, 1)",
             }}
             aria-hidden
           />
-          <div className="absolute inset-8 flex flex-col items-center justify-center rounded-full bg-white text-center dark:bg-zinc-900">
+          <div className="absolute inset-8 flex flex-col items-center justify-center rounded-full bg-[rgba(255,250,250,1)] text-center text-black">
             <span className="text-xs uppercase tracking-wide text-[var(--text-meta)]">Orders</span>
             <span className="text-2xl font-semibold">{total}</span>
             <span className="text-xs text-[var(--text-meta)]">today</span>
