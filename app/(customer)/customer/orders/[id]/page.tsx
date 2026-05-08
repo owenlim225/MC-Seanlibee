@@ -9,6 +9,7 @@ import { MoneyText } from "@/components/ui/money-text";
 import { PageHeader } from "@/components/ui/page-header";
 import { RelativeTime } from "@/components/ui/relative-time";
 import { StatusBadge } from "@/components/ui/status-badge";
+import { CancelOrderButton } from "@/app/(customer)/customer/cancel-order-button";
 
 export default async function OrderDetailPage({
   params,
@@ -54,6 +55,7 @@ export default async function OrderDetailPage({
             <div className="text-xs text-[var(--text-meta)]">{order.id}</div>
           </div>
           <div className="flex flex-wrap items-center gap-3">
+            <CancelOrderButton orderId={order.id} status={order.status} />
             <StatusBadge status={order.status} />
             <div className="text-lg font-semibold">
               <MoneyText cents={order.totalCents} />

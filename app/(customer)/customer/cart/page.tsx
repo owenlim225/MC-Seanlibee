@@ -64,7 +64,7 @@ export default async function CartPage({
               </div>
               <div className="flex flex-wrap items-center gap-2">
                 <SuccessActionForm action={setLineQty.bind(null, line.menuItemId, Math.max(1, line.qty - 1))}>
-                  <Button type="submit" variant="secondary">
+                  <Button type="submit" variant="danger">
                     −
                   </Button>
                 </SuccessActionForm>
@@ -75,7 +75,7 @@ export default async function CartPage({
                   </Button>
                 </SuccessActionForm>
                 <SuccessActionForm action={setLineQty.bind(null, line.menuItemId, 0)}>
-                  <Button type="submit" variant="ghost">
+                  <Button type="submit" variant="danger">
                     Remove
                   </Button>
                 </SuccessActionForm>

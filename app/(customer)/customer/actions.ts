@@ -7,7 +7,9 @@ import { requireRoleLite } from "@/lib/auth";
 import { clearCart, readCart, writeCart } from "@/lib/cart-cookie";
 import { computeCheckoutPricing, resolveDeliveryOption, resolveTipCents } from "@/lib/customer/checkout-pricing";
 import { prisma } from "@/lib/prisma";
-import { actionSuccess, type ActionFeedback } from "@/lib/actions/action-feedback";
+import { realtime } from "@/lib/realtime";
+import { actionNoop, actionSuccess, type ActionFeedback } from "@/lib/actions/action-feedback";
+import { isOrderCancellable } from "@/lib/orders/cancellation";
 
 export async function addToCart(menuItemId: string): Promise<ActionFeedback> {
   await requireRoleLite(Role.CUSTOMER);
@@ -23,6 +25,55 @@ export async function addToCart(menuItemId: string): Promise<ActionFeedback> {
   revalidatePath("/customer/cart");
   revalidatePath("/customer/checkout");
   return actionSuccess("Added to cart");
+}
+
+export async function cancelOrder(orderId: string): Promise<ActionFeedback> {
+  if (!orderId.trim()) return actionNoop("order-not-found");
+
+  const customer = await requireRoleLite(Role.CUSTOMER);
+  const order = await prisma.order.findFirst({
+    where: { id: orderId, deletedAt: null },
+    select: { id: true, customerId: true, status: true },
+  });
+  if (!order || order.customerId !== customer.id) return actionNoop("order-not-found");
+  if (!isOrderCancellable(order.status)) {
+    return actionNoop("order-not-cancelable");
+  }
+
+  try {
+    await prisma.$transaction(async (tx) => {
+      await tx.order.update({
+        where: { id: orderId, status: order.status },
+        data: { status: OrderStatus.CANCELED },
+      });
+      await tx.orderStatusEvent.create({
+        data: {
+          orderId,
+          fromStatus: order.status,
+          toStatus: OrderStatus.CANCELED,
+          actorUserId: customer.id,
+        },
+      });
+    });
+  } catch (error) {
+    console.error("[cancelOrder] transaction failed", error);
+    return actionNoop("order-not-cancelable");
+  }
+
+  revalidatePath("/customer/orders");
+  revalidatePath(`/customer/orders/${orderId}`);
+  revalidatePath("/admin");
+  revalidatePath("/admin/audit");
+  revalidatePath("/kitchen");
+  revalidatePath("/driver");
+
+  try {
+    realtime.publish(`order:${orderId}`, { type: "order-status", orderId, status: OrderStatus.CANCELED });
+  } catch (error) {
+    console.error("[cancelOrder] realtime publish failed", error);
+  }
+
+  return actionSuccess("Order canceled");
 }
 
 export async function setLineQty(menuItemId: string, qty: number): Promise<ActionFeedback> {

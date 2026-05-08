@@ -9,6 +9,12 @@ import { MoneyText } from "@/components/ui/money-text";
 import { PageHeader } from "@/components/ui/page-header";
 import { resolveMenuImageUrl } from "@/lib/menu/resolve-menu-image-url";
 
+async function addItemToCartAction(menuItemId: string, formData: FormData): Promise<void> {
+  "use server";
+  void formData;
+  await addToCart(menuItemId);
+}
+
 export default async function ItemDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
   const item = await prisma.menuItem.findFirst({
@@ -85,7 +91,7 @@ export default async function ItemDetailPage({ params }: { params: Promise<{ id:
           </div>
         </div>
 
-        <form action={addToCart.bind(null, item.id)}>
+        <form action={addItemToCartAction.bind(null, item.id)}>
           <Button type="submit">Add to cart</Button>
         </form>
       </Card>
@@ -124,7 +130,7 @@ export default async function ItemDetailPage({ params }: { params: Promise<{ id:
                 </div>
                 <div className="relative z-20 flex items-center justify-between gap-2">
                   <span className="text-sm text-[var(--text-muted)]">Tap card for details</span>
-                  <form action={addToCart.bind(null, recommended.id)}>
+                  <form action={addItemToCartAction.bind(null, recommended.id)}>
                     <Button type="submit" variant="secondary">
                       Add to cart
                     </Button>
