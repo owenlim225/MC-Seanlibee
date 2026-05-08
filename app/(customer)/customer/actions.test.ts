@@ -1,5 +1,5 @@
-import { beforeEach, describe, expect, it, vi } from "vitest";
-import { Role } from "@prisma/client";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { OrderStatus, Role } from "@prisma/client";
 
 const {
   requireRoleLiteMock,
@@ -7,27 +7,36 @@ const {
   writeCartMock,
   revalidatePathMock,
   orderFindFirstMock,
+  orderUpdateMock,
+  orderStatusEventCreateMock,
+  transactionMock,
+  realtimePublishMock,
 } = vi.hoisted(() => ({
   requireRoleLiteMock: vi.fn(async () => ({ id: "cust-1", role: Role.CUSTOMER })),
   readCartMock: vi.fn(),
   writeCartMock: vi.fn(async () => undefined),
   revalidatePathMock: vi.fn(),
   orderFindFirstMock: vi.fn(),
+  orderUpdateMock: vi.fn(async () => undefined),
+  orderStatusEventCreateMock: vi.fn(async () => undefined),
+  transactionMock: vi.fn(async (cb: (tx: unknown) => Promise<unknown>) =>
+    cb({
+      order: { update: orderUpdateMock },
+      orderStatusEvent: { create: orderStatusEventCreateMock },
+    }),
+  ),
+  realtimePublishMock: vi.fn(),
 }));
 
 vi.mock("@/lib/auth", () => ({
   requireRoleLite: requireRoleLiteMock,
 }));
 
-vi.mock("@/lib/cart-cookie", async () => {
-  const actual = await vi.importActual<typeof import("@/lib/cart-cookie")>("@/lib/cart-cookie");
-  return {
-    ...actual,
-    clearCart: vi.fn(),
-    readCart: readCartMock,
-    writeCart: writeCartMock,
-  };
-});
+vi.mock("@/lib/cart-cookie", () => ({
+  clearCart: vi.fn(),
+  readCart: readCartMock,
+  writeCart: writeCartMock,
+}));
 
 vi.mock("next/cache", () => ({
   revalidatePath: revalidatePathMock,
@@ -39,17 +48,19 @@ vi.mock("next/navigation", () => ({
 
 vi.mock("@/lib/prisma", () => ({
   prisma: {
+    $transaction: transactionMock,
     menuItem: { findMany: vi.fn() },
     order: { create: vi.fn(), findFirst: orderFindFirstMock },
   },
 }));
 
-import {
-  addToCart,
-  getOrderTrackingStatus,
-  setLineNotes,
-  setLineQty,
-} from "@/app/(customer)/customer/actions";
+vi.mock("@/lib/realtime", () => ({
+  realtime: {
+    publish: realtimePublishMock,
+  },
+}));
+
+import { addToCart, cancelOrder, setLineQty } from "@/app/(customer)/customer/actions";
 
 describe("customer cart actions", () => {
   beforeEach(() => {
@@ -66,14 +77,6 @@ describe("customer cart actions", () => {
     expect(result).toEqual(expect.objectContaining({ ok: true, message: "Added to cart" }));
   });
 
-  it("preserves notes when incrementing quantity", async () => {
-    readCartMock.mockResolvedValueOnce([{ menuItemId: "m-1", qty: 1, notes: "extra sauce" }]);
-
-    await addToCart("m-1");
-
-    expect(writeCartMock).toHaveBeenCalledWith([{ menuItemId: "m-1", qty: 2, notes: "extra sauce" }]);
-  });
-
   it("returns remove feedback when quantity is set to zero", async () => {
     readCartMock.mockResolvedValueOnce([
       { menuItemId: "m-1", qty: 2 },
@@ -85,97 +88,148 @@ describe("customer cart actions", () => {
     expect(writeCartMock).toHaveBeenCalledWith([{ menuItemId: "m-2", qty: 1 }]);
     expect(result).toEqual(expect.objectContaining({ ok: true, message: "Removed from cart" }));
   });
-
-  it("removes the only cart line when quantity is decremented to zero", async () => {
-    readCartMock.mockResolvedValueOnce([{ menuItemId: "m-1", qty: 1 }]);
-
-    const result = await setLineQty("m-1", 0);
-
-    expect(writeCartMock).toHaveBeenCalledWith([]);
-    expect(result).toEqual(expect.objectContaining({ ok: true, message: "Removed from cart" }));
-  });
-
-  it("persists trimmed notes from form", async () => {
-    readCartMock.mockResolvedValueOnce([{ menuItemId: "m-1", qty: 1 }]);
-    const fd = new FormData();
-    fd.set("notes", "no onions");
-
-    const result = await setLineNotes("m-1", fd);
-
-    expect(writeCartMock).toHaveBeenCalledWith([{ menuItemId: "m-1", qty: 1, notes: "no onions" }]);
-    expect(result).toEqual(expect.objectContaining({ ok: true, message: "Note saved" }));
-  });
-
-  it("truncates notes longer than maximum length when saving", async () => {
-    readCartMock.mockResolvedValueOnce([{ menuItemId: "m-1", qty: 1 }]);
-    const fd = new FormData();
-    const longNote = "a".repeat(502);
-    fd.set("notes", longNote);
-
-    await setLineNotes("m-1", fd);
-
-    expect(writeCartMock).toHaveBeenCalledWith([{ menuItemId: "m-1", qty: 1, notes: "a".repeat(500) }]);
-  });
-
-  it("clears notes when form sends empty trimmed text", async () => {
-    readCartMock.mockResolvedValueOnce([{ menuItemId: "m-1", qty: 1, notes: "old" }]);
-    const fd = new FormData();
-    fd.set("notes", "   ");
-
-    await setLineNotes("m-1", fd);
-
-    expect(writeCartMock).toHaveBeenCalledWith([{ menuItemId: "m-1", qty: 1 }]);
-  });
-
-  it("does not write cart when updating notes for absent line", async () => {
-    readCartMock.mockResolvedValueOnce([]);
-    const fd = new FormData();
-    fd.set("notes", "ghost");
-
-    await setLineNotes("m-1", fd);
-
-    expect(writeCartMock).not.toHaveBeenCalled();
-  });
 });
 
-describe("getOrderTrackingStatus", () => {
+describe("customer order cancellation", () => {
   beforeEach(() => {
-    orderFindFirstMock.mockReset();
-    requireRoleLiteMock.mockClear();
+    vi.clearAllMocks();
+    requireRoleLiteMock.mockResolvedValue({ id: "cust-1", role: Role.CUSTOMER });
+    vi.spyOn(console, "error").mockImplementation(() => undefined);
   });
 
-  it("requires the customer role before reading the database", async () => {
-    orderFindFirstMock.mockResolvedValueOnce({ id: "order-1" });
-
-    await getOrderTrackingStatus("order-1");
-
-    expect(requireRoleLiteMock).toHaveBeenCalledWith(Role.CUSTOMER);
+  afterEach(() => {
+    vi.restoreAllMocks();
   });
 
-  it("returns found=true when the order exists for the calling customer", async () => {
-    orderFindFirstMock.mockResolvedValueOnce({ id: "order-1" });
+  it("rejects empty order id input", async () => {
+    const result = await cancelOrder("   ");
 
-    const result = await getOrderTrackingStatus("order-1");
-
-    expect(result).toEqual({ found: true });
+    expect(result).toEqual(expect.objectContaining({ ok: false, code: "order-not-found" }));
+    expect(orderFindFirstMock).not.toHaveBeenCalled();
   });
 
-  it("returns found=false when the order is missing or owned by another customer", async () => {
-    orderFindFirstMock.mockResolvedValueOnce(null);
-
-    const result = await getOrderTrackingStatus("order-1");
-
-    expect(result).toEqual({ found: false });
-  });
-
-  it("scopes the database read to the calling customer to prevent cross-account probing", async () => {
-    orderFindFirstMock.mockResolvedValueOnce(null);
-
-    await getOrderTrackingStatus("order-1");
-
-    expect(orderFindFirstMock).toHaveBeenCalledWith({
-      where: { id: "order-1", customerId: "cust-1", deletedAt: null },
-      select: { id: true },
+  it("customer can cancel own eligible order", async () => {
+    orderFindFirstMock.mockResolvedValueOnce({
+      id: "order-1",
+      customerId: "cust-1",
+      status: OrderStatus.PREPARING,
+      deletedAt: null,
     });
+
+    const result = await cancelOrder("order-1");
+
+    expect(result).toEqual(expect.objectContaining({ ok: true, message: "Order canceled" }));
+    expect(transactionMock).toHaveBeenCalledTimes(1);
+  });
+
+  it("cannot cancel DELIVERED order", async () => {
+    orderFindFirstMock.mockResolvedValueOnce({
+      id: "order-2",
+      customerId: "cust-1",
+      status: OrderStatus.DELIVERED,
+      deletedAt: null,
+    });
+
+    const result = await cancelOrder("order-2");
+
+    expect(result).toEqual(expect.objectContaining({ ok: false, code: "order-not-cancelable" }));
+    expect(transactionMock).not.toHaveBeenCalled();
+    expect(realtimePublishMock).not.toHaveBeenCalled();
+  });
+
+  it("cannot cancel another customer's order", async () => {
+    orderFindFirstMock.mockResolvedValueOnce({
+      id: "order-3",
+      customerId: "cust-2",
+      status: OrderStatus.RECEIVED,
+      deletedAt: null,
+    });
+
+    const result = await cancelOrder("order-3");
+
+    expect(result).toEqual(expect.objectContaining({ ok: false, code: "order-not-found" }));
+    expect(transactionMock).not.toHaveBeenCalled();
+    expect(realtimePublishMock).not.toHaveBeenCalled();
+  });
+
+  it("status event is recorded correctly", async () => {
+    orderFindFirstMock.mockResolvedValueOnce({
+      id: "order-4",
+      customerId: "cust-1",
+      status: OrderStatus.READY,
+      deletedAt: null,
+    });
+
+    await cancelOrder("order-4");
+
+    expect(orderUpdateMock).toHaveBeenCalledWith({
+      where: { id: "order-4", status: OrderStatus.READY },
+      data: { status: OrderStatus.CANCELED },
+    });
+    expect(orderStatusEventCreateMock).toHaveBeenCalledWith({
+      data: {
+        orderId: "order-4",
+        fromStatus: OrderStatus.READY,
+        toStatus: OrderStatus.CANCELED,
+        actorUserId: "cust-1",
+      },
+    });
+  });
+
+  it("revalidates role views and publishes realtime update", async () => {
+    orderFindFirstMock.mockResolvedValueOnce({
+      id: "order-5",
+      customerId: "cust-1",
+      status: OrderStatus.RECEIVED,
+      deletedAt: null,
+    });
+
+    await cancelOrder("order-5");
+
+    expect(realtimePublishMock).toHaveBeenCalledWith("order:order-5", {
+      type: "order-status",
+      orderId: "order-5",
+      status: OrderStatus.CANCELED,
+    });
+    expect(revalidatePathMock).toHaveBeenCalledWith("/customer/orders");
+    expect(revalidatePathMock).toHaveBeenCalledWith("/customer/orders/order-5");
+    expect(revalidatePathMock).toHaveBeenCalledWith("/admin");
+    expect(revalidatePathMock).toHaveBeenCalledWith("/admin/audit");
+    expect(revalidatePathMock).toHaveBeenCalledWith("/kitchen");
+    expect(revalidatePathMock).toHaveBeenCalledWith("/driver");
+  });
+
+  it("returns non-cancelable when status changes before update", async () => {
+    orderFindFirstMock.mockResolvedValueOnce({
+      id: "order-6",
+      customerId: "cust-1",
+      status: OrderStatus.PREPARING,
+      deletedAt: null,
+    });
+    orderUpdateMock.mockRejectedValueOnce(new Error("stale-status"));
+
+    const result = await cancelOrder("order-6");
+
+    expect(result).toEqual(expect.objectContaining({ ok: false, code: "order-not-cancelable" }));
+    expect(orderStatusEventCreateMock).not.toHaveBeenCalled();
+    expect(realtimePublishMock).not.toHaveBeenCalled();
+  });
+
+  it("still succeeds when realtime publish throws", async () => {
+    orderFindFirstMock.mockResolvedValueOnce({
+      id: "order-7",
+      customerId: "cust-1",
+      status: OrderStatus.RECEIVED,
+      deletedAt: null,
+    });
+    realtimePublishMock.mockImplementationOnce(() => {
+      throw new Error("publish-error");
+    });
+
+    const result = await cancelOrder("order-7");
+
+    expect(result).toEqual(expect.objectContaining({ ok: true, message: "Order canceled" }));
+    expect(revalidatePathMock).toHaveBeenCalledWith("/customer/orders");
+    expect(revalidatePathMock).toHaveBeenCalledWith("/customer/orders/order-7");
   });
 });

@@ -4,10 +4,12 @@ import { OrderStatus, Role } from "@prisma/client";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { requireRoleLite } from "@/lib/auth";
-import { clearCart, readCart, sanitizeCartNoteInput, writeCart, type CartLine } from "@/lib/cart-cookie";
+import { clearCart, readCart, writeCart } from "@/lib/cart-cookie";
 import { computeCheckoutPricing, resolveDeliveryOption, resolveTipCents } from "@/lib/customer/checkout-pricing";
 import { prisma } from "@/lib/prisma";
-import { actionSuccess, type ActionFeedback } from "@/lib/actions/action-feedback";
+import { realtime } from "@/lib/realtime";
+import { actionNoop, actionSuccess, type ActionFeedback } from "@/lib/actions/action-feedback";
+import { isOrderCancellable } from "@/lib/orders/cancellation";
 
 export async function addToCart(menuItemId: string): Promise<ActionFeedback> {
   await requireRoleLite(Role.CUSTOMER);
@@ -15,9 +17,7 @@ export async function addToCart(menuItemId: string): Promise<ActionFeedback> {
   const idx = cart.findIndex((l) => l.menuItemId === menuItemId);
   const nextCart =
     idx >= 0
-      ? cart.map((line) =>
-          line.menuItemId === menuItemId ? { ...line, menuItemId, qty: line.qty + 1 } : line,
-        )
+      ? cart.map((line) => (line.menuItemId === menuItemId ? { menuItemId, qty: line.qty + 1 } : line))
       : [...cart, { menuItemId, qty: 1 }];
   await writeCart(nextCart);
   revalidatePath("/", "layout");
@@ -27,16 +27,60 @@ export async function addToCart(menuItemId: string): Promise<ActionFeedback> {
   return actionSuccess("Added to cart");
 }
 
-/** Form `action` prop must be `Promise<void>`; use this from server components. */
-export async function submitAddToCart(menuItemId: string, _formData: FormData): Promise<void> {
-  await addToCart(menuItemId);
+export async function cancelOrder(orderId: string): Promise<ActionFeedback> {
+  if (!orderId.trim()) return actionNoop("order-not-found");
+
+  const customer = await requireRoleLite(Role.CUSTOMER);
+  const order = await prisma.order.findFirst({
+    where: { id: orderId, deletedAt: null },
+    select: { id: true, customerId: true, status: true },
+  });
+  if (!order || order.customerId !== customer.id) return actionNoop("order-not-found");
+  if (!isOrderCancellable(order.status)) {
+    return actionNoop("order-not-cancelable");
+  }
+
+  try {
+    await prisma.$transaction(async (tx) => {
+      await tx.order.update({
+        where: { id: orderId, status: order.status },
+        data: { status: OrderStatus.CANCELED },
+      });
+      await tx.orderStatusEvent.create({
+        data: {
+          orderId,
+          fromStatus: order.status,
+          toStatus: OrderStatus.CANCELED,
+          actorUserId: customer.id,
+        },
+      });
+    });
+  } catch (error) {
+    console.error("[cancelOrder] transaction failed", error);
+    return actionNoop("order-not-cancelable");
+  }
+
+  revalidatePath("/customer/orders");
+  revalidatePath(`/customer/orders/${orderId}`);
+  revalidatePath("/admin");
+  revalidatePath("/admin/audit");
+  revalidatePath("/kitchen");
+  revalidatePath("/driver");
+
+  try {
+    realtime.publish(`order:${orderId}`, { type: "order-status", orderId, status: OrderStatus.CANCELED });
+  } catch (error) {
+    console.error("[cancelOrder] realtime publish failed", error);
+  }
+
+  return actionSuccess("Order canceled");
 }
 
 export async function setLineQty(menuItemId: string, qty: number): Promise<ActionFeedback> {
   await requireRoleLite(Role.CUSTOMER);
   let cart = await readCart();
   if (qty <= 0) cart = cart.filter((l) => l.menuItemId !== menuItemId);
-  else cart = cart.map((l) => (l.menuItemId === menuItemId ? { ...l, menuItemId, qty } : l));
+  else cart = cart.map((l) => (l.menuItemId === menuItemId ? { menuItemId, qty } : l));
   await writeCart(cart);
   revalidatePath("/", "layout");
   revalidatePath("/customer/cart");
@@ -45,26 +89,6 @@ export async function setLineQty(menuItemId: string, qty: number): Promise<Actio
     return actionSuccess("Removed from cart");
   }
   return actionSuccess("Cart updated");
-}
-
-export async function setLineNotes(menuItemId: string, formData: FormData): Promise<ActionFeedback> {
-  await requireRoleLite(Role.CUSTOMER);
-  const note = sanitizeCartNoteInput(formData.get("notes"));
-  const cart = await readCart();
-  if (!cart.some((l) => l.menuItemId === menuItemId)) {
-    return actionSuccess("Note saved");
-  }
-  const nextCart = cart.map((line) => {
-    if (line.menuItemId !== menuItemId) return line;
-    if (note) return { ...line, notes: note };
-    const next: CartLine = { menuItemId: line.menuItemId, qty: line.qty };
-    return next;
-  });
-  await writeCart(nextCart);
-  revalidatePath("/", "layout");
-  revalidatePath("/customer/cart");
-  revalidatePath("/customer/checkout");
-  return actionSuccess("Note saved");
 }
 
 export async function startCheckout(): Promise<void> {
@@ -136,7 +160,6 @@ async function executePlaceOrder(formData: FormData): Promise<ExecutePlaceOrderR
       menuItemId: menuItem.id,
       quantity: line.qty,
       priceCentsAtOrder: menuItem.priceCents,
-      notes: line.notes ?? null,
     };
   });
 
@@ -189,17 +212,4 @@ export async function placeOrderWithResult(formData: FormData): Promise<PlaceOrd
 export async function placeOrderMock(formData: FormData): Promise<void> {
   const result = await executePlaceOrder(formData);
   redirect(result.kind === "success" ? result.redirectUrl : result.url);
-}
-
-export type OrderTrackingStatusResponse = { found: boolean };
-
-export async function getOrderTrackingStatus(
-  orderId: string,
-): Promise<OrderTrackingStatusResponse> {
-  const user = await requireRoleLite(Role.CUSTOMER);
-  const order = await prisma.order.findFirst({
-    where: { id: orderId, customerId: user.id, deletedAt: null },
-    select: { id: true },
-  });
-  return { found: Boolean(order) };
 }

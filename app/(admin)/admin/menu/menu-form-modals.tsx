@@ -28,11 +28,6 @@ function AdminFormModal({
 }) {
   const dialogRef = useRef<HTMLDivElement>(null);
   const previousFocusRef = useRef<HTMLElement | null>(null);
-  const [mounted, setMounted] = useState(false);
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
 
   useEffect(() => {
     if (!open) return;
@@ -98,7 +93,7 @@ function AdminFormModal({
     };
   }, [open]);
 
-  if (!open || !mounted) return null;
+  if (!open || typeof document === "undefined") return null;
 
   function handleOverlayClick(event: MouseEvent<HTMLDivElement>) {
     if (event.target !== event.currentTarget) return;
