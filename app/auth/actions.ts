@@ -10,6 +10,7 @@ import type { AppRole } from "@/lib/roles";
 import { safeNextPath } from "@/lib/auth/safe-next-path";
 import { signSession } from "@/lib/auth/cookie";
 import { hashPassword, isPasswordHash, verifyPassword } from "@/lib/auth/password";
+import { checkDemoPassword } from "@/lib/auth/demo-password";
 import { getSessionSecret } from "@/lib/auth/session-secret";
 import { prisma } from "@/lib/prisma";
 import { PrismaClientKnownRequestError } from "@prisma/client/runtime/library";
@@ -21,7 +22,6 @@ const AUTH_DEBUG_ENABLED = process.env.NODE_ENV !== "production";
 const SESSION_COOKIE = "mc_session";
 const SESSION_TTL_MS = 60 * 60 * 24 * 7 * 1000;
 const MIN_PASSWORD_LENGTH = 8;
-const DEMO_SHARED_PASSWORD = "Demo123!";
 const DEMO_ACCOUNT_EMAILS = new Set([
   "ginalyn@customer.com",
   "marvin@customer.com",
@@ -83,21 +83,17 @@ export async function signInAction(formData: FormData): Promise<void> {
       where: { email: normalizedEmail },
       select: { id: true, role: true, password: true, authUserId: true, isActive: true, deletedAt: true },
     });
+    let authenticatedViaDemoFallback = false;
     let passwordOk = user
       ? isPasswordHash(user.password)
         ? verifyPassword(password, user.password)
         : timingSafeStringEqual(password, user.password)
       : false;
 
-    const isDemoCredentialAttempt =
-      Boolean(user) && DEMO_ACCOUNT_EMAILS.has(normalizedEmail) && timingSafeStringEqual(password, DEMO_SHARED_PASSWORD);
-    if (!passwordOk && isDemoCredentialAttempt && user) {
-      // Keep demo accounts recoverable if stored password was changed or seeded with a different value.
-      await prisma.user.update({
-        where: { id: user.id },
-        data: { password: hashPassword(DEMO_SHARED_PASSWORD) },
-      });
-      passwordOk = true;
+    const isDemoCredentialAttempt = Boolean(user) && DEMO_ACCOUNT_EMAILS.has(normalizedEmail);
+    if (!passwordOk && isDemoCredentialAttempt) {
+      passwordOk = await checkDemoPassword(password);
+      authenticatedViaDemoFallback = passwordOk;
     }
 
     agentDebugLog("H5", "app/auth/actions.ts:59", "password verification result", {
@@ -143,7 +139,7 @@ export async function signInAction(formData: FormData): Promise<void> {
       redirect(`/auth/login?${params.toString()}`);
     }
 
-    if (!isPasswordHash(user.password)) {
+    if (!isPasswordHash(user.password) && !authenticatedViaDemoFallback) {
       await prisma.user.update({
         where: { id: user.id },
         data: { password: hashPassword(password) },

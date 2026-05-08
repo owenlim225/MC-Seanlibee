@@ -197,10 +197,11 @@ export async function restoreMenuItemFromArchive(menuItemId: string): Promise<Ac
 }
 
 export async function updateUserRoleForm(formData: FormData): Promise<ActionFeedback> {
-  await requireRoleLite(Role.ADMIN);
+  const session = await requireRoleLite(Role.ADMIN);
   const userId = String(formData.get("userId") ?? "").trim();
   const roleRaw = String(formData.get("role") ?? "").trim();
   if (!userId || !(Object.values(Role) as string[]).includes(roleRaw)) return actionNoop("invalid-user-role");
+  if (userId === session.id && roleRaw !== Role.ADMIN) return actionNoop("self-admin-demotion-blocked");
   await prisma.user.update({ where: { id: userId }, data: { role: roleRaw as Role } });
   revalidatePath("/admin/users");
   return actionSuccess("User role updated");
