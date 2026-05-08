@@ -1,6 +1,7 @@
 import { prisma } from "@/lib/prisma";
 import {
   deleteMenuItem,
+  restoreMenuItemFromArchive,
   updateMenuItemAvailability,
 } from "@/app/(admin)/admin/actions";
 import { Button } from "@/components/ui/button";
@@ -201,6 +202,13 @@ export default async function AdminMenuPage() {
                   {item.archivedAt.toLocaleString("en-US", { timeZone: "UTC", timeZoneName: "short" })}
                 </div>
                 <div className="text-xs text-[var(--text-meta)]">Original ID: {item.originalId}</div>
+                <div className="flex justify-end pt-1">
+                  <SuccessActionForm action={restoreMenuItemFromArchive.bind(null, item.originalId)}>
+                    <Button type="submit" variant="secondary">
+                      Restore
+                    </Button>
+                  </SuccessActionForm>
+                </div>
               </Card>
             ))}
           </div>

@@ -17,6 +17,7 @@ vi.mock("@/app/(admin)/admin/actions", () => ({
   createCategory: vi.fn(),
   createMenuItem: vi.fn(),
   deleteMenuItem: vi.fn(),
+  restoreMenuItemFromArchive: vi.fn(),
   updateMenuItemAvailability: vi.fn(),
 }));
 
@@ -54,6 +55,7 @@ describe("AdminMenuPage", () => {
     expect(html).toContain("Archived menu items");
     expect(html).toContain("Old Burger");
     expect(html).toContain("Original ID: menu-arch-1");
+    expect(html).toContain("Restore");
     expect(html).toContain("href=\"#archived-menu-items\"");
   });
 });

@@ -1,9 +1,10 @@
 import { OrderStatus, Role } from "@prisma/client";
-import { prisma } from "@/lib/prisma";
+import { StatusDistributionChart } from "@/components/admin/status-distribution-chart";
 import { Card } from "@/components/ui/card";
 import { MoneyText } from "@/components/ui/money-text";
 import { PageHeader } from "@/components/ui/page-header";
 import { StatusBadge } from "@/components/ui/status-badge";
+import { prisma } from "@/lib/prisma";
 
 function startOfToday(): Date {
   const d = new Date();
@@ -49,6 +50,10 @@ export default async function AdminDashboardPage() {
   return (
     <div className="flex flex-col gap-6">
       <PageHeader title="Operations dashboard" description="Counts are scoped to orders created today (local time)." />
+
+      <Card className="flex flex-col gap-3">
+        <StatusDistributionChart rows={statusCounts} />
+      </Card>
 
       <div className="grid gap-4 md:grid-cols-3">
         <Card className="flex flex-col gap-1">

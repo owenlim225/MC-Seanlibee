@@ -1,0 +1,1202 @@
+# Instructions
+
+- Following Playwright test failed.
+- Explain why, be concise, respect Playwright best practices.
+- Provide a snippet of code with the fix, if possible.
+
+# Test info
+
+- Name: customer.happy.spec.ts >> customer can browse the menu after signing in
+- Location: tests\e2e\customer.happy.spec.ts:4:5
+
+# Error details
+
+```
+Error: expect(locator).toBeVisible() failed
+
+Locator: getByRole('heading', { name: 'Menu' })
+Expected: visible
+Error: strict mode violation: getByRole('heading', { name: 'Menu' }) resolved to 2 elements:
+    1) <h1 class="text-3xl font-semibold tracking-tight text-[var(--text-primary)] md:text-4xl">Browse our Menu</h1> aka getByRole('heading', { name: 'Browse our Menu' })
+    2) <h2 class="text-lg font-semibold tracking-tight text-[var(--text-primary)]">Featured Menu</h2> aka getByRole('heading', { name: 'Featured Menu' })
+
+Call log:
+  - Expect "toBeVisible" with timeout 10000ms
+  - waiting for getByRole('heading', { name: 'Menu' })
+
+```
+
+# Page snapshot
+
+```yaml
+- generic [active] [ref=e1]:
+  - banner [ref=e2]:
+    - generic [ref=e3]:
+      - link "Mc Seanlibee" [ref=e4] [cursor=pointer]:
+        - /url: /
+        - generic [ref=e5]: Mc Seanlibee
+      - navigation "Primary" [ref=e6]:
+        - link "Orders" [ref=e7] [cursor=pointer]:
+          - /url: /customer/orders
+          - img [ref=e8]
+          - generic [ref=e11]: Orders
+        - link "Cart" [ref=e12] [cursor=pointer]:
+          - /url: /customer/cart
+          - img [ref=e13]
+          - generic [ref=e17]: Cart
+        - generic [ref=e18]: ginalyn@customer.com
+        - button "Logout" [ref=e20] [cursor=pointer]
+  - main [ref=e21]:
+    - generic [ref=e23]:
+      - generic [ref=e24]:
+        - paragraph [ref=e25]: Menu
+        - heading "Browse our Menu" [level=1] [ref=e26]
+      - generic [ref=e27]:
+        - heading "Featured Menu" [level=2] [ref=e28]
+        - generic [ref=e29]:
+          - navigation "Featured menu categories" [ref=e30]:
+            - link "Open all menu categories" [ref=e32] [cursor=pointer]:
+              - /url: /customer
+              - text: All
+            - link "Open Main Meals menu" [ref=e34] [cursor=pointer]:
+              - /url: /customer?category=main-meals
+              - text: Main Meals
+            - link "Open Budget Meals menu" [ref=e36] [cursor=pointer]:
+              - /url: /customer?category=budget-meals
+              - text: Budget Meals
+            - link "Open Desserts & Sweets menu" [ref=e38] [cursor=pointer]:
+              - /url: /customer?category=desserts-sweets
+              - text: Desserts & Sweets
+            - link "Open Drinks & Refreshments menu" [ref=e40] [cursor=pointer]:
+              - /url: /customer?category=drinks-refreshments
+              - text: Drinks & Refreshments
+            - link "Open Snacks & Light Bites menu" [ref=e42] [cursor=pointer]:
+              - /url: /customer?category=snacks-light-bites
+              - text: Snacks & Light Bites
+            - link "Open Best Sellers / Featured Picks menu" [ref=e44] [cursor=pointer]:
+              - /url: /customer?category=best-sellers-featured
+              - text: Best Sellers / Featured Picks
+            - link "Open Grilled & Heavy Meals menu" [ref=e46] [cursor=pointer]:
+              - /url: /customer?category=grilled-heavy-meals
+              - text: Grilled & Heavy Meals
+          - button "Scroll left" [disabled] [ref=e47]:
+            - img [ref=e48]
+          - button "Scroll right" [ref=e50]:
+            - img [ref=e51]
+      - generic [ref=e53]:
+        - heading "Most Popular" [level=2] [ref=e54]
+        - generic [ref=e55]:
+          - region "Most popular menu items" [ref=e56]:
+            - generic [ref=e57]:
+              - link "View details for 4505 Burgers & BBQ" [ref=e58] [cursor=pointer]:
+                - /url: /customer/items/best-damn-cheeseburger-kit
+              - img "4505 Burgers & BBQ" [ref=e60]
+              - generic [ref=e61]:
+                - generic [ref=e62]:
+                  - heading "4505 Burgers & BBQ" [level=3] [ref=e63]
+                  - paragraph [ref=e64]: Best Damn Cheeseburger Kit - 8 Pack
+                - generic [ref=e65]: $89.00
+              - generic [ref=e66]:
+                - generic: Tap card for details
+                - button "Add 4505 Burgers & BBQ to cart" [ref=e68]:
+                  - img [ref=e69]
+            - generic [ref=e73]:
+              - link "View details for 5-8 Club" [ref=e74] [cursor=pointer]:
+                - /url: /customer/items/classic-juicy-lucy-burgers-sweet-potato-puffs-4-pack
+              - img "5-8 Club" [ref=e76]
+              - generic [ref=e77]:
+                - generic [ref=e78]:
+                  - heading "5-8 Club" [level=3] [ref=e79]
+                  - paragraph [ref=e80]: Classic Juicy Lucy Burgers + Sweet Potato Puffs - 4 Pack
+                - generic [ref=e81]: $99.00
+              - generic [ref=e82]:
+                - generic: Tap card for details
+                - button "Add 5-8 Club to cart" [ref=e84]:
+                  - img [ref=e85]
+            - generic [ref=e89]:
+              - link "View details for Alidoro" [ref=e90] [cursor=pointer]:
+                - /url: /customer/items/the-gothamist-prosciutto-burrata-sandwich-kit-4-pack
+              - img "Alidoro" [ref=e92]
+              - generic [ref=e93]:
+                - generic [ref=e94]:
+                  - heading "Alidoro" [level=3] [ref=e95]
+                  - paragraph [ref=e96]: "\"The Gothamist\" Prosciutto + Burrata Sandwich Kit - 4 Pack"
+                - generic [ref=e97]: $99.00
+              - generic [ref=e98]:
+                - generic: Tap card for details
+                - button "Add Alidoro to cart" [ref=e100]:
+                  - img [ref=e101]
+            - generic [ref=e105]:
+              - link "View details for Alidoro" [ref=e106] [cursor=pointer]:
+                - /url: /customer/items/sandwich-best-sellers-4-pack
+              - img "Alidoro" [ref=e108]
+              - generic [ref=e109]:
+                - generic [ref=e110]:
+                  - heading "Alidoro" [level=3] [ref=e111]
+                  - paragraph [ref=e112]: Italian Sandwich Kit Best Sellers - 4 Pack
+                - generic [ref=e113]: $99.00
+              - generic [ref=e114]:
+                - generic: Tap card for details
+                - button "Add Alidoro to cart" [ref=e116]:
+                  - img [ref=e117]
+            - generic [ref=e121]:
+              - link "View details for Alidoro" [ref=e122] [cursor=pointer]:
+                - /url: /customer/items/pinocchio-sandwich-kit-4-pack
+              - img "Alidoro" [ref=e124]
+              - generic [ref=e125]:
+                - generic [ref=e126]:
+                  - heading "Alidoro" [level=3] [ref=e127]
+                  - paragraph [ref=e128]: "\"The Pinocchio\" Prosciutto + Soppressata + Mozzarella Sandwich Kit - 4 Pack"
+                - generic [ref=e129]: $99.00
+              - generic [ref=e130]:
+                - generic: Tap card for details
+                - button "Add Alidoro to cart" [ref=e132]:
+                  - img [ref=e133]
+            - generic [ref=e137]:
+              - link "View details for Anderson's Frozen Custard" [ref=e138] [cursor=pointer]:
+                - /url: /customer/items/23728-beef-on-weck-and-frozen-custard-for-4-pack
+              - img "Anderson's Frozen Custard" [ref=e140]
+              - generic [ref=e141]:
+                - generic [ref=e142]:
+                  - heading "Anderson's Frozen Custard" [level=3] [ref=e143]
+                  - paragraph [ref=e144]: Beef on Weck & Frozen Custard for 4 Pack
+                - generic [ref=e145]: $119.00
+              - generic [ref=e146]:
+                - generic: Tap card for details
+                - button "Add Anderson's Frozen Custard to cart" [ref=e148]:
+                  - img [ref=e149]
+            - generic [ref=e153]:
+              - link "View details for Anderson's Frozen Custard" [ref=e154] [cursor=pointer]:
+                - /url: /customer/items/23728-beef-on-weck-sandwich-kit-4-pack
+              - img "Anderson's Frozen Custard" [ref=e156]
+              - generic [ref=e157]:
+                - generic [ref=e158]:
+                  - heading "Anderson's Frozen Custard" [level=3] [ref=e159]
+                  - paragraph [ref=e160]: Beef on Weck Sandwich Kit - 4 Pack
+                - generic [ref=e161]: $89.00
+              - generic [ref=e162]:
+                - generic: Tap card for details
+                - button "Add Anderson's Frozen Custard to cart" [ref=e164]:
+                  - img [ref=e165]
+            - generic [ref=e169]:
+              - link "View details for Baba & Pops" [ref=e170] [cursor=pointer]:
+                - /url: /customer/items/1824200000002-pulled-pork-pirogies
+              - img "Baba & Pops" [ref=e172]
+              - generic [ref=e173]:
+                - generic [ref=e174]:
+                  - heading "Baba & Pops" [level=3] [ref=e175]
+                  - paragraph [ref=e176]: Pulled Pork Pierogis
+                - generic [ref=e177]: $79.00
+              - generic [ref=e178]:
+                - generic: Tap card for details
+                - button "Add Baba & Pops to cart" [ref=e180]:
+                  - img [ref=e181]
+            - generic [ref=e185]:
+              - link "View details for Bartolini’s" [ref=e186] [cursor=pointer]:
+                - /url: /customer/items/23699-choose-your-own-thin-crust-pizza-4-pack
+              - img "Bartolini’s" [ref=e188]
+              - generic [ref=e189]:
+                - generic [ref=e190]:
+                  - heading "Bartolini’s" [level=3] [ref=e191]
+                  - paragraph [ref=e192]: Choose Your Own Thin Crust Pizza - 4 Pack
+                - generic [ref=e193]: $139.00
+              - generic [ref=e194]:
+                - generic: Tap card for details
+                - button "Add Bartolini’s to cart" [ref=e196]:
+                  - img [ref=e197]
+            - generic [ref=e201]:
+              - link "View details for Bartolini’s" [ref=e202] [cursor=pointer]:
+                - /url: /customer/items/236991-choose-your-own-deep-dish-pizza-3-pack
+              - img "Bartolini’s" [ref=e204]
+              - generic [ref=e205]:
+                - generic [ref=e206]:
+                  - heading "Bartolini’s" [level=3] [ref=e207]
+                  - paragraph [ref=e208]: Choose Your Own Deep Dish Pizza - 3 Pack
+                - generic [ref=e209]: $139.00
+              - generic [ref=e210]:
+                - generic: Tap card for details
+                - button "Add Bartolini’s to cart" [ref=e212]:
+                  - img [ref=e213]
+            - generic [ref=e217]:
+              - link "View details for Big Shake's Hot Chicken" [ref=e218] [cursor=pointer]:
+                - /url: /customer/items/world-famous-hot-chicken-and-waffles-for-6
+              - img "Big Shake's Hot Chicken" [ref=e220]
+              - generic [ref=e221]:
+                - generic [ref=e222]:
+                  - heading "Big Shake's Hot Chicken" [level=3] [ref=e223]
+                  - paragraph [ref=e224]: World Famous Hot Chicken & Waffles for 6
+                - generic [ref=e225]: $99.00
+              - generic [ref=e226]:
+                - generic: Tap card for details
+                - button "Add Big Shake's Hot Chicken to cart" [ref=e228]:
+                  - img [ref=e229]
+            - generic [ref=e233]:
+              - link "View details for Big Shake's Hot Chicken" [ref=e234] [cursor=pointer]:
+                - /url: /customer/items/nashville-hot-chicken-family-meal-for-8
+              - img "Big Shake's Hot Chicken" [ref=e236]
+              - generic [ref=e237]:
+                - generic [ref=e238]:
+                  - heading "Big Shake's Hot Chicken" [level=3] [ref=e239]
+                  - paragraph [ref=e240]: Nashville Hot Chicken Family Meal for 8
+                - generic [ref=e241]: $129.00
+              - generic [ref=e242]:
+                - generic: Tap card for details
+                - button "Add Big Shake's Hot Chicken to cart" [ref=e244]:
+                  - img [ref=e245]
+          - button "Scroll left" [disabled] [ref=e249]:
+            - img [ref=e250]
+          - button "Scroll right" [ref=e252]:
+            - img [ref=e253]
+      - generic [ref=e255]:
+        - generic [ref=e256]:
+          - heading "Main Meals" [level=2] [ref=e257]
+          - generic [ref=e258]:
+            - generic [ref=e259]:
+              - link "View details for 4505 Burgers & BBQ" [ref=e260] [cursor=pointer]:
+                - /url: /customer/items/best-damn-cheeseburger-kit
+              - img "4505 Burgers & BBQ" [ref=e262]
+              - generic [ref=e263]:
+                - generic [ref=e264]:
+                  - heading "4505 Burgers & BBQ" [level=3] [ref=e265]
+                  - paragraph [ref=e266]: Best Damn Cheeseburger Kit - 8 Pack
+                - generic [ref=e267]: $89.00
+              - generic [ref=e268]:
+                - generic: Tap card for details
+                - button "Add 4505 Burgers & BBQ to cart" [ref=e270]:
+                  - img [ref=e271]
+            - generic [ref=e275]:
+              - link "View details for 5-8 Club" [ref=e276] [cursor=pointer]:
+                - /url: /customer/items/classic-juicy-lucy-burgers-sweet-potato-puffs-4-pack
+              - img "5-8 Club" [ref=e278]
+              - generic [ref=e279]:
+                - generic [ref=e280]:
+                  - heading "5-8 Club" [level=3] [ref=e281]
+                  - paragraph [ref=e282]: Classic Juicy Lucy Burgers + Sweet Potato Puffs - 4 Pack
+                - generic [ref=e283]: $99.00
+              - generic [ref=e284]:
+                - generic: Tap card for details
+                - button "Add 5-8 Club to cart" [ref=e286]:
+                  - img [ref=e287]
+            - generic [ref=e291]:
+              - link "View details for Alidoro" [ref=e292] [cursor=pointer]:
+                - /url: /customer/items/the-gothamist-prosciutto-burrata-sandwich-kit-4-pack
+              - img "Alidoro" [ref=e294]
+              - generic [ref=e295]:
+                - generic [ref=e296]:
+                  - heading "Alidoro" [level=3] [ref=e297]
+                  - paragraph [ref=e298]: "\"The Gothamist\" Prosciutto + Burrata Sandwich Kit - 4 Pack"
+                - generic [ref=e299]: $99.00
+              - generic [ref=e300]:
+                - generic: Tap card for details
+                - button "Add Alidoro to cart" [ref=e302]:
+                  - img [ref=e303]
+            - generic [ref=e307]:
+              - link "View details for Alidoro" [ref=e308] [cursor=pointer]:
+                - /url: /customer/items/sandwich-best-sellers-4-pack
+              - img "Alidoro" [ref=e310]
+              - generic [ref=e311]:
+                - generic [ref=e312]:
+                  - heading "Alidoro" [level=3] [ref=e313]
+                  - paragraph [ref=e314]: Italian Sandwich Kit Best Sellers - 4 Pack
+                - generic [ref=e315]: $99.00
+              - generic [ref=e316]:
+                - generic: Tap card for details
+                - button "Add Alidoro to cart" [ref=e318]:
+                  - img [ref=e319]
+            - generic [ref=e323]:
+              - link "View details for Alidoro" [ref=e324] [cursor=pointer]:
+                - /url: /customer/items/pinocchio-sandwich-kit-4-pack
+              - img "Alidoro" [ref=e326]
+              - generic [ref=e327]:
+                - generic [ref=e328]:
+                  - heading "Alidoro" [level=3] [ref=e329]
+                  - paragraph [ref=e330]: "\"The Pinocchio\" Prosciutto + Soppressata + Mozzarella Sandwich Kit - 4 Pack"
+                - generic [ref=e331]: $99.00
+              - generic [ref=e332]:
+                - generic: Tap card for details
+                - button "Add Alidoro to cart" [ref=e334]:
+                  - img [ref=e335]
+            - generic [ref=e339]:
+              - link "View details for Anderson's Frozen Custard" [ref=e340] [cursor=pointer]:
+                - /url: /customer/items/23728-beef-on-weck-and-frozen-custard-for-4-pack
+              - img "Anderson's Frozen Custard" [ref=e342]
+              - generic [ref=e343]:
+                - generic [ref=e344]:
+                  - heading "Anderson's Frozen Custard" [level=3] [ref=e345]
+                  - paragraph [ref=e346]: Beef on Weck & Frozen Custard for 4 Pack
+                - generic [ref=e347]: $119.00
+              - generic [ref=e348]:
+                - generic: Tap card for details
+                - button "Add Anderson's Frozen Custard to cart" [ref=e350]:
+                  - img [ref=e351]
+            - generic [ref=e355]:
+              - link "View details for Anderson's Frozen Custard" [ref=e356] [cursor=pointer]:
+                - /url: /customer/items/23728-beef-on-weck-sandwich-kit-4-pack
+              - img "Anderson's Frozen Custard" [ref=e358]
+              - generic [ref=e359]:
+                - generic [ref=e360]:
+                  - heading "Anderson's Frozen Custard" [level=3] [ref=e361]
+                  - paragraph [ref=e362]: Beef on Weck Sandwich Kit - 4 Pack
+                - generic [ref=e363]: $89.00
+              - generic [ref=e364]:
+                - generic: Tap card for details
+                - button "Add Anderson's Frozen Custard to cart" [ref=e366]:
+                  - img [ref=e367]
+            - generic [ref=e371]:
+              - link "View details for Baba & Pops" [ref=e372] [cursor=pointer]:
+                - /url: /customer/items/1824200000002-pulled-pork-pirogies
+              - img "Baba & Pops" [ref=e374]
+              - generic [ref=e375]:
+                - generic [ref=e376]:
+                  - heading "Baba & Pops" [level=3] [ref=e377]
+                  - paragraph [ref=e378]: Pulled Pork Pierogis
+                - generic [ref=e379]: $79.00
+              - generic [ref=e380]:
+                - generic: Tap card for details
+                - button "Add Baba & Pops to cart" [ref=e382]:
+                  - img [ref=e383]
+            - generic [ref=e387]:
+              - link "View details for Bartolini’s" [ref=e388] [cursor=pointer]:
+                - /url: /customer/items/23699-choose-your-own-thin-crust-pizza-4-pack
+              - img "Bartolini’s" [ref=e390]
+              - generic [ref=e391]:
+                - generic [ref=e392]:
+                  - heading "Bartolini’s" [level=3] [ref=e393]
+                  - paragraph [ref=e394]: Choose Your Own Thin Crust Pizza - 4 Pack
+                - generic [ref=e395]: $139.00
+              - generic [ref=e396]:
+                - generic: Tap card for details
+                - button "Add Bartolini’s to cart" [ref=e398]:
+                  - img [ref=e399]
+          - button "View more" [ref=e404]
+        - generic [ref=e405]:
+          - heading "Budget Meals" [level=2] [ref=e406]
+          - generic [ref=e407]:
+            - generic [ref=e408]:
+              - link "View details for 4505 Burgers & BBQ" [ref=e409] [cursor=pointer]:
+                - /url: /customer/items/best-damn-cheeseburger-kit
+              - img "4505 Burgers & BBQ" [ref=e411]
+              - generic [ref=e412]:
+                - generic [ref=e413]:
+                  - heading "4505 Burgers & BBQ" [level=3] [ref=e414]
+                  - paragraph [ref=e415]: Best Damn Cheeseburger Kit - 8 Pack
+                - generic [ref=e416]: $89.00
+              - generic [ref=e417]:
+                - generic: Tap card for details
+                - button "Add 4505 Burgers & BBQ to cart" [ref=e419]:
+                  - img [ref=e420]
+            - generic [ref=e424]:
+              - link "View details for 5-8 Club" [ref=e425] [cursor=pointer]:
+                - /url: /customer/items/classic-juicy-lucy-burgers-sweet-potato-puffs-4-pack
+              - img "5-8 Club" [ref=e427]
+              - generic [ref=e428]:
+                - generic [ref=e429]:
+                  - heading "5-8 Club" [level=3] [ref=e430]
+                  - paragraph [ref=e431]: Classic Juicy Lucy Burgers + Sweet Potato Puffs - 4 Pack
+                - generic [ref=e432]: $99.00
+              - generic [ref=e433]:
+                - generic: Tap card for details
+                - button "Add 5-8 Club to cart" [ref=e435]:
+                  - img [ref=e436]
+            - generic [ref=e440]:
+              - link "View details for Alidoro" [ref=e441] [cursor=pointer]:
+                - /url: /customer/items/the-gothamist-prosciutto-burrata-sandwich-kit-4-pack
+              - img "Alidoro" [ref=e443]
+              - generic [ref=e444]:
+                - generic [ref=e445]:
+                  - heading "Alidoro" [level=3] [ref=e446]
+                  - paragraph [ref=e447]: "\"The Gothamist\" Prosciutto + Burrata Sandwich Kit - 4 Pack"
+                - generic [ref=e448]: $99.00
+              - generic [ref=e449]:
+                - generic: Tap card for details
+                - button "Add Alidoro to cart" [ref=e451]:
+                  - img [ref=e452]
+            - generic [ref=e456]:
+              - link "View details for Alidoro" [ref=e457] [cursor=pointer]:
+                - /url: /customer/items/sandwich-best-sellers-4-pack
+              - img "Alidoro" [ref=e459]
+              - generic [ref=e460]:
+                - generic [ref=e461]:
+                  - heading "Alidoro" [level=3] [ref=e462]
+                  - paragraph [ref=e463]: Italian Sandwich Kit Best Sellers - 4 Pack
+                - generic [ref=e464]: $99.00
+              - generic [ref=e465]:
+                - generic: Tap card for details
+                - button "Add Alidoro to cart" [ref=e467]:
+                  - img [ref=e468]
+            - generic [ref=e472]:
+              - link "View details for Alidoro" [ref=e473] [cursor=pointer]:
+                - /url: /customer/items/pinocchio-sandwich-kit-4-pack
+              - img "Alidoro" [ref=e475]
+              - generic [ref=e476]:
+                - generic [ref=e477]:
+                  - heading "Alidoro" [level=3] [ref=e478]
+                  - paragraph [ref=e479]: "\"The Pinocchio\" Prosciutto + Soppressata + Mozzarella Sandwich Kit - 4 Pack"
+                - generic [ref=e480]: $99.00
+              - generic [ref=e481]:
+                - generic: Tap card for details
+                - button "Add Alidoro to cart" [ref=e483]:
+                  - img [ref=e484]
+            - generic [ref=e488]:
+              - link "View details for Anderson's Frozen Custard" [ref=e489] [cursor=pointer]:
+                - /url: /customer/items/23728-beef-on-weck-and-frozen-custard-for-4-pack
+              - img "Anderson's Frozen Custard" [ref=e491]
+              - generic [ref=e492]:
+                - generic [ref=e493]:
+                  - heading "Anderson's Frozen Custard" [level=3] [ref=e494]
+                  - paragraph [ref=e495]: Beef on Weck & Frozen Custard for 4 Pack
+                - generic [ref=e496]: $119.00
+              - generic [ref=e497]:
+                - generic: Tap card for details
+                - button "Add Anderson's Frozen Custard to cart" [ref=e499]:
+                  - img [ref=e500]
+            - generic [ref=e504]:
+              - link "View details for Anderson's Frozen Custard" [ref=e505] [cursor=pointer]:
+                - /url: /customer/items/23728-beef-on-weck-sandwich-kit-4-pack
+              - img "Anderson's Frozen Custard" [ref=e507]
+              - generic [ref=e508]:
+                - generic [ref=e509]:
+                  - heading "Anderson's Frozen Custard" [level=3] [ref=e510]
+                  - paragraph [ref=e511]: Beef on Weck Sandwich Kit - 4 Pack
+                - generic [ref=e512]: $89.00
+              - generic [ref=e513]:
+                - generic: Tap card for details
+                - button "Add Anderson's Frozen Custard to cart" [ref=e515]:
+                  - img [ref=e516]
+            - generic [ref=e520]:
+              - link "View details for Antique Bar & Bakery" [ref=e521] [cursor=pointer]:
+                - /url: /customer/items/stuffed-bread-loaves-choose-your-own-2-pack
+              - img "Antique Bar & Bakery" [ref=e523]
+              - generic [ref=e524]:
+                - generic [ref=e525]:
+                  - heading "Antique Bar & Bakery" [level=3] [ref=e526]
+                  - paragraph [ref=e527]: Stuffed Bread Loaves - Choose Your Own 2 Pack
+                - generic [ref=e528]: $59.00
+              - generic [ref=e529]:
+                - generic: Tap card for details
+                - button "Add Antique Bar & Bakery to cart" [ref=e531]:
+                  - img [ref=e532]
+            - generic [ref=e536]:
+              - link "View details for Arcangeli Grocery" [ref=e537] [cursor=pointer]:
+                - /url: /customer/items/23572-artichoke-bread-sampler-4-pack
+              - img "Arcangeli Grocery" [ref=e539]
+              - generic [ref=e540]:
+                - generic [ref=e541]:
+                  - heading "Arcangeli Grocery" [level=3] [ref=e542]
+                  - paragraph [ref=e543]: Artichoke Bread Sampler - 4 Pack
+                - generic [ref=e544]: $59.00
+              - generic [ref=e545]:
+                - generic: Tap card for details
+                - button "Add Arcangeli Grocery to cart" [ref=e547]:
+                  - img [ref=e548]
+          - button "View more" [ref=e553]
+        - generic [ref=e554]:
+          - heading "Desserts & Sweets" [level=2] [ref=e555]
+          - generic [ref=e556]:
+            - generic [ref=e557]:
+              - link "View details for Anderson's Frozen Custard" [ref=e558] [cursor=pointer]:
+                - /url: /customer/items/237283342-choose-your-own-frozen-custard-6-pack
+              - img "Anderson's Frozen Custard" [ref=e560]
+              - generic [ref=e561]:
+                - generic [ref=e562]:
+                  - heading "Anderson's Frozen Custard" [level=3] [ref=e563]
+                  - paragraph [ref=e564]: Frozen Custard + Handmade Ice Cream - Choose Your Own - 6 Pack
+                - generic [ref=e565]: $109.00
+              - generic [ref=e566]:
+                - generic: Tap card for details
+                - button "Add Anderson's Frozen Custard to cart" [ref=e568]:
+                  - img [ref=e569]
+            - generic [ref=e573]:
+              - link "View details for Bread and Roses Bakery" [ref=e574] [cursor=pointer]:
+                - /url: /customer/items/dessert-bar-care-package
+              - img "Bread and Roses Bakery" [ref=e576]
+              - generic [ref=e577]:
+                - generic [ref=e578]:
+                  - heading "Bread and Roses Bakery" [level=3] [ref=e579]
+                  - paragraph [ref=e580]: Dessert Bar Care Package
+                - generic [ref=e581]: $65.00
+              - generic [ref=e582]:
+                - generic: Tap card for details
+                - button "Add Bread and Roses Bakery to cart" [ref=e584]:
+                  - img [ref=e585]
+            - generic [ref=e589]:
+              - link "View details for Brooklyn Blackout Company" [ref=e590] [cursor=pointer]:
+                - /url: /customer/items/brooklyn-blackout-cookie-brownie-combo-pack-2-tins
+              - img "Brooklyn Blackout Company" [ref=e592]
+              - generic [ref=e593]:
+                - generic [ref=e594]:
+                  - heading "Brooklyn Blackout Company" [level=3] [ref=e595]
+                  - paragraph [ref=e596]: Brooklyn Blackout Cookie + Brownie Combo Pack - 2 Tins
+                - generic [ref=e597]: $89.00
+              - generic [ref=e598]:
+                - generic: Tap card for details
+                - button "Add Brooklyn Blackout Company to cart" [ref=e600]:
+                  - img [ref=e601]
+            - generic [ref=e605]:
+              - link "View details for Brooklyn Cupcake" [ref=e606] [cursor=pointer]:
+                - /url: /customer/items/brooklyn-blackout-parfait
+              - img "Brooklyn Cupcake" [ref=e608]
+              - generic [ref=e609]:
+                - generic [ref=e610]:
+                  - heading "Brooklyn Cupcake" [level=3] [ref=e611]
+                  - paragraph [ref=e612]: Brooklyn Blackout Cupcake Jars
+                - generic [ref=e613]: $79.00
+              - generic [ref=e614]:
+                - generic: Tap card for details
+                - button "Add Brooklyn Cupcake to cart" [ref=e616]:
+                  - img [ref=e617]
+            - generic [ref=e621]:
+              - link "View details for Brooklyn Cupcake" [ref=e622] [cursor=pointer]:
+                - /url: /customer/items/chocolate-covered-cupcake-half-dozen
+              - img "Brooklyn Cupcake" [ref=e624]
+              - generic [ref=e625]:
+                - generic [ref=e626]:
+                  - heading "Brooklyn Cupcake" [level=3] [ref=e627]
+                  - paragraph [ref=e628]: Chocolate Covered Cupcake - 6 Pack
+                - generic [ref=e629]: $65.00
+              - generic [ref=e630]:
+                - generic: Tap card for details
+                - button "Add Brooklyn Cupcake to cart" [ref=e632]:
+                  - img [ref=e633]
+            - generic [ref=e637]:
+              - link "View details for Caffè Panna Ice Cream" [ref=e638] [cursor=pointer]:
+                - /url: /customer/items/pannas-choice-ice-cream-6-pack
+              - img "Caffè Panna Ice Cream" [ref=e640]
+              - generic [ref=e641]:
+                - generic [ref=e642]:
+                  - heading "Caffè Panna Ice Cream" [level=3] [ref=e643]
+                  - paragraph [ref=e644]: Panna's Choice Ice Cream 6-Pack
+                - generic [ref=e645]: $109.00
+              - generic [ref=e646]:
+                - generic: Tap card for details
+                - button "Add Caffè Panna Ice Cream to cart" [ref=e648]:
+                  - img [ref=e649]
+            - generic [ref=e653]:
+              - link "View details for Carlo's Bakery" [ref=e654] [cursor=pointer]:
+                - /url: /customer/items/chocolate-fudge-cake
+              - img "Carlo's Bakery" [ref=e656]
+              - generic [ref=e657]:
+                - generic [ref=e658]:
+                  - heading "Carlo's Bakery" [level=3] [ref=e659]
+                  - paragraph [ref=e660]: Chocolate Fudge Cake
+                - generic [ref=e661]: $69.95
+              - generic [ref=e662]:
+                - generic: Tap card for details
+                - button "Add Carlo's Bakery to cart" [ref=e664]:
+                  - img [ref=e665]
+            - generic [ref=e669]:
+              - link "View details for Chocolate by Thomas Keller + Armando Manni" [ref=e670] [cursor=pointer]:
+                - /url: /customer/items/k-m-chocolate-sampler-gift-box
+              - img "Chocolate by Thomas Keller + Armando Manni" [ref=e672]
+              - generic [ref=e673]:
+                - generic [ref=e674]:
+                  - heading "Chocolate by Thomas Keller + Armando Manni" [level=3] [ref=e675]
+                  - paragraph [ref=e676]: K+M Chocolate Sampler Gift Box
+                - generic [ref=e677]: $59.00
+              - generic [ref=e678]:
+                - generic: Tap card for details
+                - button "Add Chocolate by Thomas Keller + Armando Manni to cart" [ref=e680]:
+                  - img [ref=e681]
+            - generic [ref=e685]:
+              - link "View details for Colts Chocolate" [ref=e686] [cursor=pointer]:
+                - /url: /customer/items/chocolate-marshmallows
+              - img "Colts Chocolate" [ref=e688]
+              - generic [ref=e689]:
+                - generic [ref=e690]:
+                  - heading "Colts Chocolate" [level=3] [ref=e691]
+                  - paragraph [ref=e692]: Chocolate Marshmallows
+                - generic [ref=e693]: $25.00
+              - generic [ref=e694]:
+                - generic: Tap card for details
+                - button "Add Colts Chocolate to cart" [ref=e696]:
+                  - img [ref=e697]
+          - button "View more" [ref=e702]
+        - generic [ref=e703]:
+          - heading "Drinks & Refreshments" [level=2] [ref=e704]
+          - generic [ref=e705]:
+            - generic [ref=e706]:
+              - link "View details for Evan Williams" [ref=e707] [cursor=pointer]:
+                - /url: /customer/items/evan-williams-gourmet-mint-julep-mix-2-pack
+              - img "Evan Williams" [ref=e709]
+              - generic [ref=e710]:
+                - generic [ref=e711]:
+                  - heading "Evan Williams" [level=3] [ref=e712]
+                  - paragraph [ref=e713]: Evan Williams Gourmet Mint Julep Mix - 2 Pack
+                - generic [ref=e714]: $39.00
+              - generic [ref=e715]:
+                - generic: Tap card for details
+                - button "Add Evan Williams to cart" [ref=e717]:
+                  - img [ref=e718]
+            - generic [ref=e722]:
+              - link "View details for Evan Williams" [ref=e723] [cursor=pointer]:
+                - /url: /customer/items/evan-williams-gourmet-mint-julep-mix
+              - img "Evan Williams" [ref=e725]
+              - generic [ref=e726]:
+                - generic [ref=e727]:
+                  - heading "Evan Williams" [level=3] [ref=e728]
+                  - paragraph [ref=e729]: Evan Williams Gourmet Mint Julep Mix
+                - generic [ref=e730]: $25.00
+              - generic [ref=e731]:
+                - generic: Tap card for details
+                - button "Add Evan Williams to cart" [ref=e733]:
+                  - img [ref=e734]
+            - generic [ref=e738]:
+              - link "View details for Fat Mama's Tamales" [ref=e739] [cursor=pointer]:
+                - /url: /customer/items/knock-you-naked-strawberry-margarita-mix
+              - img "Fat Mama's Tamales" [ref=e741]
+              - generic [ref=e742]:
+                - generic [ref=e743]:
+                  - heading "Fat Mama's Tamales" [level=3] [ref=e744]
+                  - paragraph [ref=e745]: "\"Knock-You-Naked\" Strawberry Margarita Mix"
+                - generic [ref=e746]: $39.00
+              - generic [ref=e747]:
+                - generic: Tap card for details
+                - button "Add Fat Mama's Tamales to cart" [ref=e749]:
+                  - img [ref=e750]
+            - generic [ref=e754]:
+              - link "View details for Fat Mama's Tamales" [ref=e755] [cursor=pointer]:
+                - /url: /customer/items/16591-knock-you-naked-margarita-mix
+              - img "Fat Mama's Tamales" [ref=e757]
+              - generic [ref=e758]:
+                - generic [ref=e759]:
+                  - heading "Fat Mama's Tamales" [level=3] [ref=e760]
+                  - paragraph [ref=e761]: "\"Knock-You-Naked\" Margarita Mix"
+                - generic [ref=e762]: $39.00
+              - generic [ref=e763]:
+                - generic: Tap card for details
+                - button "Add Fat Mama's Tamales to cart" [ref=e765]:
+                  - img [ref=e766]
+            - generic [ref=e770]:
+              - link "View details for Franco's Hurricane Mix" [ref=e771] [cursor=pointer]:
+                - /url: /customer/items/new-orleans-hurricane-mix
+              - img "Franco's Hurricane Mix" [ref=e773]
+              - generic [ref=e774]:
+                - generic [ref=e775]:
+                  - heading "Franco's Hurricane Mix" [level=3] [ref=e776]
+                  - paragraph [ref=e777]: New Orleans Hurricane Mix
+                - generic [ref=e778]: $39.00
+              - generic [ref=e779]:
+                - generic: Tap card for details
+                - button "Add Franco's Hurricane Mix to cart" [ref=e781]:
+                  - img [ref=e782]
+            - generic [ref=e786]:
+              - link "View details for Grady's Cold Brew" [ref=e787] [cursor=pointer]:
+                - /url: /customer/items/hazelnut-mocha-cold-brew-concentrate-6-pack
+              - img "Grady's Cold Brew" [ref=e789]
+              - generic [ref=e790]:
+                - generic [ref=e791]:
+                  - heading "Grady's Cold Brew" [level=3] [ref=e792]
+                  - paragraph [ref=e793]: Hazelnut Mocha Cold Brew Concentrate - 6 Pack
+                - generic [ref=e794]: $60.00
+              - generic [ref=e795]:
+                - generic: Tap card for details
+                - button "Add Grady's Cold Brew to cart" [ref=e797]:
+                  - img [ref=e798]
+            - generic [ref=e802]:
+              - link "View details for Grady's Cold Brew" [ref=e803] [cursor=pointer]:
+                - /url: /customer/items/cold-brew-concentrate-variety-6-pack
+              - img "Grady's Cold Brew" [ref=e805]
+              - generic [ref=e806]:
+                - generic [ref=e807]:
+                  - heading "Grady's Cold Brew" [level=3] [ref=e808]
+                  - paragraph [ref=e809]: Cold Brew Concentrate Variety - 6 Pack
+                - generic [ref=e810]: $60.00
+              - generic [ref=e811]:
+                - generic: Tap card for details
+                - button "Add Grady's Cold Brew to cart" [ref=e813]:
+                  - img [ref=e814]
+            - generic [ref=e818]:
+              - link "View details for Guy Fieri" [ref=e819] [cursor=pointer]:
+                - /url: /customer/items/guys-caliente-margaritas-for-12
+              - img "Guy Fieri" [ref=e821]
+              - generic [ref=e822]:
+                - generic [ref=e823]:
+                  - heading "Guy Fieri" [level=3] [ref=e824]
+                  - paragraph [ref=e825]: Guy's Caliente Margaritas for 12
+                - generic [ref=e826]: $69.00
+              - generic [ref=e827]:
+                - generic: Tap card for details
+                - button "Add Guy Fieri to cart" [ref=e829]:
+                  - img [ref=e830]
+            - generic [ref=e834]:
+              - link "View details for Iggy's" [ref=e835] [cursor=pointer]:
+                - /url: /customer/items/dels-x-iggys-frozen-lemonade-mix
+              - img "Iggy's" [ref=e837]
+              - generic [ref=e838]:
+                - generic [ref=e839]:
+                  - heading "Iggy's" [level=3] [ref=e840]
+                  - paragraph [ref=e841]: Del's x Iggy's Frozen Lemonade Mix
+                - generic [ref=e842]: $10.00
+              - generic [ref=e843]:
+                - generic: Tap card for details
+                - button "Add Iggy's to cart" [ref=e845]:
+                  - img [ref=e846]
+          - button "View more" [ref=e851]
+        - generic [ref=e852]:
+          - heading "Snacks & Light Bites" [level=2] [ref=e853]
+          - generic [ref=e854]:
+            - generic [ref=e855]:
+              - link "View details for Alidoro" [ref=e856] [cursor=pointer]:
+                - /url: /customer/items/sandwich-best-sellers-4-pack
+              - img "Alidoro" [ref=e858]
+              - generic [ref=e859]:
+                - generic [ref=e860]:
+                  - heading "Alidoro" [level=3] [ref=e861]
+                  - paragraph [ref=e862]: Italian Sandwich Kit Best Sellers - 4 Pack
+                - generic [ref=e863]: $99.00
+              - generic [ref=e864]:
+                - generic: Tap card for details
+                - button "Add Alidoro to cart" [ref=e866]:
+                  - img [ref=e867]
+            - generic [ref=e871]:
+              - link "View details for Alidoro" [ref=e872] [cursor=pointer]:
+                - /url: /customer/items/pinocchio-sandwich-kit-4-pack
+              - img "Alidoro" [ref=e874]
+              - generic [ref=e875]:
+                - generic [ref=e876]:
+                  - heading "Alidoro" [level=3] [ref=e877]
+                  - paragraph [ref=e878]: "\"The Pinocchio\" Prosciutto + Soppressata + Mozzarella Sandwich Kit - 4 Pack"
+                - generic [ref=e879]: $99.00
+              - generic [ref=e880]:
+                - generic: Tap card for details
+                - button "Add Alidoro to cart" [ref=e882]:
+                  - img [ref=e883]
+            - generic [ref=e887]:
+              - link "View details for Alidoro" [ref=e888] [cursor=pointer]:
+                - /url: /customer/items/the-gothamist-prosciutto-burrata-sandwich-kit-4-pack
+              - img "Alidoro" [ref=e890]
+              - generic [ref=e891]:
+                - generic [ref=e892]:
+                  - heading "Alidoro" [level=3] [ref=e893]
+                  - paragraph [ref=e894]: "\"The Gothamist\" Prosciutto + Burrata Sandwich Kit - 4 Pack"
+                - generic [ref=e895]: $99.00
+              - generic [ref=e896]:
+                - generic: Tap card for details
+                - button "Add Alidoro to cart" [ref=e898]:
+                  - img [ref=e899]
+            - generic [ref=e903]:
+              - link "View details for Anderson's Frozen Custard" [ref=e904] [cursor=pointer]:
+                - /url: /customer/items/23728-beef-on-weck-sandwich-kit-4-pack
+              - img "Anderson's Frozen Custard" [ref=e906]
+              - generic [ref=e907]:
+                - generic [ref=e908]:
+                  - heading "Anderson's Frozen Custard" [level=3] [ref=e909]
+                  - paragraph [ref=e910]: Beef on Weck Sandwich Kit - 4 Pack
+                - generic [ref=e911]: $89.00
+              - generic [ref=e912]:
+                - generic: Tap card for details
+                - button "Add Anderson's Frozen Custard to cart" [ref=e914]:
+                  - img [ref=e915]
+            - generic [ref=e919]:
+              - link "View details for Anderson's Frozen Custard" [ref=e920] [cursor=pointer]:
+                - /url: /customer/items/23728-beef-on-weck-and-frozen-custard-for-4-pack
+              - img "Anderson's Frozen Custard" [ref=e922]
+              - generic [ref=e923]:
+                - generic [ref=e924]:
+                  - heading "Anderson's Frozen Custard" [level=3] [ref=e925]
+                  - paragraph [ref=e926]: Beef on Weck & Frozen Custard for 4 Pack
+                - generic [ref=e927]: $119.00
+              - generic [ref=e928]:
+                - generic: Tap card for details
+                - button "Add Anderson's Frozen Custard to cart" [ref=e930]:
+                  - img [ref=e931]
+            - generic [ref=e935]:
+              - link "View details for Antique Bar & Bakery" [ref=e936] [cursor=pointer]:
+                - /url: /customer/items/stuffed-bread-loaves-choose-your-own-2-pack
+              - img "Antique Bar & Bakery" [ref=e938]
+              - generic [ref=e939]:
+                - generic [ref=e940]:
+                  - heading "Antique Bar & Bakery" [level=3] [ref=e941]
+                  - paragraph [ref=e942]: Stuffed Bread Loaves - Choose Your Own 2 Pack
+                - generic [ref=e943]: $59.00
+              - generic [ref=e944]:
+                - generic: Tap card for details
+                - button "Add Antique Bar & Bakery to cart" [ref=e946]:
+                  - img [ref=e947]
+            - generic [ref=e951]:
+              - link "View details for Arcangeli Grocery" [ref=e952] [cursor=pointer]:
+                - /url: /customer/items/23572-artichoke-bread-sampler-4-pack
+              - img "Arcangeli Grocery" [ref=e954]
+              - generic [ref=e955]:
+                - generic [ref=e956]:
+                  - heading "Arcangeli Grocery" [level=3] [ref=e957]
+                  - paragraph [ref=e958]: Artichoke Bread Sampler - 4 Pack
+                - generic [ref=e959]: $59.00
+              - generic [ref=e960]:
+                - generic: Tap card for details
+                - button "Add Arcangeli Grocery to cart" [ref=e962]:
+                  - img [ref=e963]
+            - generic [ref=e967]:
+              - link "View details for Boudin Bakery" [ref=e968] [cursor=pointer]:
+                - /url: /customer/items/classic-clam-chowder-and-bread-bowls-4-pack
+              - img "Boudin Bakery" [ref=e970]
+              - generic [ref=e971]:
+                - generic [ref=e972]:
+                  - heading "Boudin Bakery" [level=3] [ref=e973]
+                  - paragraph [ref=e974]: Classic Clam Chowder and Bread Bowls Kit - 4 Pack
+                - generic [ref=e975]: $49.00
+              - generic [ref=e976]:
+                - generic: Tap card for details
+                - button "Add Boudin Bakery to cart" [ref=e978]:
+                  - img [ref=e979]
+            - generic [ref=e983]:
+              - link "View details for Bread and Roses Bakery" [ref=e984] [cursor=pointer]:
+                - /url: /customer/items/bread-and-roses-care-package
+              - img "Bread and Roses Bakery" [ref=e986]
+              - generic [ref=e987]:
+                - generic [ref=e988]:
+                  - heading "Bread and Roses Bakery" [level=3] [ref=e989]
+                  - paragraph [ref=e990]: Bread & Roses Care Package
+                - generic [ref=e991]: $59.00
+              - generic [ref=e992]:
+                - generic: Tap card for details
+                - button "Add Bread and Roses Bakery to cart" [ref=e994]:
+                  - img [ref=e995]
+          - button "View more" [ref=e1000]
+        - generic [ref=e1001]:
+          - heading "Best Sellers / Featured Picks" [level=2] [ref=e1002]
+          - generic [ref=e1003]:
+            - generic [ref=e1004]:
+              - link "View details for 4505 Burgers & BBQ" [ref=e1005] [cursor=pointer]:
+                - /url: /customer/items/best-damn-cheeseburger-kit
+              - img "4505 Burgers & BBQ" [ref=e1007]
+              - generic [ref=e1008]:
+                - generic [ref=e1009]:
+                  - heading "4505 Burgers & BBQ" [level=3] [ref=e1010]
+                  - paragraph [ref=e1011]: Best Damn Cheeseburger Kit - 8 Pack
+                - generic [ref=e1012]: $89.00
+              - generic [ref=e1013]:
+                - generic: Tap card for details
+                - button "Add 4505 Burgers & BBQ to cart" [ref=e1015]:
+                  - img [ref=e1016]
+            - generic [ref=e1020]:
+              - link "View details for 5-8 Club" [ref=e1021] [cursor=pointer]:
+                - /url: /customer/items/classic-juicy-lucy-burgers-sweet-potato-puffs-4-pack
+              - img "5-8 Club" [ref=e1023]
+              - generic [ref=e1024]:
+                - generic [ref=e1025]:
+                  - heading "5-8 Club" [level=3] [ref=e1026]
+                  - paragraph [ref=e1027]: Classic Juicy Lucy Burgers + Sweet Potato Puffs - 4 Pack
+                - generic [ref=e1028]: $99.00
+              - generic [ref=e1029]:
+                - generic: Tap card for details
+                - button "Add 5-8 Club to cart" [ref=e1031]:
+                  - img [ref=e1032]
+            - generic [ref=e1036]:
+              - link "View details for Arthur Bryant's Barbeque" [ref=e1037] [cursor=pointer]:
+                - /url: /customer/items/barbeque-Sampler-for-8
+              - img "Arthur Bryant's Barbeque" [ref=e1039]
+              - generic [ref=e1040]:
+                - generic [ref=e1041]:
+                  - heading "Arthur Bryant's Barbeque" [level=3] [ref=e1042]
+                  - paragraph [ref=e1043]: Barbeque Sampler for 8
+                - generic [ref=e1044]: $139.00
+              - generic [ref=e1045]:
+                - generic: Tap card for details
+                - button "Add Arthur Bryant's Barbeque to cart" [ref=e1047]:
+                  - img [ref=e1048]
+            - generic [ref=e1052]:
+              - link "View details for Bartolini’s" [ref=e1053] [cursor=pointer]:
+                - /url: /customer/items/23699-choose-your-own-thin-crust-pizza-4-pack
+              - img "Bartolini’s" [ref=e1055]
+              - generic [ref=e1056]:
+                - generic [ref=e1057]:
+                  - heading "Bartolini’s" [level=3] [ref=e1058]
+                  - paragraph [ref=e1059]: Choose Your Own Thin Crust Pizza - 4 Pack
+                - generic [ref=e1060]: $139.00
+              - generic [ref=e1061]:
+                - generic: Tap card for details
+                - button "Add Bartolini’s to cart" [ref=e1063]:
+                  - img [ref=e1064]
+            - generic [ref=e1068]:
+              - link "View details for Bartolini’s" [ref=e1069] [cursor=pointer]:
+                - /url: /customer/items/236991-choose-your-own-deep-dish-pizza-3-pack
+              - img "Bartolini’s" [ref=e1071]
+              - generic [ref=e1072]:
+                - generic [ref=e1073]:
+                  - heading "Bartolini’s" [level=3] [ref=e1074]
+                  - paragraph [ref=e1075]: Choose Your Own Deep Dish Pizza - 3 Pack
+                - generic [ref=e1076]: $139.00
+              - generic [ref=e1077]:
+                - generic: Tap card for details
+                - button "Add Bartolini’s to cart" [ref=e1079]:
+                  - img [ref=e1080]
+            - generic [ref=e1084]:
+              - link "View details for Big Bob Gibson Bar-B-Q" [ref=e1085] [cursor=pointer]:
+                - /url: /customer/items/choose-your-own-world-championship-bbq-4-pack
+              - img "Big Bob Gibson Bar-B-Q" [ref=e1087]
+              - generic [ref=e1088]:
+                - generic [ref=e1089]:
+                  - heading "Big Bob Gibson Bar-B-Q" [level=3] [ref=e1090]
+                  - paragraph [ref=e1091]: Choose Your Own World Championship BBQ - 4 Pack
+                - generic [ref=e1092]: $109.95
+              - generic [ref=e1093]:
+                - generic: Tap card for details
+                - button "Add Big Bob Gibson Bar-B-Q to cart" [ref=e1095]:
+                  - img [ref=e1096]
+            - generic [ref=e1100]:
+              - link "View details for Big Shake's Hot Chicken" [ref=e1101] [cursor=pointer]:
+                - /url: /customer/items/nashville-hot-chicken-family-meal-for-8
+              - img "Big Shake's Hot Chicken" [ref=e1103]
+              - generic [ref=e1104]:
+                - generic [ref=e1105]:
+                  - heading "Big Shake's Hot Chicken" [level=3] [ref=e1106]
+                  - paragraph [ref=e1107]: Nashville Hot Chicken Family Meal for 8
+                - generic [ref=e1108]: $129.00
+              - generic [ref=e1109]:
+                - generic: Tap card for details
+                - button "Add Big Shake's Hot Chicken to cart" [ref=e1111]:
+                  - img [ref=e1112]
+            - generic [ref=e1116]:
+              - link "View details for Big Shake's Hot Chicken" [ref=e1117] [cursor=pointer]:
+                - /url: /customer/items/world-famous-hot-chicken-and-waffles-for-6
+              - img "Big Shake's Hot Chicken" [ref=e1119]
+              - generic [ref=e1120]:
+                - generic [ref=e1121]:
+                  - heading "Big Shake's Hot Chicken" [level=3] [ref=e1122]
+                  - paragraph [ref=e1123]: World Famous Hot Chicken & Waffles for 6
+                - generic [ref=e1124]: $99.00
+              - generic [ref=e1125]:
+                - generic: Tap card for details
+                - button "Add Big Shake's Hot Chicken to cart" [ref=e1127]:
+                  - img [ref=e1128]
+            - generic [ref=e1132]:
+              - link "View details for Big Shake's Hot Chicken" [ref=e1133] [cursor=pointer]:
+                - /url: /customer/items/nashville-hot-chicken-family-meal-for-4
+              - img "Big Shake's Hot Chicken" [ref=e1135]
+              - generic [ref=e1136]:
+                - generic [ref=e1137]:
+                  - heading "Big Shake's Hot Chicken" [level=3] [ref=e1138]
+                  - paragraph [ref=e1139]: Nashville Hot Chicken Family Meal for 4
+                - generic [ref=e1140]: $99.00
+              - generic [ref=e1141]:
+                - generic: Tap card for details
+                - button "Add Big Shake's Hot Chicken to cart" [ref=e1143]:
+                  - img [ref=e1144]
+          - button "View more" [ref=e1149]
+        - generic [ref=e1150]:
+          - heading "Grilled & Heavy Meals" [level=2] [ref=e1151]
+          - generic [ref=e1152]:
+            - generic [ref=e1153]:
+              - link "View details for Arthur Bryant's Barbeque" [ref=e1154] [cursor=pointer]:
+                - /url: /customer/items/barbeque-Sampler-for-8
+              - img "Arthur Bryant's Barbeque" [ref=e1156]
+              - generic [ref=e1157]:
+                - generic [ref=e1158]:
+                  - heading "Arthur Bryant's Barbeque" [level=3] [ref=e1159]
+                  - paragraph [ref=e1160]: Barbeque Sampler for 8
+                - generic [ref=e1161]: $139.00
+              - generic [ref=e1162]:
+                - generic: Tap card for details
+                - button "Add Arthur Bryant's Barbeque to cart" [ref=e1164]:
+                  - img [ref=e1165]
+            - generic [ref=e1169]:
+              - link "View details for Baba & Pops" [ref=e1170] [cursor=pointer]:
+                - /url: /customer/items/1824200000002-pulled-pork-pirogies
+              - img "Baba & Pops" [ref=e1172]
+              - generic [ref=e1173]:
+                - generic [ref=e1174]:
+                  - heading "Baba & Pops" [level=3] [ref=e1175]
+                  - paragraph [ref=e1176]: Pulled Pork Pierogis
+                - generic [ref=e1177]: $79.00
+              - generic [ref=e1178]:
+                - generic: Tap card for details
+                - button "Add Baba & Pops to cart" [ref=e1180]:
+                  - img [ref=e1181]
+            - generic [ref=e1185]:
+              - link "View details for Big Bob Gibson Bar-B-Q" [ref=e1186] [cursor=pointer]:
+                - /url: /customer/items/choose-your-own-world-championship-bbq-4-pack
+              - img "Big Bob Gibson Bar-B-Q" [ref=e1188]
+              - generic [ref=e1189]:
+                - generic [ref=e1190]:
+                  - heading "Big Bob Gibson Bar-B-Q" [level=3] [ref=e1191]
+                  - paragraph [ref=e1192]: Choose Your Own World Championship BBQ - 4 Pack
+                - generic [ref=e1193]: $109.95
+              - generic [ref=e1194]:
+                - generic: Tap card for details
+                - button "Add Big Bob Gibson Bar-B-Q to cart" [ref=e1196]:
+                  - img [ref=e1197]
+            - generic [ref=e1201]:
+              - link "View details for Bludso's BBQ" [ref=e1202] [cursor=pointer]:
+                - /url: /customer/items/bbq-rib-tips-serves-10-15
+              - img "Bludso's BBQ" [ref=e1204]
+              - generic [ref=e1205]:
+                - generic [ref=e1206]:
+                  - heading "Bludso's BBQ" [level=3] [ref=e1207]
+                  - paragraph [ref=e1208]: BBQ Rib Tips - Serves 10-15
+                - generic [ref=e1209]: $109.00
+              - generic [ref=e1210]:
+                - generic: Tap card for details
+                - button "Add Bludso's BBQ to cart" [ref=e1212]:
+                  - img [ref=e1213]
+            - generic [ref=e1217]:
+              - link "View details for Bludso's BBQ" [ref=e1218] [cursor=pointer]:
+                - /url: /customer/items/smoked-whole-bbq-pork-shoulder-serves-10-15
+              - img "Bludso's BBQ" [ref=e1220]
+              - generic [ref=e1221]:
+                - generic [ref=e1222]:
+                  - heading "Bludso's BBQ" [level=3] [ref=e1223]
+                  - paragraph [ref=e1224]: Smoked Whole BBQ Pork Shoulder - Serves 10-15
+                - generic [ref=e1225]: $129.00
+              - generic [ref=e1226]:
+                - generic: Tap card for details
+                - button "Add Bludso's BBQ to cart" [ref=e1228]:
+                  - img [ref=e1229]
+            - generic [ref=e1233]:
+              - link "View details for Bludso's BBQ" [ref=e1234] [cursor=pointer]:
+                - /url: /customer/items/mini-trinity-bbq-combo-brisket-ribs-and-links
+              - img "Bludso's BBQ" [ref=e1236]
+              - generic [ref=e1237]:
+                - generic [ref=e1238]:
+                  - heading "Bludso's BBQ" [level=3] [ref=e1239]
+                  - paragraph [ref=e1240]: Mini Trinity BBQ Combo - Brisket, Ribs & Links
+                - generic [ref=e1241]: $139.00
+              - generic [ref=e1242]:
+                - generic: Tap card for details
+                - button "Add Bludso's BBQ to cart" [ref=e1244]:
+                  - img [ref=e1245]
+            - generic [ref=e1249]:
+              - link "View details for Blue Smoke" [ref=e1250] [cursor=pointer]:
+                - /url: /customer/items/pulled-pork-and-chopped-beef-brisket-combo
+              - img "Blue Smoke" [ref=e1252]
+              - generic [ref=e1253]:
+                - generic [ref=e1254]:
+                  - heading "Blue Smoke" [level=3] [ref=e1255]
+                  - paragraph [ref=e1256]: Pulled Pork & Chopped Beef Brisket Combo
+                - generic [ref=e1257]: $119.00
+              - generic [ref=e1258]:
+                - generic: Tap card for details
+                - button "Add Blue Smoke to cart" [ref=e1260]:
+                  - img [ref=e1261]
+            - generic [ref=e1265]:
+              - link "View details for Blue Smoke" [ref=e1266] [cursor=pointer]:
+                - /url: /customer/items/235203-blue-smoke-baby-back-ribs-backyard-barbecue-chicken-combo
+              - img "Blue Smoke" [ref=e1268]
+              - generic [ref=e1269]:
+                - generic [ref=e1270]:
+                  - heading "Blue Smoke" [level=3] [ref=e1271]
+                  - paragraph [ref=e1272]: Blue Smoke Baby Back Ribs + Backyard Barbecue Chicken Combo
+                - generic [ref=e1273]: $129.00
+              - generic [ref=e1274]:
+                - generic: Tap card for details
+                - button "Add Blue Smoke to cart" [ref=e1276]:
+                  - img [ref=e1277]
+            - generic [ref=e1281]:
+              - link "View details for Central BBQ" [ref=e1282] [cursor=pointer]:
+                - /url: /customer/items/17347-pulled-pork-3-pound-pack
+              - img "Central BBQ" [ref=e1284]
+              - generic [ref=e1285]:
+                - generic [ref=e1286]:
+                  - heading "Central BBQ" [level=3] [ref=e1287]
+                  - paragraph [ref=e1288]: Pulled Pork Pack - Serves 6-8
+                - generic [ref=e1289]: $89.00
+              - generic [ref=e1290]:
+                - generic: Tap card for details
+                - button "Add Central BBQ to cart" [ref=e1292]:
+                  - img [ref=e1293]
+          - button "View more" [ref=e1298]
+  - contentinfo "Site footer" [ref=e1299]:
+    - generic [ref=e1300]:
+      - region "Footer links" [ref=e1301]:
+        - generic [ref=e1302]:
+          - heading "Account" [level=2] [ref=e1303]
+          - list [ref=e1304]:
+            - listitem [ref=e1305]:
+              - link "Login" [ref=e1306] [cursor=pointer]:
+                - /url: /auth/login
+            - listitem [ref=e1307]:
+              - link "Sign up" [ref=e1308] [cursor=pointer]:
+                - /url: /auth/signup
+            - listitem [ref=e1309]:
+              - link "Orders" [ref=e1310] [cursor=pointer]:
+                - /url: /customer/orders
+            - listitem [ref=e1311]:
+              - link "Cart" [ref=e1312] [cursor=pointer]:
+                - /url: /customer/cart
+        - generic [ref=e1313]:
+          - heading "Operations" [level=2] [ref=e1314]
+          - list [ref=e1315]:
+            - listitem [ref=e1316]:
+              - link "Dashboard" [ref=e1317] [cursor=pointer]:
+                - /url: /admin
+            - listitem [ref=e1318]:
+              - link "Menu" [ref=e1319] [cursor=pointer]:
+                - /url: /admin/menu
+            - listitem [ref=e1320]:
+              - link "Users" [ref=e1321] [cursor=pointer]:
+                - /url: /admin/users
+            - listitem [ref=e1322]:
+              - link "Audit" [ref=e1323] [cursor=pointer]:
+                - /url: /admin/audit
+        - generic [ref=e1324]:
+          - heading "Roles" [level=2] [ref=e1325]
+          - list [ref=e1326]:
+            - listitem [ref=e1327]:
+              - link "Customer" [ref=e1328] [cursor=pointer]:
+                - /url: /customer
+            - listitem [ref=e1329]:
+              - link "Kitchen" [ref=e1330] [cursor=pointer]:
+                - /url: /kitchen
+            - listitem [ref=e1331]:
+              - link "Driver" [ref=e1332] [cursor=pointer]:
+                - /url: /driver
+            - listitem [ref=e1333]:
+              - link "Admin" [ref=e1334] [cursor=pointer]:
+                - /url: /admin
+        - generic [ref=e1335]:
+          - heading "Developer" [level=2] [ref=e1336]
+          - list [ref=e1337]:
+            - listitem [ref=e1338]:
+              - link "Dev role switcher" [ref=e1339] [cursor=pointer]:
+                - /url: /dev/role-switcher
+            - listitem [ref=e1340]: Mock Stripe Checkout
+            - listitem [ref=e1341]:
+              - link "Multi-role iframe lab" [ref=e1342] [cursor=pointer]:
+                - /url: /dev/multi-role
+      - region "Brand and app links" [ref=e1343]:
+        - generic [ref=e1344]:
+          - paragraph [ref=e1346]: MC Seanlibee
+          - paragraph [ref=e1347]: Multi-role food ordering MVP with mocked integrations
+        - generic [ref=e1348]:
+          - heading "App" [level=2] [ref=e1349]
+          - generic "App links" [ref=e1350]:
+            - link "Login" [ref=e1351] [cursor=pointer]:
+              - /url: /auth/login
+              - img [ref=e1352]
+              - generic [ref=e1355]: Login
+            - link "Sign up" [ref=e1356] [cursor=pointer]:
+              - /url: /auth/signup
+              - img [ref=e1357]
+              - generic [ref=e1360]: Sign up
+      - region "Legal and external links" [ref=e1361]:
+        - paragraph [ref=e1362]: © 2026 MC Seanlibee
+        - generic "External links" [ref=e1363]:
+          - link "Open Next.js documentation" [ref=e1364] [cursor=pointer]:
+            - /url: https://nextjs.org/docs/app/api-reference/cli/create-next-app
+            - img [ref=e1365]
+          - link "Open Google Fonts" [ref=e1367] [cursor=pointer]:
+            - /url: https://fonts.google.com
+            - img [ref=e1368]
+          - link "Open Supabase asset" [ref=e1370] [cursor=pointer]:
+            - /url: https://sdgpxydkqdthgolfmpei.supabase.co/storage/v1/object/public/website-assets/logo.webp
+            - img [ref=e1371]
+  - button "Open Next.js Dev Tools" [ref=e1378] [cursor=pointer]:
+    - img [ref=e1379]
+  - alert [ref=e1382]
+```
+
+# Test source
+
+```ts
+  1  | import { expect, test } from "@playwright/test";
+  2  | import { signInUser } from "./utils/auth";
+  3  | 
+  4  | test("customer can browse the menu after signing in", async ({ page }) => {
+  5  |   await signInUser(page, "ginalyn@customer.com", "CUSTOMER", "Ginalyn Customer");
+  6  |   await page.goto("/customer");
+> 7  |   await expect(page.getByRole("heading", { name: "Menu" })).toBeVisible();
+     |                                                             ^ Error: expect(locator).toBeVisible() failed
+  8  |   await expect(page.getByRole("heading", { name: "Main Meals" })).toBeVisible();
+  9  | });
+  10 | 
+```

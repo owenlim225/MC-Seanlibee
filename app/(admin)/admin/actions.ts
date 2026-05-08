@@ -159,6 +159,43 @@ export async function deleteMenuItem(menuItemId: string): Promise<ActionFeedback
   return actionSuccess("Menu item archived");
 }
 
+export async function restoreMenuItemFromArchive(menuItemId: string): Promise<ActionFeedback> {
+  await requireRoleLite(Role.ADMIN);
+  const targetId = String(menuItemId ?? "").trim();
+  if (!targetId) return actionNoop("invalid-menu-item-restore");
+
+  const archived = await prisma.archivedMenuItem.findFirst({
+    where: { originalId: targetId },
+    orderBy: { archivedAt: "desc" },
+  });
+  if (!archived) return actionNoop("archived-menu-item-not-found");
+
+  await prisma.menuItem.upsert({
+    where: { id: targetId },
+    create: {
+      id: targetId,
+      name: archived.name,
+      description: archived.description,
+      priceCents: archived.priceCents,
+      imageUrl: archived.imageUrl,
+      isAvailable: archived.isAvailable,
+      deletedAt: null,
+    },
+    update: {
+      name: archived.name,
+      description: archived.description,
+      priceCents: archived.priceCents,
+      imageUrl: archived.imageUrl,
+      isAvailable: archived.isAvailable,
+      deletedAt: null,
+    },
+  });
+
+  revalidatePath("/admin/menu");
+  revalidatePath("/customer");
+  return actionSuccess("Archived menu item restored");
+}
+
 export async function updateUserRoleForm(formData: FormData): Promise<ActionFeedback> {
   await requireRoleLite(Role.ADMIN);
   const userId = String(formData.get("userId") ?? "").trim();
@@ -268,3 +305,42 @@ export async function restoreUserForm(formData: FormData): Promise<ActionFeedbac
   revalidatePath("/admin/users");
   return actionSuccess("User restored");
 }
+
+export async function restoreUserFromArchive(userId: string): Promise<ActionFeedback> {
+  await requireRoleLite(Role.ADMIN);
+  const targetId = String(userId ?? "").trim();
+  if (!targetId) return actionNoop("invalid-user-restore");
+
+  const archived = await prisma.archivedUser.findFirst({
+    where: { originalId: targetId },
+    orderBy: { archivedAt: "desc" },
+  });
+  if (!archived) return actionNoop("archived-user-not-found");
+
+  await prisma.user.upsert({
+    where: { id: targetId },
+    create: {
+      id: targetId,
+      authUserId: archived.authUserId,
+      email: archived.email,
+      password: archived.password,
+      role: archived.role,
+      name: archived.name,
+      isActive: true,
+      deletedAt: null,
+    },
+    update: {
+      authUserId: archived.authUserId,
+      email: archived.email,
+      password: archived.password,
+      role: archived.role,
+      name: archived.name,
+      isActive: true,
+      deletedAt: null,
+    },
+  });
+
+  revalidatePath("/admin/users");
+  return actionSuccess("Archived user restored");
+}
+

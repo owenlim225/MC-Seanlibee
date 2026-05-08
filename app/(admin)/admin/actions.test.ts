@@ -8,10 +8,14 @@ const {
   userCreateMock,
   userUpdateMock,
   userFindUniqueMock,
+  userUpsertMock,
   transactionMock,
   archivedUserCreateMock,
+  archivedUserFindFirstMock,
   menuItemFindUniqueMock,
+  menuItemUpsertMock,
   archivedMenuItemCreateMock,
+  archivedMenuItemFindFirstMock,
   menuItemUpdateMock,
 } = vi.hoisted(() => ({
   requireRoleLiteMock: vi.fn(async () => ({ id: "admin-1", role: Role.ADMIN })),
@@ -19,15 +23,19 @@ const {
   userCreateMock: vi.fn(),
   userUpdateMock: vi.fn(),
   userFindUniqueMock: vi.fn(),
+  userUpsertMock: vi.fn().mockResolvedValue({}),
   transactionMock: vi.fn(async (arg: unknown) => {
     if (Array.isArray(arg)) {
       await Promise.all(arg as Promise<unknown>[]);
     }
   }),
   archivedUserCreateMock: vi.fn().mockResolvedValue({}),
+  archivedUserFindFirstMock: vi.fn(),
   archivedMenuItemCreateMock: vi.fn().mockResolvedValue({}),
+  archivedMenuItemFindFirstMock: vi.fn(),
   menuItemFindUniqueMock: vi.fn(),
   menuItemUpdateMock: vi.fn().mockResolvedValue({}),
+  menuItemUpsertMock: vi.fn().mockResolvedValue({}),
 }));
 
 vi.mock("@/lib/auth", () => ({
@@ -41,19 +49,21 @@ vi.mock("next/cache", () => ({
 vi.mock("@/lib/prisma", () => ({
   prisma: {
     $transaction: transactionMock,
-    archivedUser: { create: archivedUserCreateMock },
-    archivedMenuItem: { create: archivedMenuItemCreateMock },
+    archivedMenuItem: { create: archivedMenuItemCreateMock, findFirst: archivedMenuItemFindFirstMock },
     user: {
       create: userCreateMock,
       update: userUpdateMock,
       findUnique: userFindUniqueMock,
+      upsert: userUpsertMock,
     },
+    archivedUser: { create: archivedUserCreateMock, findFirst: archivedUserFindFirstMock },
     menuCategory: { create: vi.fn(), findMany: vi.fn() },
     menuItem: {
       create: vi.fn(),
       updateMany: vi.fn().mockResolvedValue({ count: 1 }),
       update: menuItemUpdateMock,
       findUnique: menuItemFindUniqueMock,
+      upsert: menuItemUpsertMock,
     },
   },
 }));
@@ -61,6 +71,8 @@ vi.mock("@/lib/prisma", () => ({
 import {
   createUserForm,
   deleteMenuItem,
+  restoreMenuItemFromArchive,
+  restoreUserFromArchive,
   restoreUserForm,
   softDeleteUserForm,
   updateUserProfileForm,
@@ -247,6 +259,39 @@ describe("admin user CRUD actions", () => {
     expect(revalidatePathMock).toHaveBeenCalledWith("/admin/users");
     expect(result).toEqual(expect.objectContaining({ ok: true, message: "User restored" }));
   });
+
+  it("restores user from latest archive snapshot", async () => {
+    archivedUserFindFirstMock.mockResolvedValue({
+      originalId: "u-arch",
+      authUserId: "auth-arch",
+      email: "arch@example.com",
+      password: "hashed",
+      role: Role.DRIVER,
+      name: "Archived User",
+    });
+
+    const result = await restoreUserFromArchive("u-arch");
+
+    expect(archivedUserFindFirstMock).toHaveBeenCalledWith({
+      where: { originalId: "u-arch" },
+      orderBy: { archivedAt: "desc" },
+    });
+    expect(userUpsertMock).toHaveBeenCalledWith({
+      where: { id: "u-arch" },
+      create: expect.objectContaining({
+        id: "u-arch",
+        email: "arch@example.com",
+        isActive: true,
+        deletedAt: null,
+      }),
+      update: expect.objectContaining({
+        email: "arch@example.com",
+        isActive: true,
+        deletedAt: null,
+      }),
+    });
+    expect(result).toEqual(expect.objectContaining({ ok: true, message: "Archived user restored" }));
+  });
 });
 
 describe("admin menu archive actions", () => {
@@ -306,5 +351,36 @@ describe("admin menu archive actions", () => {
     await deleteMenuItem("mi-2");
 
     expect(transactionMock).not.toHaveBeenCalled();
+  });
+
+  it("restores menu item from latest archive snapshot", async () => {
+    archivedMenuItemFindFirstMock.mockResolvedValue({
+      originalId: "mi-arch",
+      name: "Archived Burger",
+      description: "Old",
+      priceCents: 1099,
+      imageUrl: null,
+      isAvailable: true,
+    });
+
+    const result = await restoreMenuItemFromArchive("mi-arch");
+
+    expect(archivedMenuItemFindFirstMock).toHaveBeenCalledWith({
+      where: { originalId: "mi-arch" },
+      orderBy: { archivedAt: "desc" },
+    });
+    expect(menuItemUpsertMock).toHaveBeenCalledWith({
+      where: { id: "mi-arch" },
+      create: expect.objectContaining({
+        id: "mi-arch",
+        name: "Archived Burger",
+        deletedAt: null,
+      }),
+      update: expect.objectContaining({
+        name: "Archived Burger",
+        deletedAt: null,
+      }),
+    });
+    expect(result).toEqual(expect.objectContaining({ ok: true, message: "Archived menu item restored" }));
   });
 });

@@ -2,6 +2,7 @@ import { Role } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
 import {
   createUserForm,
+  restoreUserFromArchive,
   restoreUserForm,
   softDeleteUserForm,
   updateUserProfileForm,
@@ -177,6 +178,13 @@ export default async function AdminUsersPage() {
               </div>
               <div className="text-xs text-[var(--text-meta)]">
                 Archived: {user.archivedAt.toLocaleString()} · Original ID: {user.originalId}
+              </div>
+              <div className="flex justify-end pt-1">
+                <SuccessActionForm action={restoreUserFromArchive.bind(null, user.originalId)}>
+                  <Button type="submit" variant="secondary">
+                    Restore from archive
+                  </Button>
+                </SuccessActionForm>
               </div>
             </Card>
           ))

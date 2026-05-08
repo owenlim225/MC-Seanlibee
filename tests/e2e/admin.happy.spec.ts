@@ -5,6 +5,7 @@ test("admin can view the dashboard", async ({ page }) => {
   await signInUser(page, "sherwin@admin.com", "ADMIN", "Sherwin Admin");
   await page.goto("/admin");
   await expect(page.getByRole("heading", { name: "Operations dashboard" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Orders by status (today)" })).toBeVisible();
 });
 
 test("admin can run user CRUD lifecycle", async ({ page }) => {

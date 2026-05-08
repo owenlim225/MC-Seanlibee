@@ -21,6 +21,7 @@ const kitchenOrderSelect = {
     select: {
       id: true,
       quantity: true,
+      notes: true,
       menuItem: { select: { name: true } },
     },
   },
@@ -74,7 +75,12 @@ export default async function KitchenQueuePage() {
                   <ul className="list-disc pl-5 text-sm">
                     {order.items.map((li) => (
                       <li key={li.id}>
-                        {li.quantity} × {li.menuItem.name}
+                        <div>
+                          {li.quantity} × {li.menuItem.name}
+                        </div>
+                        {li.notes ? (
+                          <div className="text-xs italic text-[var(--text-meta)]">Note: {li.notes}</div>
+                        ) : null}
                       </li>
                     ))}
                   </ul>

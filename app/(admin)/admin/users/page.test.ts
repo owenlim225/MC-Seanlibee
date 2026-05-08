@@ -16,6 +16,7 @@ vi.mock("@/lib/prisma", () => ({
 
 vi.mock("@/app/(admin)/admin/actions", () => ({
   createUserForm: vi.fn(),
+  restoreUserFromArchive: vi.fn(),
   restoreUserForm: vi.fn(),
   softDeleteUserForm: vi.fn(),
   updateUserProfileForm: vi.fn(),
@@ -59,6 +60,7 @@ describe("AdminUsersPage", () => {
     expect(html).toContain("Archived users");
     expect(html).toContain("archived@example.com");
     expect(html).toContain("Original ID: arch-1");
+    expect(html).toContain("Restore from archive");
     expect(html).toContain('type="password"');
     expect(html).toContain('name="password"');
   });

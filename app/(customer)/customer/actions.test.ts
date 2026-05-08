@@ -19,11 +19,15 @@ vi.mock("@/lib/auth", () => ({
   requireRoleLite: requireRoleLiteMock,
 }));
 
-vi.mock("@/lib/cart-cookie", () => ({
-  clearCart: vi.fn(),
-  readCart: readCartMock,
-  writeCart: writeCartMock,
-}));
+vi.mock("@/lib/cart-cookie", async () => {
+  const actual = await vi.importActual<typeof import("@/lib/cart-cookie")>("@/lib/cart-cookie");
+  return {
+    ...actual,
+    clearCart: vi.fn(),
+    readCart: readCartMock,
+    writeCart: writeCartMock,
+  };
+});
 
 vi.mock("next/cache", () => ({
   revalidatePath: revalidatePathMock,
@@ -43,6 +47,7 @@ vi.mock("@/lib/prisma", () => ({
 import {
   addToCart,
   getOrderTrackingStatus,
+  setLineNotes,
   setLineQty,
 } from "@/app/(customer)/customer/actions";
 
@@ -61,6 +66,14 @@ describe("customer cart actions", () => {
     expect(result).toEqual(expect.objectContaining({ ok: true, message: "Added to cart" }));
   });
 
+  it("preserves notes when incrementing quantity", async () => {
+    readCartMock.mockResolvedValueOnce([{ menuItemId: "m-1", qty: 1, notes: "extra sauce" }]);
+
+    await addToCart("m-1");
+
+    expect(writeCartMock).toHaveBeenCalledWith([{ menuItemId: "m-1", qty: 2, notes: "extra sauce" }]);
+  });
+
   it("returns remove feedback when quantity is set to zero", async () => {
     readCartMock.mockResolvedValueOnce([
       { menuItemId: "m-1", qty: 2 },
@@ -71,6 +84,57 @@ describe("customer cart actions", () => {
 
     expect(writeCartMock).toHaveBeenCalledWith([{ menuItemId: "m-2", qty: 1 }]);
     expect(result).toEqual(expect.objectContaining({ ok: true, message: "Removed from cart" }));
+  });
+
+  it("removes the only cart line when quantity is decremented to zero", async () => {
+    readCartMock.mockResolvedValueOnce([{ menuItemId: "m-1", qty: 1 }]);
+
+    const result = await setLineQty("m-1", 0);
+
+    expect(writeCartMock).toHaveBeenCalledWith([]);
+    expect(result).toEqual(expect.objectContaining({ ok: true, message: "Removed from cart" }));
+  });
+
+  it("persists trimmed notes from form", async () => {
+    readCartMock.mockResolvedValueOnce([{ menuItemId: "m-1", qty: 1 }]);
+    const fd = new FormData();
+    fd.set("notes", "no onions");
+
+    const result = await setLineNotes("m-1", fd);
+
+    expect(writeCartMock).toHaveBeenCalledWith([{ menuItemId: "m-1", qty: 1, notes: "no onions" }]);
+    expect(result).toEqual(expect.objectContaining({ ok: true, message: "Note saved" }));
+  });
+
+  it("truncates notes longer than maximum length when saving", async () => {
+    readCartMock.mockResolvedValueOnce([{ menuItemId: "m-1", qty: 1 }]);
+    const fd = new FormData();
+    const longNote = "a".repeat(502);
+    fd.set("notes", longNote);
+
+    await setLineNotes("m-1", fd);
+
+    expect(writeCartMock).toHaveBeenCalledWith([{ menuItemId: "m-1", qty: 1, notes: "a".repeat(500) }]);
+  });
+
+  it("clears notes when form sends empty trimmed text", async () => {
+    readCartMock.mockResolvedValueOnce([{ menuItemId: "m-1", qty: 1, notes: "old" }]);
+    const fd = new FormData();
+    fd.set("notes", "   ");
+
+    await setLineNotes("m-1", fd);
+
+    expect(writeCartMock).toHaveBeenCalledWith([{ menuItemId: "m-1", qty: 1 }]);
+  });
+
+  it("does not write cart when updating notes for absent line", async () => {
+    readCartMock.mockResolvedValueOnce([]);
+    const fd = new FormData();
+    fd.set("notes", "ghost");
+
+    await setLineNotes("m-1", fd);
+
+    expect(writeCartMock).not.toHaveBeenCalled();
   });
 });
 
