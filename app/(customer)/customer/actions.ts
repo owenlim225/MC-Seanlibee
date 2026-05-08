@@ -167,3 +167,16 @@ export async function placeOrderMock(formData: FormData): Promise<void> {
   const result = await executePlaceOrder(formData);
   redirect(result.kind === "success" ? result.redirectUrl : result.url);
 }
+
+export type OrderTrackingStatusResponse = { found: boolean };
+
+export async function getOrderTrackingStatus(
+  orderId: string,
+): Promise<OrderTrackingStatusResponse> {
+  const user = await requireRoleLite(Role.CUSTOMER);
+  const order = await prisma.order.findFirst({
+    where: { id: orderId, customerId: user.id, deletedAt: null },
+    select: { id: true },
+  });
+  return { found: Boolean(order) };
+}

@@ -1,9 +1,12 @@
 "use client";
 
-import { useMemo, useRef, useState, type FormEvent } from "react";
+import { useEffect, useMemo, useRef, useState, type FormEvent } from "react";
 import { useRouter } from "next/navigation";
 
-import type { PlaceOrderWithResultResponse } from "@/app/(customer)/customer/actions";
+import type {
+  OrderTrackingStatusResponse,
+  PlaceOrderWithResultResponse,
+} from "@/app/(customer)/customer/actions";
 import {
   DELIVERY_OPTIONS,
   TIP_OPTIONS_CENTS,
@@ -16,16 +19,16 @@ import {
   createCheckoutUiState,
   updateCheckoutUiState,
 } from "@/lib/customer/checkout-ui-state";
+import {
+  POLL_INTERVAL_MS,
+  appendTrackingPendingFlag,
+  resolvePollOutcome,
+  successDwellMs,
+} from "@/lib/customer/checkout-payment-poller";
 import { CheckoutPaymentStatusModal } from "@/components/customer/checkout-payment-status-modal";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { MoneyText } from "@/components/ui/money-text";
-
-function pickSuccessDwellMs(): number {
-  const baseMs = 900 + Math.floor(Math.random() * 301);
-  const extraMs = 10000 + Math.floor(Math.random() * 5001); // +5s–10s
-  return baseMs + extraMs;
-}
 
 type CheckoutReviewFormProps = {
   lines: Array<{
@@ -37,6 +40,7 @@ type CheckoutReviewFormProps = {
   initialTipCents?: number;
   defaultUser: { name?: string | null; email?: string | null; phone?: string | null };
   placeOrderWithResult: (formData: FormData) => Promise<PlaceOrderWithResultResponse>;
+  getOrderTrackingStatus: (orderId: string) => Promise<OrderTrackingStatusResponse>;
 };
 
 export function CheckoutReviewForm({
@@ -45,6 +49,7 @@ export function CheckoutReviewForm({
   initialTipCents,
   defaultUser,
   placeOrderWithResult: placeOrderWithResultAction,
+  getOrderTrackingStatus: getOrderTrackingStatusAction,
 }: CheckoutReviewFormProps) {
   const router = useRouter();
   const [uiState, setUiState] = useState(() =>
@@ -57,6 +62,14 @@ export function CheckoutReviewForm({
   const [modalPhase, setModalPhase] = useState<"processing" | "success" | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const submitLockRef = useRef(false);
+  const abortRef = useRef(false);
+
+  useEffect(
+    () => () => {
+      abortRef.current = true;
+    },
+    [],
+  );
 
   const defaultDetails = useMemo(
     () =>
@@ -103,15 +116,53 @@ export function CheckoutReviewForm({
         return;
       }
 
+      const startedAt = Date.now();
+      let timedOut = false;
+
+      while (!abortRef.current) {
+        let found = false;
+        try {
+          const status = await getOrderTrackingStatusAction(result.orderId);
+          found = status.found;
+        } catch {
+          timedOut = true;
+          break;
+        }
+
+        const outcome = resolvePollOutcome({
+          found,
+          elapsedMs: Date.now() - startedAt,
+        });
+
+        if (outcome === "success") break;
+        if (outcome === "timeout") {
+          timedOut = true;
+          break;
+        }
+
+        await new Promise((resolve) => setTimeout(resolve, POLL_INTERVAL_MS));
+      }
+
+      if (abortRef.current) return;
+
+      if (timedOut) {
+        router.push(appendTrackingPendingFlag(result.redirectUrl));
+        return;
+      }
+
       setModalPhase("success");
 
-      const prefersReduced =
-        typeof window !== "undefined" && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-      const dwellMs = prefersReduced ? Math.min(400, pickSuccessDwellMs()) : pickSuccessDwellMs();
+      const prefersReducedMotion =
+        typeof window !== "undefined" &&
+        window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      await new Promise((resolve) =>
+        setTimeout(resolve, successDwellMs({ prefersReducedMotion })),
+      );
 
-      await new Promise((resolve) => setTimeout(resolve, dwellMs));
+      if (abortRef.current) return;
       router.push(result.redirectUrl);
     } catch {
+      if (abortRef.current) return;
       setModalPhase(null);
       setIsSubmitting(false);
       submitLockRef.current = false;
